@@ -6,14 +6,14 @@
 #    By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/23 14:34:40 by jiseo             #+#    #+#              #
-#    Updated: 2020/10/18 23:22:00 by jiseo            ###   ########.fr        #
+#    Updated: 2020/10/19 07:31:22 by jiseo            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME			=	minishell
 LIBFT			=	./libft/libft.a
 SRCS_PATH		=	./srcs/
-INCS			=	-I./includes -I./libft
+INCS			=	-Iincludes
 RAW_SRCS		=	main.c
 SRCS			=	$(addprefix $(SRCS_PATH), $(RAW_SRCS))
 OBJS			=	$(SRCS:.c=.o)
@@ -29,7 +29,7 @@ all:			$(NAME)
 
 $(NAME): $(OBJS)
 	$(MAKE) -C $(LIBFT)
-	$(CC) $(CFLAGS) $(LIB) $^ -o $@
+	$(CC) $(CFLAGS) $^ -o $@ $(LIB) $(INCS)
 
 .c.o:
 	$(CC) $(CFLAGS) $(INCS) -c $< -o $(<:.c=.o)
