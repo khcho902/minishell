@@ -1,24 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2020/10/20 16:35:13 by jiseo            ###   ########.fr       */
+/*   Created: 2020/10/20 16:32:07 by jiseo             #+#    #+#             */
+/*   Updated: 2020/10/20 16:34:05 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-# define MINISHELL_H
+#include "minishell.h"
 
-# include "../libft/libft.h"
-# include <stdio.h>
+int		ft_double_free(void **ptr)
+{
+	int		i;
 
-/*
- ** utils.c
- */
-int		ft_double_free(void **ptr);
+	i = 0;
+	while (ptr[i])
+	{
+		free(ptr[i]);
+		i++;
+	}
+	if (ptr)
+		free(ptr);
+	return (i);
+}
 
-#endif
+int		ft_exit(int x)
+{
+	exit(x);
+	return (x);
+}
