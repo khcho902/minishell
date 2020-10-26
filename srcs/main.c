@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/10/20 17:15:24 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/10/26 23:31:33 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,10 @@ int		main(void)
 			}
 			else if (ft_strncmp(input, "exit", 4) == 0)
 				exit(0);
-			else if (ft_strncmp(input, "./run.sh", 8) == 0)
+			/*else if (ft_strncmp(input, "./run.sh", 8) == 0)
 			{
 				execve("run.sh", NULL, NULL);
-			}
+			}*/
 			printf("input:[%s]\n", input);
 			free(input);
 		}
