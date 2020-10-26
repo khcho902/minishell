@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/10/26 23:31:33 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/10/27 00:11:32 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int		main(void)
 	
 	while (1)
 	{
-		ft_putstr_fd("minishell ", STDIN_FILENO);
+		ft_putstr_fd("~/minishell ", STDIN_FILENO);
 		if (get_next_line(STDIN_FILENO, &input) > -1)
 		{
 			if (ft_strncmp(input, "pwd", 3) == 0)

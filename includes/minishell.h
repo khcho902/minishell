@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2020/10/20 16:35:13 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/10/26 23:55:23 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,6 @@
 # include "../libft/libft.h"
 # include <stdio.h>
 
-/*
- ** utils.c
- */
 int		ft_double_free(void **ptr);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/20 16:32:07 by jiseo             #+#    #+#             */
-/*   Updated: 2020/10/20 16:34:05 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/10/26 23:56:01 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,4 @@ int		ft_double_free(void **ptr)
 	if (ptr)
 		free(ptr);
 	return (i);
-}
-
-int		ft_exit(int x)
-{
-	exit(x);
-	return (x);
 }
