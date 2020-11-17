@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2020/10/27 01:01:17 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/11/17 17:31:57 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,12 @@
 # include "../libft/libft.h"
 # include <stdio.h>
 
-void	ft_double_free(char **ptr);
+typedef struct	s_key_value
+{
+	char		*key;
+	char		*value;
+}				t_kv;
+
+void			ft_double_free(char **ptr);
 
 #endif

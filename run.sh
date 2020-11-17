@@ -1,3 +1,2 @@
 make
-make clean
 ./minishell
