@@ -6,7 +6,7 @@
 #    By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/23 14:34:40 by jiseo             #+#    #+#              #
-#    Updated: 2020/11/15 15:10:31 by jiseo            ###   ########.fr        #
+#    Updated: 2020/11/17 19:02:51 by jiseo            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,6 +15,7 @@ LIBFT			=	./libft/libft.a
 SRCS_PATH		=	./srcs/
 INCS			=	-Iincludes
 RAW_SRCS		=	main.c \
+					env.c \
 					utils.c
 
 SRCS			=	$(addprefix $(SRCS_PATH), $(RAW_SRCS))
