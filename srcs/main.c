@@ -6,23 +6,61 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/10/27 01:16:05 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/11/17 12:34:34 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #define MAX_PATH 256
 
-int		main(void)
+void	show_prompt(char *str)
+{
+	ft_putstr_fd(str, STDIN_FILENO);
+	ft_putchar_fd(' ', STDIN_FILENO);
+}
+
+t_list	*init_env(char **env)
+{
+	t_list	*l;
+	int		i;
+
+	l = NULL;
+	i = 0;
+	while (env[i])
+	{
+		if (!l)
+			l = ft_lstnew(env[i]);
+		else
+			ft_lstadd_back(&l, ft_lstnew(env[i]));
+		i++;
+	}
+	return (l);
+}
+
+void	do_env(t_list *l)
+{
+	t_list	*l_cpy;
+
+	l_cpy = l;
+	while (l_cpy)
+	{
+		ft_putstr_fd(l_cpy->content, STDIN_FILENO);
+		l_cpy = l_cpy->next;
+	}
+}
+
+int		main(int ac, char **av, char **env)
 {
 	char	*input;
 	char	buf[MAX_PATH];
 	char	**split;
 	int		i;
+	t_list	*env_list;
 
-	while (1)
+	env_list = init_env(env);
+	while (ac)
 	{
-		ft_putstr_fd("~/minishell ", STDIN_FILENO);
+		show_prompt(av[0]);
 		if (get_next_line(STDIN_FILENO, &input) > -1)
 		{
 			i = 0;
@@ -43,6 +81,8 @@ int		main(void)
 				exit(0);
 			else if (ft_strncmp(input, "echo", 4) == 0)
 				printf("input:[%s]\n", input);
+			else if (ft_strncmp(input, "env", 3) == 0)
+				do_env(env_list);
 			printf("split %p input %p\n", split, input);
 			ft_double_free(split);
 			free(input);
