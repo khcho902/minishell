@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/17 19:00:35 by jiseo             #+#    #+#             */
-/*   Updated: 2020/11/17 19:01:56 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/11/19 21:29:23 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,7 @@ t_kv		*key_value_generator(char *env)
 {
 	t_kv	*kv;
 	char	*chr;
-	int		i;
 
-	i = 0;
 	if (!(kv = (t_kv *)malloc(sizeof(t_kv))))
 		return (NULL);
 	chr = ft_strchr(env, '=');
@@ -45,7 +43,7 @@ t_list		*init_env(char **env)
 	return (l);
 }
 
-void		do_env(t_list *l)
+void		do_env(t_list *l, int fd)
 {
 	t_list	*l_cpy;
 	t_kv	*kv;
@@ -54,10 +52,10 @@ void		do_env(t_list *l)
 	while (l_cpy)
 	{
 		kv = l_cpy->content;
-		ft_putstr_fd(kv->key, STDIN_FILENO);
-		ft_putchar_fd('=', STDIN_FILENO);
-		ft_putstr_fd(kv->value, STDIN_FILENO);
-		ft_putchar_fd('\n', STDIN_FILENO);
+		ft_putstr_fd(kv->key, fd);
+		ft_putchar_fd('=', fd);
+		ft_putstr_fd(kv->value, fd);
+		ft_putchar_fd('\n', fd);
 		l_cpy = l_cpy->next;
 	}
 }
