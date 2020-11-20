@@ -1,39 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   directory.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/10/20 16:32:07 by jiseo             #+#    #+#             */
-/*   Updated: 2020/11/21 00:48:31 by jiseo            ###   ########.fr       */
+/*   Created: 2020/11/20 16:10:13 by jiseo             #+#    #+#             */
+/*   Updated: 2020/11/21 01:36:54 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	ft_double_free(char **ptr)
+void		do_pwd(int fd)
 {
-	int		i;
+	char	buf[MAX_PATH];
 
-	i = 0;
-	while (ptr[i])
-	{
-		free(ptr[i]);
-		i++;
-	}
-	if (ptr)
-		free(ptr);
+	ft_putstr_fd(getcwd(buf, MAX_PATH), fd);
+	ft_putchar_fd('\n', fd);
 }
 
-int		exact_strcmp(char *str1, char *str2)
+void		do_cd(t_msh *msh)
 {
-	int		str1_len;
-	int		str2_len;
+	char	*str;
 
-	str1_len = ft_strlen(str1);
-	str2_len = ft_strlen(str2);
-	if ((str1_len == str2_len) && ft_strncmp(str1, str2, str1_len) == 0)
-		return (1);
-	return (0);
+	str = msh->cmd_list[++msh->cmd_idx];
+	chdir(str);
 }

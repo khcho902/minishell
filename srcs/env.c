@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/17 19:00:35 by jiseo             #+#    #+#             */
-/*   Updated: 2020/11/19 21:29:23 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/11/20 22:59:16 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,19 +43,19 @@ t_list		*init_env(char **env)
 	return (l);
 }
 
-void		do_env(t_list *l, int fd)
+void		do_env(t_list *env_list, int fd)
 {
-	t_list	*l_cpy;
+	t_list	*l;
 	t_kv	*kv;
 
-	l_cpy = l;
-	while (l_cpy)
+	l = env_list;
+	while (l)
 	{
-		kv = l_cpy->content;
+		kv = l->content;
 		ft_putstr_fd(kv->key, fd);
 		ft_putchar_fd('=', fd);
 		ft_putstr_fd(kv->value, fd);
 		ft_putchar_fd('\n', fd);
-		l_cpy = l_cpy->next;
+		l = l->next;
 	}
 }

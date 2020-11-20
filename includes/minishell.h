@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2020/11/20 03:00:54 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/11/21 01:35:09 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,11 @@
 # include "../libft/libft.h"
 # include <stdio.h>
 
+#define MAX_PATH 256
+
 typedef struct	s_msh
 {
+	char		*input;
 	t_list		*env_list;
 	char		**cmd_list;
 	int			cmd_idx;
@@ -41,10 +44,27 @@ enum
 	k_exit = 7
 };
 
+/*
+ ** env.c
+ */
 t_kv			*key_value_generator(char *env);
 t_list			*init_env(char **env);
-void			do_env(t_list *l, int fd);
+void			do_env(t_list *env_list, int fd);
 
+/*
+ ** directory.c 
+ */
+void			do_pwd(int fd);
+void			do_cd(t_msh *msh);
+
+/*
+ ** utils.c
+ */
 void			ft_double_free(char **ptr);
+int				exact_strcmp(char *str1, char *str2);
 
+/*
+ ** prompt.c
+ */
+void			show_prompt(char *str);
 #endif

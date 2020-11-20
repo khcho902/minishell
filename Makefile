@@ -6,7 +6,7 @@
 #    By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/23 14:34:40 by jiseo             #+#    #+#              #
-#    Updated: 2020/11/17 19:02:51 by jiseo            ###   ########.fr        #
+#    Updated: 2020/11/21 01:36:12 by jiseo            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,9 @@ LIBFT			=	./libft/libft.a
 SRCS_PATH		=	./srcs/
 INCS			=	-Iincludes
 RAW_SRCS		=	main.c \
+					directory.c \
 					env.c \
+					prompt.c \
 					utils.c
 
 SRCS			=	$(addprefix $(SRCS_PATH), $(RAW_SRCS))
@@ -26,7 +28,7 @@ LIB				=	-Llibft -lft
 LIBFT			=	./libft
 RM				= 	rm -f
 
-.PHONY : all clean fclean re
+.PHONY : all clean fclean re valgrind run
 
 all:			$(NAME)
 
@@ -46,3 +48,9 @@ fclean: clean
 	$(RM) $(NAME)
 
 re: fclean all
+
+val:
+	valgrind --leak-check=full --error-limit=no ./minishell
+
+r: all
+	./minishell
