@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/11/21 01:35:53 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/11/21 04:27:18 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,13 @@
 void		do_echo(t_msh *msh, int fd)
 {
 	char	*str;
+	char	*chr;
+	//t_list	*l;
 
 	str = msh->cmd_list[++msh->cmd_idx];
-	ft_putstr_fd(str, fd);
+	if ((chr = ft_strchr(str, '$')) == NULL)
+		ft_putstr_fd(str, fd);
+	//l = msh->env_list;
 	ft_putchar_fd('\n', fd);
 }
 
@@ -45,6 +49,36 @@ void		do_export(t_msh *msh)
 	ft_lstadd_back(&msh->env_list, ft_lstnew(export_kv));
 }
 
+void		do_unset(t_msh *msh)
+{
+	char	*str;
+	t_list	*l;
+	t_list	*prev;
+	t_list	*next;
+	t_kv	*kv;
+
+	str = msh->cmd_list[++msh->cmd_idx];
+	l = msh->env_list;
+	prev = NULL;
+	while (l)
+	{
+		kv = l->content;
+		next = l->next;
+		if (exact_strcmp(str, kv->key))
+		{
+			if (kv)
+				free(kv);
+			free(l);
+			if (prev)
+				prev->next = next;
+			else
+				msh->env_list = next;
+			return ;
+		}
+		prev = l;
+		l = l->next;
+	}
+}
 
 int			builtins(t_msh *msh)
 {
@@ -52,13 +86,13 @@ int			builtins(t_msh *msh)
 		do_echo(msh, STDIN_FILENO);
 	else if (msh->cmd_key == k_cd)
 		do_cd(msh);
-	else if (msh->cmd_key == k_pwd) // complete
+	else if (msh->cmd_key == k_pwd)
 		do_pwd(STDIN_FILENO);
 	else if (msh->cmd_key == k_export)
 		do_export(msh);
 	else if (msh->cmd_key == k_unset)
-		ft_putstr_fd("unset\n", STDIN_FILENO);
-	else if (msh->cmd_key == k_env) // complete
+		do_unset(msh);
+	else if (msh->cmd_key == k_env)
 		do_env(msh->env_list, STDIN_FILENO);
 	else if (msh->cmd_key == k_exit)
 		exit(0);
