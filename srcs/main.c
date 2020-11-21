@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/11/21 04:27:18 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/11/22 01:20:51 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,9 @@
 void		do_echo(t_msh *msh, int fd)
 {
 	char	*str;
-	char	*chr;
-	//t_list	*l;
 
 	str = msh->cmd_list[++msh->cmd_idx];
-	if ((chr = ft_strchr(str, '$')) == NULL)
-		ft_putstr_fd(str, fd);
-	//l = msh->env_list;
+	ft_putstr_fd(str, fd);
 	ft_putchar_fd('\n', fd);
 }
 
