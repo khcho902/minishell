@@ -6,47 +6,141 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/10/27 01:16:05 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/11/25 02:16:43 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #define MAX_PATH 256
 
+
 int		main(void)
 {
 	char	*input;
-	char	buf[MAX_PATH];
-	char	**split;
-	int		i;
+	int		res;
+	char	*words[255];
 
-	while (1)
+
+	res = 1;
+	while (res)
 	{
-		ft_putstr_fd("~/minishell ", STDIN_FILENO);
-		if (get_next_line(STDIN_FILENO, &input) > -1)
+		ft_putstr_fd("minishell$ ", STDOUT_FILENO);
+		res = get_next_line(STDIN_FILENO, &input);
+		if (res == -1)
 		{
-			i = 0;
-			split = ft_split(input, ' ');
-			while (split[i])
+			// TODO : 에러발생 출력
+			exit(0);
+		}
+		else 
+		{
+			printf("input : %s\n", input);
+			
+			int word_start = 0; 
+			int word_cnt = 0;
+
+			while (input[word_start])
 			{
-				printf("[%d]: [%s]\n", i, split[i]);
-				i++;
+				while(input[word_start] == ' ')
+					word_start++;
+				if (input[word_start] == 0)
+					break;
+
+				int word_len = 1;
+				int only_num = 1;
+
+				while(input[word_start + word_len])
+				{
+					if (!ft_isdigit(input[word_start + word_len - 1]))
+						only_num = 0;
+
+					if (input[word_start + word_len - 1] == '"'
+							&& ( word_start + word_len - 1 == 0 || input[word_start + word_len - 2] != '\\'))
+					{
+						while(!(input[word_start + word_len] == '"' && input[word_start + word_len - 1] != '\\') 
+								&& input[word_start + word_len] != 0)
+							word_len++;
+						word_len++;
+					}
+					
+					if (input[word_start + word_len - 1] == '\''
+							&& ( word_start + word_len - 1 == 0 || input[word_start + word_len - 2] != '\\'))
+					{
+						while(!(input[word_start + word_len] == '\'' && input[word_start + word_len - 1] != '\\') 
+								&& input[word_start + word_len] != 0)
+							word_len++;
+						word_len++;
+					}
+					/*
+					if (input[word_start + word_len - 1] == '\'')
+					{
+						while(input[word_start + word_len] != '\'' && input[word_start + word_len] != 0)
+							word_len++;
+						word_len++;
+					}
+					*/
+			
+
+					// --------------------------------------------------------
+					if (input[word_start] == '>' && input[word_start + 1] == '>')
+					{
+						word_len++;
+						break;
+					}
+
+					if (input[word_start] == '>')
+						break;
+
+					if (only_num == 0 && input[word_start + word_len] == '>' && input[word_start + word_len - 1] != '\\')
+						break;
+
+					if (only_num == 1 && input[word_start + word_len] == '>' && input[word_start + word_len + 1] == '>')
+					{
+						word_len += 2;
+						break;
+					}
+
+					if (only_num == 1 && input[word_start + word_len] == '>')
+					{
+						word_len++;
+						break;
+					}
+
+					// --------------------------------------------------------
+
+					if (input[word_start] == '<' || (input[word_start + word_len] == '<' && input[word_start + word_len - 1] != '\\'))
+						break;
+
+					if (input[word_start] == ';' || (input[word_start + word_len] == ';' && input[word_start + word_len - 1] != '\\'))
+						break;
+
+					if (input[word_start] == '|' || (input[word_start + word_len] == '|' && input[word_start + word_len - 1] != '\\'))
+						break;
+
+					if (input[word_start + word_len] == ' ')
+						break;
+
+					word_len++;
+				}
+
+				
+				words[word_cnt] = ft_substr(input, word_start, word_len);
+				word_cnt++;
+
+				word_start += word_len;
 			}
-			if (ft_strncmp(input, "pwd", 3) == 0)
-				printf("pwd[%s]\n", getcwd(buf, MAX_PATH));
-			else if (ft_strncmp(input, "cd", 2) == 0)
-			{
-				chdir("/Users/jiseo/work");
-				printf("change directory[%s]\n", getcwd(buf, MAX_PATH));
+
+	
+			for(int j = 0; j < word_cnt; j++){
+				printf("|%s|\n", words[j]);
 			}
-			else if (ft_strncmp(input, "exit", 4) == 0)
-				exit(0);
-			else if (ft_strncmp(input, "echo", 4) == 0)
-				printf("input:[%s]\n", input);
-			printf("split %p input %p\n", split, input);
-			ft_double_free(split);
+
+			for(int j = 0;j < word_cnt; j++){
+				free(words[j]);
+			}
+
+
 			free(input);
-			printf("split %p input %p\n", split, input);
 		}
 	}
+	return (0);
 }
