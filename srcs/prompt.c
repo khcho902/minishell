@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 23:11:23 by jiseo             #+#    #+#             */
-/*   Updated: 2020/11/20 23:11:36 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/11/25 22:44:03 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,6 @@
 
 void		show_prompt(char *str)
 {
-	ft_putstr_fd(str, STDIN_FILENO);
-	ft_putchar_fd(' ', STDIN_FILENO);
+	ft_putstr_fd(str, STDOUT);
+	ft_putchar_fd(' ', STDOUT);
 }

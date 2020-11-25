@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 16:10:13 by jiseo             #+#    #+#             */
-/*   Updated: 2020/11/21 01:36:54 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/11/25 22:49:44 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,11 @@ void		do_cd(t_msh *msh)
 {
 	char	*str;
 
+	if (msh->cmd_list[msh->cmd_idx + 1] == NULL)
+	{
+		chdir("/home/jiseo"); // HOME
+		return ;
+	}
 	str = msh->cmd_list[++msh->cmd_idx];
 	chdir(str);
 }

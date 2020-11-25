@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2020/11/21 01:35:09 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/11/25 22:29:47 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,10 @@
 # include "../libft/libft.h"
 # include <stdio.h>
 
-#define MAX_PATH 256
+# define MAX_PATH 256
+# define STDIN 0
+# define STDOUT 1
+# define STDERR 2
 
 typedef struct	s_msh
 {
@@ -52,6 +55,13 @@ t_list			*init_env(char **env);
 void			do_env(t_list *env_list, int fd);
 
 /*
+ ** env_functions.c
+ */
+void			do_echo(t_msh *msh, int fd);
+void			do_export(t_msh *msh);
+void			do_unset(t_msh *msh);
+
+/*
  ** directory.c 
  */
 void			do_pwd(int fd);
@@ -61,7 +71,7 @@ void			do_cd(t_msh *msh);
  ** utils.c
  */
 void			ft_double_free(char **ptr);
-int				exact_strcmp(char *str1, char *str2);
+int				ft_max(int n1, int n2);
 
 /*
  ** prompt.c

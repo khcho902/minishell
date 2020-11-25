@@ -6,75 +6,11 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/11/22 01:20:51 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/11/25 22:44:43 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void		do_echo(t_msh *msh, int fd)
-{
-	char	*str;
-
-	str = msh->cmd_list[++msh->cmd_idx];
-	ft_putstr_fd(str, fd);
-	ft_putchar_fd('\n', fd);
-}
-
-void		do_export(t_msh *msh)
-{
-	char	*str;
-	t_list	*l;
-	t_kv	*kv;
-	t_kv	*export_kv;
-
-	str = msh->cmd_list[++msh->cmd_idx];
-	l = msh->env_list;
-	export_kv = key_value_generator(str);
-	while (l)
-	{
-		kv = l->content;
-		if (exact_strcmp(export_kv->key, kv->key))
-		{
-			free(l->content);
-			l->content = export_kv;
-			return ;
-		}
-		l = l->next;
-	}
-	ft_lstadd_back(&msh->env_list, ft_lstnew(export_kv));
-}
-
-void		do_unset(t_msh *msh)
-{
-	char	*str;
-	t_list	*l;
-	t_list	*prev;
-	t_list	*next;
-	t_kv	*kv;
-
-	str = msh->cmd_list[++msh->cmd_idx];
-	l = msh->env_list;
-	prev = NULL;
-	while (l)
-	{
-		kv = l->content;
-		next = l->next;
-		if (exact_strcmp(str, kv->key))
-		{
-			if (kv)
-				free(kv);
-			free(l);
-			if (prev)
-				prev->next = next;
-			else
-				msh->env_list = next;
-			return ;
-		}
-		prev = l;
-		l = l->next;
-	}
-}
 
 int			builtins(t_msh *msh)
 {
@@ -89,7 +25,7 @@ int			builtins(t_msh *msh)
 	else if (msh->cmd_key == k_unset)
 		do_unset(msh);
 	else if (msh->cmd_key == k_env)
-		do_env(msh->env_list, STDIN_FILENO);
+		do_env(msh->env_list, STDOUT);
 	else if (msh->cmd_key == k_exit)
 		exit(0);
 	return (0);
@@ -106,7 +42,7 @@ static int	cmdcmp(char *str)
 	i = 0;
 	while (cmd_list[i] && (name = (char *)cmd_list[i]))
 	{
-		if (exact_strcmp(str, name))
+		if (!ft_strncmp(str, name, ft_max(ft_strlen(str), ft_strlen(name))))
 			return (i);
 		i++;
 	}
@@ -134,7 +70,7 @@ int			main(int ac, char **av, char **env)
 	while (ac)
 	{
 		show_prompt(av[0]);
-		if (get_next_line(STDIN_FILENO, &(msh.input)) == -1)
+		if (get_next_line(STDIN, &(msh.input)) == -1)
 			break ;
 		main_loop(&msh);
 		free(msh.input);

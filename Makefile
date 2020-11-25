@@ -6,7 +6,7 @@
 #    By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/23 14:34:40 by jiseo             #+#    #+#              #
-#    Updated: 2020/11/21 01:36:12 by jiseo            ###   ########.fr        #
+#    Updated: 2020/11/25 22:02:44 by jiseo            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,6 +17,7 @@ INCS			=	-Iincludes
 RAW_SRCS		=	main.c \
 					directory.c \
 					env.c \
+					env_functions.c \
 					prompt.c \
 					utils.c
 
