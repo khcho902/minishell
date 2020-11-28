@@ -6,13 +6,88 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/11/25 02:16:43 by kycho            ###   ########.fr       */
+/*   Updated: 2020/11/28 21:58:23 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #define MAX_PATH 256
 
+#define FALSE 0
+#define TRUE 1
+#define METACHARACTER " \t\n|;<>"
+
+int		is_in_charset(char c, char *str)
+{
+	int idx;
+
+	idx = 0;
+	while (str[idx])
+	{
+		if (str[idx] == c)
+			return (TRUE);
+		idx++;
+	}
+	return (FALSE);
+}
+
+void	split_token_sub(char *input, int *i, int *len)
+{
+	while (input[*i + *len])
+	{
+		if (input[*i + *len - 1] == '"'
+				&& (*i + *len - 1 == 0 || input[*i + *len - 2] != '\\'))
+		{
+			while (!(input[*i + *len] == '"' && input[*i + *len - 1] != '\\')
+					&& input[*i + *len] != 0)
+				(*len)++;
+			(*len)++;
+		}
+		if (input[*i + *len - 1] == '\''
+				&& (*i + *len - 1 == 0 || input[*i + *len - 2] != '\\'))
+		{
+			while (!(input[*i + *len] == '\'' && input[*i + *len - 1] != '\\')
+					&& input[*i + *len] != 0)
+				(*len)++;
+			(*len)++;
+		}
+		if (is_in_charset(input[*i + *len], METACHARACTER)
+				&& input[*i + *len - 1] != '\\')
+		{
+			break ;
+		}
+		(*len)++;
+	}
+}
+
+void	split_token(char *input, char **words)
+{
+	int i;
+	int word_cnt;
+	int len;
+
+	i = 0;
+	word_cnt = 0;
+	while (input[i])
+	{
+		while (input[i] == ' ' || input[i] == '\t')
+			i++;
+		if (input[i] == 0)
+			break ;
+		len = 1;
+		if (is_in_charset(input[i], METACHARACTER))
+		{
+			if (input[i] == '>' && input[i + 1] == '>')
+				len++;
+		}
+		else
+			split_token_sub(input, &i, &len);
+		words[word_cnt] = ft_substr(input, i, len);
+		word_cnt++;
+		i += len;
+	}
+	words[word_cnt] = NULL;
+}
 
 int		main(void)
 {
@@ -28,113 +103,25 @@ int		main(void)
 		res = get_next_line(STDIN_FILENO, &input);
 		if (res == -1)
 		{
-			// TODO : 에러발생 출력
-			exit(0);
+			exit(0);  // TODO : 에러발생 출력
 		}
 		else 
 		{
 			printf("input : %s\n", input);
+
+			split_token(input, words);
 			
-			int word_start = 0; 
-			int word_cnt = 0;
-
-			while (input[word_start])
-			{
-				while(input[word_start] == ' ')
-					word_start++;
-				if (input[word_start] == 0)
-					break;
-
-				int word_len = 1;
-				int only_num = 1;
-
-				while(input[word_start + word_len])
-				{
-					if (!ft_isdigit(input[word_start + word_len - 1]))
-						only_num = 0;
-
-					if (input[word_start + word_len - 1] == '"'
-							&& ( word_start + word_len - 1 == 0 || input[word_start + word_len - 2] != '\\'))
-					{
-						while(!(input[word_start + word_len] == '"' && input[word_start + word_len - 1] != '\\') 
-								&& input[word_start + word_len] != 0)
-							word_len++;
-						word_len++;
-					}
-					
-					if (input[word_start + word_len - 1] == '\''
-							&& ( word_start + word_len - 1 == 0 || input[word_start + word_len - 2] != '\\'))
-					{
-						while(!(input[word_start + word_len] == '\'' && input[word_start + word_len - 1] != '\\') 
-								&& input[word_start + word_len] != 0)
-							word_len++;
-						word_len++;
-					}
-					/*
-					if (input[word_start + word_len - 1] == '\'')
-					{
-						while(input[word_start + word_len] != '\'' && input[word_start + word_len] != 0)
-							word_len++;
-						word_len++;
-					}
-					*/
-			
-
-					// --------------------------------------------------------
-					if (input[word_start] == '>' && input[word_start + 1] == '>')
-					{
-						word_len++;
-						break;
-					}
-
-					if (input[word_start] == '>')
-						break;
-
-					if (only_num == 0 && input[word_start + word_len] == '>' && input[word_start + word_len - 1] != '\\')
-						break;
-
-					if (only_num == 1 && input[word_start + word_len] == '>' && input[word_start + word_len + 1] == '>')
-					{
-						word_len += 2;
-						break;
-					}
-
-					if (only_num == 1 && input[word_start + word_len] == '>')
-					{
-						word_len++;
-						break;
-					}
-
-					// --------------------------------------------------------
-
-					if (input[word_start] == '<' || (input[word_start + word_len] == '<' && input[word_start + word_len - 1] != '\\'))
-						break;
-
-					if (input[word_start] == ';' || (input[word_start + word_len] == ';' && input[word_start + word_len - 1] != '\\'))
-						break;
-
-					if (input[word_start] == '|' || (input[word_start + word_len] == '|' && input[word_start + word_len - 1] != '\\'))
-						break;
-
-					if (input[word_start + word_len] == ' ')
-						break;
-
-					word_len++;
-				}
-
-				
-				words[word_cnt] = ft_substr(input, word_start, word_len);
-				word_cnt++;
-
-				word_start += word_len;
-			}
-
-	
-			for(int j = 0; j < word_cnt; j++){
+			for(int j = 0; words[j] != NULL ; j++){
 				printf("|%s|\n", words[j]);
+				int cnt = 0;
+				for(int k = 0; k < (int)ft_strlen(words[j]); k++){
+					if (words[j][k] == '\t')
+						cnt++;
+				}
+				//printf("%d\n",cnt);
 			}
 
-			for(int j = 0;j < word_cnt; j++){
+			for(int j = 0; words[j] != NULL; j++){
 				free(words[j]);
 			}
 
