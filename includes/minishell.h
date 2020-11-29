@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2020/11/25 22:29:47 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/11/28 04:21:31 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 # include "../libft/libft.h"
 # include <stdio.h>
 
-# define MAX_PATH 256
 # define STDIN 0
 # define STDOUT 1
 # define STDERR 2

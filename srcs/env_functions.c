@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/25 21:51:59 by jiseo             #+#    #+#             */
-/*   Updated: 2020/11/25 22:43:19 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/11/29 21:46:42 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,13 +33,14 @@ void		do_export(t_msh *msh)
 	t_kv	*kv;
 	t_kv	*export_kv;
 
+	l = msh->env_list;
 	if (msh->cmd_list[msh->cmd_idx + 1] == NULL)
 	{
-		ft_putstr_fd("sort env\n", STDOUT);
+	//	print_export_env(l);
+		printf("sorv env\n");
 		return ;
 	}
 	str = msh->cmd_list[++msh->cmd_idx];
-	l = msh->env_list;
 	export_kv = key_value_generator(str);
 	while (l)
 	{
