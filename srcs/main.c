@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/11/28 21:58:23 by kycho            ###   ########.fr       */
+/*   Updated: 2020/11/29 16:58:10 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,14 +60,12 @@ void	split_token_sub(char *input, int *i, int *len)
 	}
 }
 
-void	split_token(char *input, char **words)
+void	split_token(char *input, t_list **tokens)
 {
 	int i;
-	int word_cnt;
 	int len;
 
 	i = 0;
-	word_cnt = 0;
 	while (input[i])
 	{
 		while (input[i] == ' ' || input[i] == '\t')
@@ -82,19 +80,61 @@ void	split_token(char *input, char **words)
 		}
 		else
 			split_token_sub(input, &i, &len);
-		words[word_cnt] = ft_substr(input, i, len);
-		word_cnt++;
+		if (*tokens == NULL)
+			*tokens = ft_lstnew(ft_substr(input, i, len));
+		else
+			ft_lstadd_back(tokens, ft_lstnew(ft_substr(input, i, len)));
 		i += len;
 	}
-	words[word_cnt] = NULL;
+}
+
+int		check_token_valid(t_list **tokens)
+{
+	t_list	*now;
+	int		before_type;
+
+	before_type = 0;
+	now = *tokens;
+	while(now)
+	{
+		if (((char*)now->content)[0] == '|' || ((char *)now->content)[0] == ';')
+		{
+			if (before_type != 1)
+			{
+				printf("-bash: syntax error near unexpected token `%s'\n", now->content);
+				return (-1);
+			}
+			before_type = 2;
+		}
+		else if (((char *)now->content)[0] == '>' || ((char *)now->content)[0] == '<')
+		{
+			if (before_type == 3)
+			{
+				printf("-bash: syntax error near unexpected token `%s'\n", now->content);
+				return (-1);
+			}
+			before_type = 3;
+		}
+		else 
+		{
+			before_type = 1;
+		}
+		now = now->next;
+	}
+
+	if (before_type == 3)
+	{
+		printf("-bash: syntax error near unexpected token `newline'\n");
+		return (-1);
+	}
+	return (1);
 }
 
 int		main(void)
 {
 	char	*input;
 	int		res;
-	char	*words[255];
-
+	t_list	*tokens;
 
 	res = 1;
 	while (res)
@@ -109,23 +149,24 @@ int		main(void)
 		{
 			printf("input : %s\n", input);
 
-			split_token(input, words);
-			
-			for(int j = 0; words[j] != NULL ; j++){
-				printf("|%s|\n", words[j]);
-				int cnt = 0;
-				for(int k = 0; k < (int)ft_strlen(words[j]); k++){
-					if (words[j][k] == '\t')
-						cnt++;
+			tokens = NULL;
+			split_token(input, &tokens);
+
+			if (check_token_valid(&tokens) == -1)
+			{
+				printf("error\n");
+			}
+			else
+			{
+				printf("%d\n", ft_lstsize(tokens));
+				t_list *now = tokens;
+				while(now)
+				{
+					printf("|%s|\n", now->content);
+					now = now->next;
 				}
-				//printf("%d\n",cnt);
 			}
-
-			for(int j = 0; words[j] != NULL; j++){
-				free(words[j]);
-			}
-
-
+			ft_lstclear(&tokens, free);
 			free(input);
 		}
 	}
