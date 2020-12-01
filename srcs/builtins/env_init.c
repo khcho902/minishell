@@ -6,11 +6,30 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 04:35:43 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/02 04:35:54 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/02 05:18:23 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int		builtins(t_msh *msh)
+{
+	if (msh->cmd_key == k_echo)
+		do_echo(msh, STDIN_FILENO);
+	else if (msh->cmd_key == k_cd)
+		do_cd(msh);
+	else if (msh->cmd_key == k_pwd)
+		do_pwd(STDIN_FILENO);
+	else if (msh->cmd_key == k_export)
+		do_export(msh);
+	else if (msh->cmd_key == k_unset)
+		do_unset(msh);
+	else if (msh->cmd_key == k_env)
+		do_env(msh->env_list, STDOUT);
+	else if (msh->cmd_key == k_exit)
+		exit(0);
+	return (0);
+}
 
 t_kv	*key_value_generator(char *env)
 {

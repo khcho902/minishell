@@ -6,37 +6,18 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/11/25 22:44:43 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/02 07:16:23 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-int			builtins(t_msh *msh)
-{
-	if (msh->cmd_key == k_echo)
-		do_echo(msh, STDIN_FILENO);
-	else if (msh->cmd_key == k_cd)
-		do_cd(msh);
-	else if (msh->cmd_key == k_pwd)
-		do_pwd(STDIN_FILENO);
-	else if (msh->cmd_key == k_export)
-		do_export(msh);
-	else if (msh->cmd_key == k_unset)
-		do_unset(msh);
-	else if (msh->cmd_key == k_env)
-		do_env(msh->env_list, STDOUT);
-	else if (msh->cmd_key == k_exit)
-		exit(0);
-	return (0);
-}
 
 static int	cmdcmp(char *str)
 {
 	int			i;
 	char		*name;
 	const char	*cmd_list[] = {
-		"echo", "cd", "pwd", "export", "unset", "env", "exit", NULL
+		"cd", "echo", "env", "export", "pwd", "unset", "exit", NULL
 	};
 
 	i = 0;
@@ -46,7 +27,13 @@ static int	cmdcmp(char *str)
 			return (i);
 		i++;
 	}
-	return (-1);
+	return (9);
+	// return (-1); error
+}
+
+void		execute()
+{
+	printf("execute\n");
 }
 
 void		main_loop(t_msh *msh)
@@ -58,6 +45,8 @@ void		main_loop(t_msh *msh)
 		msh->cmd_key = cmdcmp(msh->cmd_list[msh->cmd_idx]) + 1;
 		if (msh->cmd_key < 10)
 			builtins(msh);
+		else if (msh->cmd_key == 10)
+			execute();//msh->cmd_list[msh->cmd_idx]);
 		msh->cmd_idx++;
 	}
 }
