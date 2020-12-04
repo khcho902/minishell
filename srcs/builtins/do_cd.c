@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 00:57:53 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/02 00:58:04 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/03 06:25:15 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,10 @@ void		do_cd(t_msh *msh)
 	/*
 		str = ft_strdup();
 		i = chdir(str);
-		if (str == 0)
+		if (i == 0)
 			success;
-		else if (str == -1)
+		else if (i == -1)
 			fail;
+		free(str);
 	*/ 
 }

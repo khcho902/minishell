@@ -6,7 +6,7 @@
 #    By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/23 14:34:40 by jiseo             #+#    #+#              #
-#    Updated: 2020/12/02 04:43:28 by jiseo            ###   ########.fr        #
+#    Updated: 2020/12/04 07:12:45 by jiseo            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,13 +16,15 @@ SRCS_PATH		=	./srcs/
 INCS			=	-Iincludes
 RAW_SRCS		=	main.c \
 					prompt.c \
+					\
 					builtins/do_cd.c \
 					builtins/do_echo.c \
 					builtins/do_env.c \
 					builtins/do_export.c \
 					builtins/do_pwd.c \
 					builtins/do_unset.c \
-					builtins/env_init.c \
+					builtins/env_utils.c \
+					\
 					utils/utils.c
 
 SRCS			=	$(addprefix $(SRCS_PATH), $(RAW_SRCS))

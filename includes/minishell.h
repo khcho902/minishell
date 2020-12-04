@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/02 06:18:38 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/04 07:15:50 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ enum
  */
 t_kv			*key_value_generator(char *env);
 t_list			*init_env(char **env);
+void			print_env(t_list *env_list, int fd);
 int				builtins(t_msh *msh);
 void			do_cd(t_msh *msh);
 void			do_echo(t_msh *msh, int fd);
