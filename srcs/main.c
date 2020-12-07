@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/07 09:02:39 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/08 03:02:51 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ static int	cmdcmp(char *str)
 			return (i);
 		i++;
 	}
-	return (9);
+	return (19);
 	// return (-1); error
 }
 
@@ -36,14 +36,39 @@ void		execute(t_msh *msh, char **av, char **env)
 {
 	pid_t		pid;
 	char		*temp;
-	const char	*path = "/bin/";
+	char		**paths;
+	t_list		*l;
+	t_kv		*kv;
+	int			i;
 
 	pid = fork();
 	if (pid == 0)
 	{
-		temp = ft_strjoin(path, msh->cmd_list[msh->cmd_idx]);
-		execve(temp, av, env);
-		free(temp);
+		paths = NULL;
+		l = msh->env_list;
+		while (l)
+		{
+			kv = l->content;
+			if (ft_strncmp(kv->key, "PATH", 4) == 0)
+			{
+				paths = ft_split(&kv->value[5], ':');
+				break ;
+			}
+			l = l->next;
+		}
+		i = 0;
+		while (paths[i])
+		{
+			if (paths[i][ft_strlen(paths[i]) - 1] != '/')
+				paths[i] = ft_strjoin(paths[i], "/");
+			temp = ft_strjoin(paths[i], msh->cmd_list[msh->cmd_idx]);
+			printf("temp:[%s]\n", temp);
+			if (execve(temp, av, env) == -1)
+				printf("error[%d]\n", i);
+			i++;
+			free(temp);
+		}
+		ft_double_free(paths);
 	}
 	else
 		wait(NULL);
@@ -56,9 +81,9 @@ void		main_loop(t_msh *msh, char **av, char **env)
 	while (msh->cmd_list[msh->cmd_idx])
 	{
 		msh->cmd_key = cmdcmp(msh->cmd_list[msh->cmd_idx]) + 1;
-		if (msh->cmd_key < 10)
+		if (msh->cmd_key < 20)
 			builtins(msh);
-		else if (msh->cmd_key == 10)
+		else if (msh->cmd_key == 20)
 			execute(msh, av, env);
 		msh->cmd_idx++;
 	}
