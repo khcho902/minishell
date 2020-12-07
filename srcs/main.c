@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/02 07:16:23 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/07 09:02:39 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,12 +31,25 @@ static int	cmdcmp(char *str)
 	// return (-1); error
 }
 
-void		execute()
+void		execute(t_msh *msh, char **av, char **env)
+
 {
-	printf("execute\n");
+	pid_t		pid;
+	char		*temp;
+	const char	*path = "/bin/";
+
+	pid = fork();
+	if (pid == 0)
+	{
+		temp = ft_strjoin(path, msh->cmd_list[msh->cmd_idx]);
+		execve(temp, av, env);
+		free(temp);
+	}
+	else
+		wait(NULL);
 }
 
-void		main_loop(t_msh *msh)
+void		main_loop(t_msh *msh, char **av, char **env)
 {
 	msh->cmd_list = ft_split(msh->input, ' ');
 	msh->cmd_idx = 0;
@@ -46,7 +59,7 @@ void		main_loop(t_msh *msh)
 		if (msh->cmd_key < 10)
 			builtins(msh);
 		else if (msh->cmd_key == 10)
-			execute();//msh->cmd_list[msh->cmd_idx]);
+			execute(msh, av, env);
 		msh->cmd_idx++;
 	}
 }
@@ -61,7 +74,7 @@ int			main(int ac, char **av, char **env)
 		show_prompt(av[0]);
 		if (get_next_line(STDIN, &(msh.input)) == -1)
 			break ;
-		main_loop(&msh);
+		main_loop(&msh, av, env);
 		free(msh.input);
 	}
 	return (0);
