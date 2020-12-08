@@ -6,11 +6,13 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/06 10:26:04 by kycho            ###   ########.fr       */
+/*   Updated: 2020/12/08 17:03:41 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include <string.h>
+#include <sys/errno.h>
 
 #define MAX_PATH 256
 #define FALSE 0
@@ -19,6 +21,10 @@
 #define SUCCESS 1
 #define ERROR -1
 
+#define STDIN 0
+#define STDOUT 1
+#define STDERR 2
+
 #define METACHARACTER " \t\n|;<>"
 
 typedef struct		s_cmd
@@ -26,7 +32,7 @@ typedef struct		s_cmd
 	char			**args;
 	int				length;
 	int				type;
-	int				piles[2];
+	int				pipes[2];
 	struct s_cmd	*previous;
 	struct s_cmd	*next;
 }					t_cmd;
@@ -39,11 +45,11 @@ typedef struct		s_dict
 
 typedef struct		s_msh
 {
+	char			*program_name;
 	int				exit_status;
 	t_cmd			*cmd;
-	t_dict			**envs;
-	t_dict			**sorted_envs;
-	int				envs_len;
+	t_dict			**env;
+	int				env_len;
 }					t_msh;
 
 int		is_in_charset(char c, char *str)
@@ -185,55 +191,46 @@ void	parsing(t_msh *msh, char *input)
 	ft_lstclear(&tokens, free);
 }
 
+void	exit_print_err(char *err_msg1, char *err_msg2, int exit_status)
+{
+	ft_putstr_fd(err_msg1, STDERR);
+	ft_putstr_fd(" : ", STDERR);
+	ft_putstr_fd(err_msg2, STDERR);
+	ft_putstr_fd("\n", STDERR);
+	exit(exit_status);
+}
 
-int		init_msh(t_msh	*msh, char **env)
+
+void	init_msh(char *program_name, t_msh	*msh, char **env)
 {
 	int i;
 	int	key_len;
 
+	msh->program_name = program_name;
 	msh->exit_status = 0;
 	msh->cmd = NULL;
 
-	msh->envs_len = 0;
-	while(env[msh->envs_len])
-		msh->envs_len++;
+	msh->env_len = 0;
+	while(env[msh->env_len])
+		msh->env_len++;
 
-	msh->envs = (t_dict**)malloc(sizeof(t_dict*) * (msh->envs_len + 1));
-	msh->envs[msh->envs_len] = NULL;
-	msh->sorted_envs = (t_dict**)malloc(sizeof(t_dict*) * (msh->envs_len + 1));
-	msh->sorted_envs[msh->envs_len] = NULL;
+	if(!(msh->env = (t_dict**)malloc(sizeof(t_dict*) * (msh->env_len + 1))))
+		exit_print_err("Error", strerror(errno), EXIT_FAILURE);
+	msh->env[msh->env_len] = NULL;
 
 	i = 0;
 	while (env[i])
 	{
 		key_len = ft_strchr(env[i], '=') - env[i];
-		msh->envs[i] = (t_dict*)malloc(sizeof(t_dict));
-		msh->envs[i]->key = (char *)malloc(sizeof(char) * (key_len + 1));
-		ft_strlcat(msh->envs[i]->key, env[i], key_len + 1);
-		msh->envs[i]->value = ft_strdup(env[i] + key_len + 1);
-		msh->sorted_envs[i] = msh->envs[i];
+		if(!(msh->env[i] = (t_dict*)malloc(sizeof(t_dict))))
+			exit_print_err("Error", strerror(errno), EXIT_FAILURE);
+		if(!(msh->env[i]->key = (char *)malloc(sizeof(char) * (key_len + 1))))
+			exit_print_err("Error", strerror(errno), EXIT_FAILURE);
+		ft_strlcat(msh->env[i]->key, env[i], key_len + 1);
+		if(!(msh->env[i]->value = ft_strdup(env[i] + key_len + 1)))
+			exit_print_err("Error", strerror(errno), EXIT_FAILURE);
 		i++;
 	}
-
-
-	t_dict* tmp;
-	
-	for (int j = 0; j < msh->envs_len; j++)
-	{
-		for (int k = 0; k < msh->envs_len - 1; k++)
-		{
-			int max_len = ft_strlen(msh->sorted_envs[k]->key);
-			if (max_len < (int)ft_strlen(msh->sorted_envs[k + 1]->key))
-				max_len = ft_strlen(msh->sorted_envs[k + 1]->key);
-			if (ft_strncmp(msh->sorted_envs[k]->key, msh->sorted_envs[k + 1]->key, max_len) > 0)
-			{
-				tmp = msh->sorted_envs[k];
-				msh->sorted_envs[k] = msh->sorted_envs[k + 1];
-				msh->sorted_envs[k + 1] = tmp;
-			}
-		}
-	}
-	return (1);
 }
 
 int		main(int argc, char** argv, char** env)
@@ -242,19 +239,10 @@ int		main(int argc, char** argv, char** env)
 	int		res;
 	t_msh	msh;
 
-	if (argc == 0 && argv == NULL && env == NULL) //
+	if (argc == 0)
 		return (1);
-	printf("===========================\n");
-	int i = 0;
-	while(argv[i])
-	{	
-		printf("%s\n", argv[i]);
-		i++;
-	}	
-	printf("===========================\n");
 
-
-	init_msh(&msh, env);
+	init_msh(argv[0], &msh, env);
 
 
 	res = 1;
