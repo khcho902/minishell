@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/08 21:47:47 by kycho            ###   ########.fr       */
+/*   Updated: 2020/12/08 23:59:37 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,6 @@
 #define MAX_PATH 256
 #define FALSE 0
 #define TRUE 1
-
-#define SUCCESS 1
-#define ERROR -1
 
 #define STDIN 0
 #define STDOUT 1
@@ -249,7 +246,13 @@ void	init_msh_path(t_msh *msh)
 
 void	init_msh(char *program_name, t_msh *msh, char **env)
 {
-	msh->program_name = program_name;
+	int i;
+
+	i = ft_strlen(program_name) - 1;
+	while (i >= 0 && program_name[i] != '/')
+		i--;
+	if (!(msh->program_name = ft_strdup(program_name + i + 1)))
+		exit_print_err("Error", strerror(errno), EXIT_FAILURE);
 	msh->exit_status = 0;
 	msh->cmd = NULL;
 	init_msh_env(msh, env);
@@ -264,37 +267,18 @@ int		main(int argc, char **argv, char **env)
 
 	if (argc == 0)
 		return (1);
-
 	init_msh(argv[0], &msh, env);
-
-	/*
-	printf("----------------------------------------------------\n");
-	int i = 0; 
-	while (msh.env[i])
-	{
-		printf("%s=%s\n", msh.env[i]->key, msh.env[i]->value);
-		i++;
-	}
-	printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
-	i = 0;
-	while (msh.path[i])
-	{
-		printf("%s\n", msh.path[i]);
-		i++;
-	}
-	printf("----------------------------------------------------\n");
-	*/
-
 	res = 1;
 	while (res)
 	{
-		ft_putstr_fd("minishell$ ", STDOUT);
+		ft_putstr_fd(msh.program_name, STDOUT);
+		ft_putstr_fd("$ ", STDOUT);
 		res = get_next_line(STDIN, &input);
 		if (res == -1)
 		{
-			exit(0);  // TODO : 에러발생 출력
+			exit_print_err("Error", "get_next_line fail!", EXIT_FAILURE);
 		}
-		else 
+		else
 		{
 			parsing(&msh, input);
 			free(input);
