@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/08 17:03:41 by kycho            ###   ########.fr       */
+/*   Updated: 2020/12/08 21:47:47 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,17 @@ typedef struct		s_msh
 	t_cmd			*cmd;
 	t_dict			**env;
 	int				env_len;
+	char			**path;
 }					t_msh;
+
+void	exit_print_err(char *err_msg1, char *err_msg2, int exit_status)
+{
+	ft_putstr_fd(err_msg1, STDERR);
+	ft_putstr_fd(" : ", STDERR);
+	ft_putstr_fd(err_msg2, STDERR);
+	ft_putstr_fd("\n", STDERR);
+	exit(exit_status);
+}
 
 int		is_in_charset(char c, char *str)
 {
@@ -170,10 +180,8 @@ void	parsing(t_msh *msh, char *input)
 	if (msh == NULL)
 		return ;
 	printf("input : %s\n", input);
-
 	tokens = NULL;
 	split_token(input, &tokens);
-
 	if (check_token_valid(&tokens) == -1)
 	{
 		printf("error\n");
@@ -182,7 +190,7 @@ void	parsing(t_msh *msh, char *input)
 	{
 		printf("%d\n", ft_lstsize(tokens));
 		t_list *now = tokens;
-		while(now)
+		while (now)
 		{
 			printf("|%s|\n", now->content);
 			now = now->next;
@@ -191,49 +199,64 @@ void	parsing(t_msh *msh, char *input)
 	ft_lstclear(&tokens, free);
 }
 
-void	exit_print_err(char *err_msg1, char *err_msg2, int exit_status)
-{
-	ft_putstr_fd(err_msg1, STDERR);
-	ft_putstr_fd(" : ", STDERR);
-	ft_putstr_fd(err_msg2, STDERR);
-	ft_putstr_fd("\n", STDERR);
-	exit(exit_status);
-}
-
-
-void	init_msh(char *program_name, t_msh	*msh, char **env)
+void	init_msh_env(t_msh *msh, char **env)
 {
 	int i;
 	int	key_len;
 
-	msh->program_name = program_name;
-	msh->exit_status = 0;
-	msh->cmd = NULL;
-
 	msh->env_len = 0;
-	while(env[msh->env_len])
+	while (env[msh->env_len])
 		msh->env_len++;
-
-	if(!(msh->env = (t_dict**)malloc(sizeof(t_dict*) * (msh->env_len + 1))))
+	if (!(msh->env = (t_dict**)malloc(sizeof(t_dict*) * (msh->env_len + 1))))
 		exit_print_err("Error", strerror(errno), EXIT_FAILURE);
 	msh->env[msh->env_len] = NULL;
-
 	i = 0;
 	while (env[i])
 	{
 		key_len = ft_strchr(env[i], '=') - env[i];
-		if(!(msh->env[i] = (t_dict*)malloc(sizeof(t_dict))))
+		if (!(msh->env[i] = (t_dict*)malloc(sizeof(t_dict))))
 			exit_print_err("Error", strerror(errno), EXIT_FAILURE);
-		if(!(msh->env[i]->key = (char *)malloc(sizeof(char) * (key_len + 1))))
+		if (!(msh->env[i]->key = (char *)malloc(sizeof(char) * (key_len + 1))))
 			exit_print_err("Error", strerror(errno), EXIT_FAILURE);
 		ft_strlcat(msh->env[i]->key, env[i], key_len + 1);
-		if(!(msh->env[i]->value = ft_strdup(env[i] + key_len + 1)))
+		if (!(msh->env[i]->value = ft_strdup(env[i] + key_len + 1)))
 			exit_print_err("Error", strerror(errno), EXIT_FAILURE);
 		i++;
 	}
 }
 
-int		main(int argc, char** argv, char** env)
+void	init_msh_path(t_msh *msh)
+{
+	int		i;
+	size_t	len;
+
+	i = 0;
+	while (msh->env[i])
+	{
+		len = ft_strlen("PATH");
+		if (ft_strlen(msh->env[i]->key) > len)
+			len = ft_strlen(msh->env[i]->key);
+		if (ft_strncmp(msh->env[i]->key, "PATH", len) == 0)
+		{
+			msh->path = ft_split(msh->env[i]->value, ':');
+			if (msh->path == NULL)
+				exit_print_err("Error", strerror(errno), EXIT_FAILURE);
+			break ;
+		}
+		i++;
+	}
+}
+
+void	init_msh(char *program_name, t_msh *msh, char **env)
+{
+	msh->program_name = program_name;
+	msh->exit_status = 0;
+	msh->cmd = NULL;
+	init_msh_env(msh, env);
+	init_msh_path(msh);
+}
+
+int		main(int argc, char **argv, char **env)
 {
 	char	*input;
 	int		res;
@@ -244,12 +267,29 @@ int		main(int argc, char** argv, char** env)
 
 	init_msh(argv[0], &msh, env);
 
+	/*
+	printf("----------------------------------------------------\n");
+	int i = 0; 
+	while (msh.env[i])
+	{
+		printf("%s=%s\n", msh.env[i]->key, msh.env[i]->value);
+		i++;
+	}
+	printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
+	i = 0;
+	while (msh.path[i])
+	{
+		printf("%s\n", msh.path[i]);
+		i++;
+	}
+	printf("----------------------------------------------------\n");
+	*/
 
 	res = 1;
 	while (res)
 	{
-		ft_putstr_fd("minishell$ ", STDOUT_FILENO);
-		res = get_next_line(STDIN_FILENO, &input);
+		ft_putstr_fd("minishell$ ", STDOUT);
+		res = get_next_line(STDIN, &input);
 		if (res == -1)
 		{
 			exit(0);  // TODO : 에러발생 출력
