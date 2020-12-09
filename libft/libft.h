@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/26 06:22:12 by jiseo             #+#    #+#             */
-/*   Updated: 2020/08/11 20:02:56 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/10 03:59:14 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,12 +48,13 @@ int				ft_isspace(int c);
 int				ft_isascii(int c);
 int				ft_toupper(int c);
 int				ft_tolower(int c);
-char			*ft_substr(char const *s, unsigned int start, size_t len);
-char			*ft_strjoin(char const *s1, char const *s2);
-char			*ft_strtrim(char const *s1, char const *set);
-char			**ft_split(char const *s, char c);
+char			*ft_substr(const char *s, unsigned int start, size_t len);
+char			*ft_strjoin(const char *s1, const char *s2);
+char			*ft_strjoin3(char *str1, char *str2, char *str3);
+char			*ft_strtrim(const char *s1, const char *set);
+char			**ft_split(const char *s, char c);
 char			*ft_itoa(int n);
-char			*ft_strmapi(char const *s, char (*f)(unsigned int, char));
+char			*ft_strmapi(const char *s, char (*f)(unsigned int, char));
 void			ft_putchar_fd(char c, int fd);
 void			ft_putstr_fd(char *s, int fd);
 void			ft_putendl_fd(char *s, int fd);

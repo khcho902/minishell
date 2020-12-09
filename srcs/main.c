@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/08 03:02:51 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/10 03:53:18 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,67 +24,98 @@ static int	cmdcmp(char *str)
 	while (cmd_list[i] && (name = (char *)cmd_list[i]))
 	{
 		if (!ft_strncmp(str, name, ft_max(ft_strlen(str), ft_strlen(name))))
-			return (i);
+			return (i + 1);
 		i++;
 	}
-	return (19);
-	// return (-1); error
+	return (EXEC_IDX);
 }
 
-void		execute(t_msh *msh, char **av, char **env)
-
+char		**ft_envjoin(t_list *env_list)
 {
-	pid_t		pid;
-	char		*temp;
+	char	**temp;
+	int		list_size;
+	int		idx;
+	t_kv	*kv;
+	t_list	*l;
+
+	list_size = ft_lstsize(env_list);
+	l = env_list;
+	temp = (char **)malloc(sizeof(char *) * (list_size + 1));
+	idx = 0;
+	while (idx < list_size)
+	{
+		kv = l->content;
+		temp[idx++] = ft_strjoin3(kv->key, "=", kv->value);
+		l = l->next;
+	}
+	return (temp);
+}
+
+void		exec_process(t_msh *msh)
+{
 	char		**paths;
 	t_list		*l;
 	t_kv		*kv;
+	char		*temp;
+	char		**av;
+	char		**env;
 	int			i;
+	
+	l = msh->env_list;
+	while (l)
+	{
+		kv = l->content;
+		if (ft_strncmp(kv->key, "PATH", 4) == 0)
+		{
+			paths = ft_split(&kv->value[5], ':');
+			break ;
+		}
+		l = l->next;
+	}
+	i = 0;
+	av = (char **)malloc(sizeof(char *));
+	av[0] = ft_strjoin("./", msh->cmd_list[msh->cmd_idx]);
+	env = ft_envjoin(msh->env_list);
+	while (paths[i])
+	{
+		if (paths[i][ft_strlen(paths[i]) - 1] != '/')
+			paths[i] = ft_strjoin(paths[i], "/");
+		temp = ft_strjoin(paths[i], msh->cmd_list[msh->cmd_idx]);
+		if (execve(temp, av, env) != -1)
+			free(temp);
+		i++;
+		free(temp);
+	}
+	ft_double_free(av);
+	ft_double_free(env);
+	ft_double_free(paths);
+}
+
+void		create_process(t_msh *msh)
+{
+	pid_t		pid;
 
 	pid = fork();
 	if (pid == 0)
 	{
-		paths = NULL;
-		l = msh->env_list;
-		while (l)
-		{
-			kv = l->content;
-			if (ft_strncmp(kv->key, "PATH", 4) == 0)
-			{
-				paths = ft_split(&kv->value[5], ':');
-				break ;
-			}
-			l = l->next;
-		}
-		i = 0;
-		while (paths[i])
-		{
-			if (paths[i][ft_strlen(paths[i]) - 1] != '/')
-				paths[i] = ft_strjoin(paths[i], "/");
-			temp = ft_strjoin(paths[i], msh->cmd_list[msh->cmd_idx]);
-			printf("temp:[%s]\n", temp);
-			if (execve(temp, av, env) == -1)
-				printf("error[%d]\n", i);
-			i++;
-			free(temp);
-		}
-		ft_double_free(paths);
+		exec_process(msh);
+		exit(0);
 	}
 	else
 		wait(NULL);
 }
 
-void		main_loop(t_msh *msh, char **av, char **env)
+void		main_loop(t_msh *msh)
 {
 	msh->cmd_list = ft_split(msh->input, ' ');
 	msh->cmd_idx = 0;
 	while (msh->cmd_list[msh->cmd_idx])
 	{
-		msh->cmd_key = cmdcmp(msh->cmd_list[msh->cmd_idx]) + 1;
-		if (msh->cmd_key < 20)
+		msh->cmd_key = cmdcmp(msh->cmd_list[msh->cmd_idx]);
+		if (msh->cmd_key == EXEC_IDX)
+			create_process(msh);
+		else
 			builtins(msh);
-		else if (msh->cmd_key == 20)
-			execute(msh, av, env);
 		msh->cmd_idx++;
 	}
 }
@@ -99,7 +130,7 @@ int			main(int ac, char **av, char **env)
 		show_prompt(av[0]);
 		if (get_next_line(STDIN, &(msh.input)) == -1)
 			break ;
-		main_loop(&msh, av, env);
+		main_loop(&msh);
 		free(msh.input);
 	}
 	return (0);

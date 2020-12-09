@@ -1,32 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strjoin.c                                       :+:      :+:    :+:   */
+/*   ft_strjoin3.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/03/02 08:42:11 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/10 03:29:04 by jiseo            ###   ########.fr       */
+/*   Created: 2020/12/10 03:25:46 by jiseo             #+#    #+#             */
+/*   Updated: 2020/12/10 03:25:55 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strjoin(const char *s1, const char *s2)
+char	*ft_strjoin3(char *str1, char *str2, char *str3)
 {
 	char	*temp;
 	int		i;
 	int		sum_len;
 
-	sum_len = ft_strlen(s1) + ft_strlen(s2);
+	sum_len = ft_strlen(str1) + ft_strlen(str2) + ft_strlen(str3);
 	temp = (char *)malloc(sizeof(char) * (sum_len + 1));
 	if (!temp)
 		return (NULL);
 	i = 0;
-	while (*s1)
-		temp[i++] = *s1++;
-	while (*s2)
-		temp[i++] = *s2++;
+	while (*str1)
+		temp[i++] = *str1++;
+	while (*str2)
+		temp[i++] = *str2++;
+	while (*str3)
+		temp[i++] = *str3++;
 	temp[i] = '\0';
 	return (temp);
 }

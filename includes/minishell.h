@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/07 09:02:47 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/10 03:43:24 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # define STDIN 0
 # define STDOUT 1
 # define STDERR 2
+# define EXEC_IDX 0
 
 typedef struct	s_msh
 {

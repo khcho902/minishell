@@ -6,13 +6,13 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/04 01:40:26 by jiseo             #+#    #+#             */
-/*   Updated: 2020/04/12 09:47:21 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/10 04:02:49 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int		get_r_idx(char const *s, char c)
+static int		get_r_idx(const char *s, char c)
 {
 	int		count;
 	int		is_not_c;
@@ -34,7 +34,7 @@ static int		get_r_idx(char const *s, char c)
 	return (count + is_not_c + 1);
 }
 
-static void		*split_process(char const *s, char c, char **rst, int len)
+static void		*split_process(const char *s, char c, char **rst, int len)
 {
 	int		copy_len;
 	int		i;
@@ -62,7 +62,7 @@ static void		*split_process(char const *s, char c, char **rst, int len)
 	return (rst);
 }
 
-char			**ft_split(char const *s, char c)
+char			**ft_split(const char *s, char c)
 {
 	char	**rst;
 
