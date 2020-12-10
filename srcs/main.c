@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/08 23:59:37 by kycho            ###   ########.fr       */
+/*   Updated: 2020/12/10 16:41:59 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,9 @@
 #define MAX_PATH 256
 #define FALSE 0
 #define TRUE 1
+
+#define SUCCESS 1
+#define ERROR -1
 
 #define STDIN 0
 #define STDOUT 1
@@ -101,7 +104,7 @@ void	split_token_sub(char *input, int *i, int *len)
 	}
 }
 
-void	split_token(char *input, t_list **tokens)
+void	split_token(char *input, t_list **tokens)	// TODO : malloc fail 처리!!
 {
 	int i;
 	int len;
@@ -129,71 +132,75 @@ void	split_token(char *input, t_list **tokens)
 	}
 }
 
-int		check_token_valid(t_list **tokens)
+
+int		print_syntax_err(char *program_name, char *token)
 {
-	t_list	*now;
+	ft_putstr_fd("-", STDERR);
+	ft_putstr_fd(program_name, STDERR);
+	ft_putstr_fd(": syntax error near unexpected token `", STDERR);
+	ft_putstr_fd(token, STDERR);
+	ft_putstr_fd("'\n", STDERR);
+	return (ERROR);
+}
+
+int		check_token_valid(t_msh *msh, t_list *now)
+{
 	int		before_type;
 
 	before_type = 0;
-	now = *tokens;
 	while (now)
 	{
 		if (((char*)now->content)[0] == '|' || ((char *)now->content)[0] == ';')
 		{
 			if (before_type != 1)
-			{
-				printf("-bash: syntax error near unexpected token `%s'\n", now->content);
-				return (-1);
-			}
+				return (print_syntax_err(msh->program_name, now->content));
 			before_type = 2;
 		}
 		else if (((char *)now->content)[0] == '>' || ((char *)now->content)[0] == '<')
 		{
 			if (before_type == 3)
-			{
-				printf("-bash: syntax error near unexpected token `%s'\n", now->content);
-				return (-1);
-			}
+				return (print_syntax_err(msh->program_name, now->content));
 			before_type = 3;
 		}
 		else
-		{
 			before_type = 1;
-		}
 		now = now->next;
 	}
 	if (before_type == 3)
-	{
-		printf("-bash: syntax error near unexpected token `newline'\n");
-		return (-1);
-	}
+		return (print_syntax_err(msh->program_name, "newline"));
 	return (1);
 }
 
-void	parsing(t_msh *msh, char *input)
+int		parsing(t_msh *msh, char *input)
 {
+	int		res;
 	t_list	*tokens;
 
-	if (msh == NULL)
-		return ;
-	printf("input : %s\n", input);
+	if (msh == NULL || input == NULL)
+		return (ERROR);
+	res = SUCCESS;
 	tokens = NULL;
 	split_token(input, &tokens);
-	if (check_token_valid(&tokens) == -1)
+
+	/*
+	printf("------------------------------\n");
+	printf("lstsize : %d\n", ft_lstsize(tokens));
+	t_list *now = tokens;
+	while (now)
 	{
-		printf("error\n");
+		printf("|%s|\n", now->content);
+		now = now->next;
+	}
+	printf("------------------------------\n");
+	*/
+	if (check_token_valid(msh, tokens) == SUCCESS)
+	{
+
 	}
 	else
-	{
-		printf("%d\n", ft_lstsize(tokens));
-		t_list *now = tokens;
-		while (now)
-		{
-			printf("|%s|\n", now->content);
-			now = now->next;
-		}
-	}
+		res = ERROR;
 	ft_lstclear(&tokens, free);
+	return (res);
 }
 
 void	init_msh_env(t_msh *msh, char **env)
@@ -275,12 +282,15 @@ int		main(int argc, char **argv, char **env)
 		ft_putstr_fd("$ ", STDOUT);
 		res = get_next_line(STDIN, &input);
 		if (res == -1)
-		{
 			exit_print_err("Error", "get_next_line fail!", EXIT_FAILURE);
-		}
 		else
 		{
-			parsing(&msh, input);
+			
+			if (parsing(&msh, input) == SUCCESS)
+				printf("execute cmds!!!\n");
+			else 
+				printf("parsing error : no execute cmds!!!\n");
+			
 			free(input);
 		}
 	}
