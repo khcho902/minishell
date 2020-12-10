@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/10 16:41:59 by kycho            ###   ########.fr       */
+/*   Updated: 2020/12/10 17:43:30 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,16 @@ void	exit_print_err(char *err_msg1, char *err_msg2, int exit_status)
 	exit(exit_status);
 }
 
+int		print_syntax_err(char *program_name, char *token)
+{
+	ft_putstr_fd("-", STDERR);
+	ft_putstr_fd(program_name, STDERR);
+	ft_putstr_fd(": syntax error near unexpected token `", STDERR);
+	ft_putstr_fd(token, STDERR);
+	ft_putstr_fd("'\n", STDERR);
+	return (ERROR);
+}
+
 int		is_in_charset(char c, char *str)
 {
 	int idx;
@@ -104,10 +114,12 @@ void	split_token_sub(char *input, int *i, int *len)
 	}
 }
 
-void	split_token(char *input, t_list **tokens)	// TODO : malloc fail 처리!!
+void	split_token(char *input, t_list **tokens)	// TODO : 25줄맞추기!!
 {
-	int i;
-	int len;
+	int		i;
+	int		len;
+	char	*str;
+	t_list	*lstnew;
 
 	i = 0;
 	while (input[i])
@@ -124,23 +136,16 @@ void	split_token(char *input, t_list **tokens)	// TODO : malloc fail 처리!!
 		}
 		else
 			split_token_sub(input, &i, &len);
+		if(!(str = ft_substr(input, i, len)))
+			exit_print_err("Error", strerror(errno), EXIT_FAILURE);
+		if(!(lstnew = ft_lstnew(str)))
+			exit_print_err("Error", strerror(errno), EXIT_FAILURE);
 		if (*tokens == NULL)
-			*tokens = ft_lstnew(ft_substr(input, i, len));
+			*tokens = lstnew;
 		else
-			ft_lstadd_back(tokens, ft_lstnew(ft_substr(input, i, len)));
+			ft_lstadd_back(tokens, lstnew);
 		i += len;
 	}
-}
-
-
-int		print_syntax_err(char *program_name, char *token)
-{
-	ft_putstr_fd("-", STDERR);
-	ft_putstr_fd(program_name, STDERR);
-	ft_putstr_fd(": syntax error near unexpected token `", STDERR);
-	ft_putstr_fd(token, STDERR);
-	ft_putstr_fd("'\n", STDERR);
-	return (ERROR);
 }
 
 int		check_token_valid(t_msh *msh, t_list *now)
@@ -156,7 +161,8 @@ int		check_token_valid(t_msh *msh, t_list *now)
 				return (print_syntax_err(msh->program_name, now->content));
 			before_type = 2;
 		}
-		else if (((char *)now->content)[0] == '>' || ((char *)now->content)[0] == '<')
+		else if (((char *)now->content)[0] == '>' ||
+				((char *)now->content)[0] == '<')
 		{
 			if (before_type == 3)
 				return (print_syntax_err(msh->program_name, now->content));
@@ -182,7 +188,6 @@ int		parsing(t_msh *msh, char *input)
 	tokens = NULL;
 	split_token(input, &tokens);
 
-	/*
 	printf("------------------------------\n");
 	printf("lstsize : %d\n", ft_lstsize(tokens));
 	t_list *now = tokens;
@@ -192,7 +197,7 @@ int		parsing(t_msh *msh, char *input)
 		now = now->next;
 	}
 	printf("------------------------------\n");
-	*/
+	
 	if (check_token_valid(msh, tokens) == SUCCESS)
 	{
 
