@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/10 03:43:24 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/13 06:20:58 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ typedef struct	s_msh
 	char		**cmd_list;
 	int			cmd_idx;
 	int			cmd_key;
+	char		*wd;
 }				t_msh;
 
 typedef struct	s_key_value
@@ -71,5 +72,5 @@ int				ft_max(int n1, int n2);
 /*
  ** prompt.c
  */
-void			show_prompt(char *str);
+void			show_prompt(t_msh *msh);
 #endif

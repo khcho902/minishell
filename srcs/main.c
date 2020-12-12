@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/10 03:53:18 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/13 06:20:39 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,18 +120,25 @@ void		main_loop(t_msh *msh)
 	}
 }
 
+void		init_main(t_msh *msh, char **env)
+{
+	msh->env_list = init_env(env);
+	msh->wd = getcwd(NULL, 0);
+}
+
 int			main(int ac, char **av, char **env)
 {
 	t_msh		msh;
 
-	msh.env_list = init_env(env);
+	init_main(&msh, env);
 	while (ac)
 	{
-		show_prompt(av[0]);
+		show_prompt(&msh);
 		if (get_next_line(STDIN, &(msh.input)) == -1)
 			break ;
 		main_loop(&msh);
 		free(msh.input);
 	}
+	*av = 0;
 	return (0);
 }
