@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/13 06:20:39 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/13 12:12:03 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,8 +122,10 @@ void		main_loop(t_msh *msh)
 
 void		init_main(t_msh *msh, char **env)
 {
+	show_logo();
 	msh->env_list = init_env(env);
 	msh->wd = getcwd(NULL, 0);
+	msh->prompt = ft_strdup("$USER@$NAME");
 }
 
 int			main(int ac, char **av, char **env)

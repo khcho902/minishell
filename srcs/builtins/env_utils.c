@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 04:35:43 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/10 03:41:38 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/13 10:43:48 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int		builtins(t_msh *msh)
 	else if (msh->cmd_key == k_export)
 		do_export(msh);
 	else if (msh->cmd_key == k_pwd)
-		do_pwd(STDIN_FILENO);
+		do_pwd(msh, STDIN_FILENO);
 	else if (msh->cmd_key == k_unset)
 		do_unset(msh);
 	else if (msh->cmd_key == k_exit)
