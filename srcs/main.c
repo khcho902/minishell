@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/10 17:43:30 by kycho            ###   ########.fr       */
+/*   Updated: 2020/12/12 20:01:31 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ typedef struct		s_cmd
 	int				length;
 	int				type;
 	int				pipes[2];
+	int				input_fd;
+	int				output_fd;
 	struct s_cmd	*previous;
 	struct s_cmd	*next;
 }					t_cmd;
@@ -174,7 +176,14 @@ int		check_token_valid(t_msh *msh, t_list *now)
 	}
 	if (before_type == 3)
 		return (print_syntax_err(msh->program_name, "newline"));
-	return (1);
+	return (SUCCESS);
+}
+
+void	making_cmd(t_msh *msh, t_list *tokens)
+{
+	if (msh == NULL || tokens == NULL)
+		printf("hahah\n");
+	printf("hahah\n");
 }
 
 int		parsing(t_msh *msh, char *input)
@@ -190,6 +199,7 @@ int		parsing(t_msh *msh, char *input)
 
 	printf("------------------------------\n");
 	printf("lstsize : %d\n", ft_lstsize(tokens));
+	printf("tokens : %p\n", tokens);
 	t_list *now = tokens;
 	while (now)
 	{
@@ -200,7 +210,7 @@ int		parsing(t_msh *msh, char *input)
 	
 	if (check_token_valid(msh, tokens) == SUCCESS)
 	{
-
+		making_cmd(msh, tokens);
 	}
 	else
 		res = ERROR;
