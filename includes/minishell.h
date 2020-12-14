@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/15 02:54:55 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/15 03:41:46 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ void	do_unset(t_msh *msh);
  ** utils.c
  */
 void	ft_double_free(char **ptr);
-int		ft_max(int n1, int n2);
 
 /*
  ** prompt.c

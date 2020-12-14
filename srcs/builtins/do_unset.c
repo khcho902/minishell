@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 04:22:52 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/15 02:52:40 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/15 03:54:09 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,7 @@ void		do_unset(t_msh *msh)
 	{
 		dict = l->content;
 		next = l->next;
-		if (!ft_strncmp(str, dict->key,
-					ft_max(ft_strlen(str), ft_strlen(dict->key))))
+		if (!ft_strcmp(str, dict->key))
 		{
 			if (dict)
 				free(dict);

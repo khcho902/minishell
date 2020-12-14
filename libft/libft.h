@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/26 06:22:12 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/10 03:59:14 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/15 03:41:23 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ char			*ft_strrchr(const char *str, int c);
 char			*ft_strnstr(const char *str, const char *to_find, size_t size);
 char			*ft_strdup(const char *str);
 int				ft_strncmp(const char *s1, const char *s2, size_t n);
+int				ft_strcmp(const char *s1, const char *s2);
 int				ft_atoi(const char *str);
 int				ft_isalpha(int c);
 int				ft_isdigit(int c);

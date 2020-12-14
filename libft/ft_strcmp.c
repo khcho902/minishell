@@ -1,40 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   do_cd.c                                            :+:      :+:    :+:   */
+/*   ft_strcmp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/12/02 00:57:53 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/15 03:48:09 by jiseo            ###   ########.fr       */
+/*   Created: 2020/12/15 03:38:18 by jiseo             #+#    #+#             */
+/*   Updated: 2020/12/15 03:39:59 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-void		do_cd(t_msh *msh)
+int		ft_strcmp(const char *s1, const char *s2)
 {
-	char	*str;
+	size_t	max_len;
+	size_t	s1_len;
+	size_t	s2_len;
 
-	if (msh->cmd_list[msh->cmd_idx + 1] == NULL)
-	{
-		chdir("/home/jiseo"); // HOME
-		return ;
-	}
-	str = msh->cmd_list[++msh->cmd_idx];
-	if (!ft_strcmp("-", str))
-	{
-		chdir("/home/jiseo/work"); // OLDPWD
-		return ;
-	}
-	chdir(str);
-	/*
-		str = ft_strdup();
-		i = chdir(str);
-		if (i == 0)
-			success;
-		else if (i == -1)
-			fail;
-		free(str);
-	*/ 
+	s1_len = ft_strlen(s1);
+	s2_len = ft_strlen(s2);
+	if (s1_len > s2_len)
+		max_len = s1_len;
+	else
+		max_len = s2_len;
+	return (ft_strncmp(s1, s2, max_len));
 }

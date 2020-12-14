@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 04:22:01 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/15 02:55:25 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/15 03:50:30 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,7 @@ static t_list	*sort_env(t_list *env, int size)
 			next = env->next;
 			dict1 = env->content;
 			dict2 = next->content;
-			if (ft_strncmp(dict1->key, dict2->key, 
-					ft_max(ft_strlen(dict1->key), ft_strlen(dict2->key))) > 0)
+			if (ft_strcmp(dict1->key, dict2->key) > 0)
 			{
 				env->next = next->next;
 				next->next = env;
@@ -67,8 +66,7 @@ void			do_export(t_msh *msh)
 	while (l)
 	{
 		dict = l->content;
-		if (!ft_strncmp(export_dict->key, dict->key,
-					ft_max(ft_strlen(export_dict->key), ft_strlen(dict->key))))
+		if (!ft_strcmp(export_dict->key, dict->key))
 		{
 			free(l->content);
 			l->content = export_dict;

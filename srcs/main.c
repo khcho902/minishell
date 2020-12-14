@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/15 02:45:04 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/15 03:47:34 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static int	cmdcmp(char *str)
 	i = 0;
 	while (cmd_list[i] && (name = (char *)cmd_list[i]))
 	{
-		if (!ft_strncmp(str, name, ft_max(ft_strlen(str), ft_strlen(name))))
+		if (!ft_strcmp(str, name))
 			return (i + 1);
 		i++;
 	}
@@ -65,7 +65,7 @@ void		exec_process(t_msh *msh)
 	while (l)
 	{
 		dict = l->content;
-		if (ft_strncmp(dict->key, "PATH", 4) == 0)
+		if (!ft_strncmp(dict->key, "PATH", 4))
 		{
 			paths = ft_split(&dict->value[5], ':');
 			break ;

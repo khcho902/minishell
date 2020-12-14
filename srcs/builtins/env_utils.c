@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 04:35:43 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/15 02:54:37 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/15 03:53:24 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,15 +35,16 @@ void	print_env(t_list *env_list, int fd)
 {
 	t_list	*l;
 	t_dict	*dict;
+	char	*temp;
 
 	l = env_list;
 	while (l)
 	{
 		dict = l->content;
-		ft_putstr_fd(dict->key, fd);
-		ft_putchar_fd('=', fd);
-		ft_putstr_fd(dict->value, fd);
+		temp = ft_strjoin3(dict->key, "=", dict->value);
+		ft_putstr_fd(temp, fd);
 		ft_putchar_fd('\n', fd);
+		free(temp);
 		l = l->next;
 	}
 }

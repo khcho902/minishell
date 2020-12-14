@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/20 16:32:07 by jiseo             #+#    #+#             */
-/*   Updated: 2020/11/29 07:40:42 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/15 03:41:39 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,4 @@ void		ft_double_free(char **ptr)
 	}
 	if (ptr)
 		free(ptr);
-}
-
-int			ft_max(int n1, int n2)
-{
-	if (n1 > n2)
-		return (n1);
-	else
-		return (n2);
 }
