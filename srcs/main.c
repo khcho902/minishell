@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/15 02:16:16 by kycho            ###   ########.fr       */
+/*   Updated: 2020/12/15 03:09:15 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 #define STDOUT 1
 #define STDERR 2
 
-#define TYPE_DEFALT 0
+#define TYPE_DEFAULT 0
 #define TYPE_PIPE 1
 
 #define METACHARACTER " \t\n|;<>"
@@ -210,7 +210,7 @@ void	making_cmd(t_msh *msh)
 	cmd->args = (char**)malloc(sizeof(char*));
 	cmd->args[0] = NULL;
 	cmd->length = 0;
-	cmd->type = TYPE_DEFALT;
+	cmd->type = TYPE_DEFAULT;
 	cmd->pipes[0] = -1;
 	cmd->pipes[1] = -1;
 	cmd->redirection_file = NULL;
@@ -230,7 +230,7 @@ void	making_cmd(t_msh *msh)
 				tmp_cmd->args = (char**)malloc(sizeof(char*));
 				tmp_cmd->args[0] = NULL;
 				tmp_cmd->length = 0;
-				tmp_cmd->type = -1;
+				tmp_cmd->type = TYPE_DEFAULT;
 				tmp_cmd->pipes[0] = -1;
 				tmp_cmd->pipes[1] = -1;
 				tmp_cmd->redirection_file = NULL;
@@ -245,12 +245,12 @@ void	making_cmd(t_msh *msh)
 		}
 		else if (ft_strcmp("|", token->content) == 0)
 		{
-			cmd->type = 1;
+			cmd->type = TYPE_PIPE;
 			t_cmd *tmp_cmd = (t_cmd*)malloc(sizeof(t_cmd));
 			tmp_cmd->args = (char**)malloc(sizeof(char*));
 			tmp_cmd->args[0] = NULL;
 			tmp_cmd->length = 0;
-			tmp_cmd->type = -1;
+			tmp_cmd->type = TYPE_DEFAULT;
 			tmp_cmd->pipes[0] = -1;
 			tmp_cmd->pipes[1] = -1;
 			tmp_cmd->redirection_file = NULL;
@@ -448,7 +448,7 @@ int		main(int argc, char **argv, char **env)
 
 			printf("1 msh.cmd : %p\n", msh.cmd);
 			printf("1 msh.tokens : %p\n", msh.tokens);
-			
+
 			while(msh.cmd)
 			{
 				free(msh.cmd->args);
@@ -462,9 +462,12 @@ int		main(int argc, char **argv, char **env)
 				free(msh.cmd);
 				msh.cmd = tmp_cmd;
 			}
+
 			printf("msh.cmd : %p\n", msh.cmd);
 			ft_lstclear(&msh.tokens, free);
 			printf("msh.tokens : %p\n", msh.tokens);
+
+
 			free(input);
 		}
 	}
