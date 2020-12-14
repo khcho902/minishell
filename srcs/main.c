@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/12 20:01:31 by kycho            ###   ########.fr       */
+/*   Updated: 2020/12/15 02:16:16 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,9 @@
 #define STDOUT 1
 #define STDERR 2
 
+#define TYPE_DEFALT 0
+#define TYPE_PIPE 1
+
 #define METACHARACTER " \t\n|;<>"
 
 typedef struct		s_cmd
@@ -33,8 +36,7 @@ typedef struct		s_cmd
 	int				length;
 	int				type;
 	int				pipes[2];
-	int				input_fd;
-	int				output_fd;
+	t_list			*redirection_file;
 	struct s_cmd	*previous;
 	struct s_cmd	*next;
 }					t_cmd;
@@ -49,6 +51,7 @@ typedef struct		s_msh
 {
 	char			*program_name;
 	int				exit_status;
+	t_list			*tokens;
 	t_cmd			*cmd;
 	t_dict			**env;
 	int				env_len;
@@ -72,6 +75,21 @@ int		print_syntax_err(char *program_name, char *token)
 	ft_putstr_fd(token, STDERR);
 	ft_putstr_fd("'\n", STDERR);
 	return (ERROR);
+}
+
+int		ft_strcmp(const char *s1, const char *s2)
+{
+	size_t max_len;
+	size_t s1_len;
+	size_t s2_len;
+
+	s1_len = ft_strlen(s1);
+	s2_len = ft_strlen(s2);
+	if (s1_len > s2_len)
+		max_len = s1_len;
+	else
+		max_len = s2_len;
+	return ft_strncmp(s1, s2, max_len);
 }
 
 int		is_in_charset(char c, char *str)
@@ -179,28 +197,123 @@ int		check_token_valid(t_msh *msh, t_list *now)
 	return (SUCCESS);
 }
 
-void	making_cmd(t_msh *msh, t_list *tokens)
+void	making_cmd(t_msh *msh)
 {
-	if (msh == NULL || tokens == NULL)
-		printf("hahah\n");
-	printf("hahah\n");
+	t_cmd *cmd;
+
+	if (msh->tokens == NULL)
+	{
+		printf("msh->tokens NULL임\n");
+		return ;
+	}
+	cmd = (t_cmd*)malloc(sizeof(t_cmd));
+	cmd->args = (char**)malloc(sizeof(char*));
+	cmd->args[0] = NULL;
+	cmd->length = 0;
+	cmd->type = TYPE_DEFALT;
+	cmd->pipes[0] = -1;
+	cmd->pipes[1] = -1;
+	cmd->redirection_file = NULL;
+	cmd->previous = NULL;
+	cmd->next = NULL;
+	
+	msh->cmd = cmd;
+
+	t_list *token = msh->tokens;
+	while(token)
+	{
+		if (ft_strcmp(";", token->content) == 0)
+		{
+			if (token->next != NULL)
+			{
+				t_cmd *tmp_cmd = (t_cmd*)malloc(sizeof(t_cmd));
+				tmp_cmd->args = (char**)malloc(sizeof(char*));
+				tmp_cmd->args[0] = NULL;
+				tmp_cmd->length = 0;
+				tmp_cmd->type = -1;
+				tmp_cmd->pipes[0] = -1;
+				tmp_cmd->pipes[1] = -1;
+				tmp_cmd->redirection_file = NULL;
+				tmp_cmd->previous = NULL;
+				tmp_cmd->next = NULL;
+
+				cmd->next = tmp_cmd;
+				tmp_cmd->previous = cmd;
+				cmd = tmp_cmd;
+				
+			}
+		}
+		else if (ft_strcmp("|", token->content) == 0)
+		{
+			cmd->type = 1;
+			t_cmd *tmp_cmd = (t_cmd*)malloc(sizeof(t_cmd));
+			tmp_cmd->args = (char**)malloc(sizeof(char*));
+			tmp_cmd->args[0] = NULL;
+			tmp_cmd->length = 0;
+			tmp_cmd->type = -1;
+			tmp_cmd->pipes[0] = -1;
+			tmp_cmd->pipes[1] = -1;
+			tmp_cmd->redirection_file = NULL;
+			tmp_cmd->previous = NULL;
+			tmp_cmd->next = NULL;
+
+			cmd->next = tmp_cmd;
+			tmp_cmd->previous = cmd;
+			cmd = tmp_cmd;
+		}
+		else if (ft_strcmp("<", token->content) == 0 ||
+				ft_strcmp(">", token->content) == 0 ||
+				ft_strcmp(">>", token->content) == 0)
+		{
+			if (cmd->redirection_file == NULL)
+			{
+				cmd->redirection_file = ft_lstnew(token->content);
+				token = token->next;
+				ft_lstadd_back(&cmd->redirection_file, ft_lstnew(token->content));
+			}
+			else
+			{
+				ft_lstadd_back(&cmd->redirection_file, ft_lstnew(token->content));
+				token = token->next;
+				ft_lstadd_back(&cmd->redirection_file, ft_lstnew(token->content));	
+			}
+		}
+		else
+		{
+			char **tmp;
+
+			tmp = (char**)malloc(sizeof(char*) * (cmd->length + 1 + 1));
+			tmp[cmd->length + 1] = NULL;
+			int i = 0;
+			while (i < cmd->length)
+			{
+				tmp[i] = cmd->args[i];
+				i++;
+			}
+			tmp[i] = token->content;
+			if (cmd->args != NULL)
+				free(cmd->args);
+			cmd->args = tmp;
+			cmd->length++;
+		}
+		token = token->next;
+	}
 }
 
 int		parsing(t_msh *msh, char *input)
 {
 	int		res;
-	t_list	*tokens;
 
 	if (msh == NULL || input == NULL)
 		return (ERROR);
 	res = SUCCESS;
-	tokens = NULL;
-	split_token(input, &tokens);
+	msh->tokens = NULL;
+	split_token(input, &(msh->tokens));
 
 	printf("------------------------------\n");
-	printf("lstsize : %d\n", ft_lstsize(tokens));
-	printf("tokens : %p\n", tokens);
-	t_list *now = tokens;
+	printf("lstsize : %d\n", ft_lstsize(msh->tokens));
+	printf("tokens : %p\n", msh->tokens);
+	t_list *now = msh->tokens;
 	while (now)
 	{
 		printf("|%s|\n", now->content);
@@ -208,13 +321,12 @@ int		parsing(t_msh *msh, char *input)
 	}
 	printf("------------------------------\n");
 	
-	if (check_token_valid(msh, tokens) == SUCCESS)
+	if (check_token_valid(msh, msh->tokens) == SUCCESS)
 	{
-		making_cmd(msh, tokens);
+		making_cmd(msh);
 	}
 	else
 		res = ERROR;
-	ft_lstclear(&tokens, free);
 	return (res);
 }
 
@@ -302,10 +414,57 @@ int		main(int argc, char **argv, char **env)
 		{
 			
 			if (parsing(&msh, input) == SUCCESS)
+			{
 				printf("execute cmds!!!\n");
+			}
 			else 
 				printf("parsing error : no execute cmds!!!\n");
+
+			t_cmd *cmd = msh.cmd;
+			while (cmd)
+			{
+				printf("--------@@@@@@@@@@@@@-------------\n");
+				int i = 0;
+				while(cmd->args[i])
+				{
+					printf("|%s|", cmd->args[i]);
+					i++;
+				}
+				printf("\n");
+				printf("lenght : %d\n", cmd->length);
+				printf("type : %d\n", cmd->type);
+				printf("pipes : %d %d\n", cmd->pipes[0], cmd->pipes[1]);
+				printf("  --redirection start--\n");
+				t_list *tmp = cmd->redirection_file;
+				while(tmp)
+				{
+					printf("%s\n", tmp->content);
+					tmp = tmp->next;
+				}
+				printf("  --redirection end--\n");
+				cmd = cmd->next;
+				printf("--------@@@@@@@@@@@@@-------------\n");
+			}
+
+			printf("1 msh.cmd : %p\n", msh.cmd);
+			printf("1 msh.tokens : %p\n", msh.tokens);
 			
+			while(msh.cmd)
+			{
+				free(msh.cmd->args);
+				while(msh.cmd->redirection_file)
+				{
+					t_list *tmp = msh.cmd->redirection_file->next;
+					free(msh.cmd->redirection_file);
+					msh.cmd->redirection_file = tmp;
+				}
+				t_cmd *tmp_cmd = msh.cmd->next;
+				free(msh.cmd);
+				msh.cmd = tmp_cmd;
+			}
+			printf("msh.cmd : %p\n", msh.cmd);
+			ft_lstclear(&msh.tokens, free);
+			printf("msh.tokens : %p\n", msh.tokens);
 			free(input);
 		}
 	}
