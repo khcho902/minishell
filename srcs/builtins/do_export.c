@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 04:22:01 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/05 05:03:22 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/15 02:55:25 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@ static t_list	*sort_env(t_list *env, int size)
 	t_list	*begin;
 	t_list	*prev;
 	t_list	*next;
-	t_kv	*kv1;
-	t_kv	*kv2;
+	t_dict	*dict1;
+	t_dict	*dict2;
 
 	while (size-- && !(prev = NULL))
 	{
@@ -26,10 +26,10 @@ static t_list	*sort_env(t_list *env, int size)
 		while (env->next)
 		{
 			next = env->next;
-			kv1 = env->content;
-			kv2 = next->content;
-			if (ft_strncmp(kv1->key, kv2->key,
-						ft_max(ft_strlen(kv1->key), ft_strlen(kv2->key))) > 0)
+			dict1 = env->content;
+			dict2 = next->content;
+			if (ft_strncmp(dict1->key, dict2->key, 
+					ft_max(ft_strlen(dict1->key), ft_strlen(dict2->key))) > 0)
 			{
 				env->next = next->next;
 				next->next = env;
@@ -51,8 +51,8 @@ void			do_export(t_msh *msh)
 {
 	char	*str;
 	t_list	*l;
-	t_kv	*kv;
-	t_kv	*export_kv;
+	t_dict	*dict;
+	t_dict	*export_dict;
 
 	l = msh->env_list;
 	if (msh->cmd_list[msh->cmd_idx + 1] == NULL)
@@ -63,18 +63,18 @@ void			do_export(t_msh *msh)
 		return ;
 	}
 	str = msh->cmd_list[++msh->cmd_idx];
-	export_kv = key_value_generator(str);
+	export_dict = dict_generator(str);
 	while (l)
 	{
-		kv = l->content;
-		if (!ft_strncmp(export_kv->key, kv->key,
-					ft_max(ft_strlen(export_kv->key), ft_strlen(kv->key))))
+		dict = l->content;
+		if (!ft_strncmp(export_dict->key, dict->key,
+					ft_max(ft_strlen(export_dict->key), ft_strlen(dict->key))))
 		{
 			free(l->content);
-			l->content = export_kv;
+			l->content = export_dict;
 			return ;
 		}
 		l = l->next;
 	}
-	ft_lstadd_back(&msh->env_list, ft_lstnew(export_kv));
+	ft_lstadd_back(&msh->env_list, ft_lstnew(export_dict));
 }

@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 04:35:43 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/13 10:43:48 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/15 02:54:37 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,13 @@ int		builtins(t_msh *msh)
 	if (msh->cmd_key == k_cd)
 		do_cd(msh);
 	else if (msh->cmd_key == k_echo)
-		do_echo(msh, STDIN_FILENO);
+		do_echo(msh, STDOUT);
 	else if (msh->cmd_key == k_env)
 		do_env(msh->env_list, STDOUT);
 	else if (msh->cmd_key == k_export)
 		do_export(msh);
 	else if (msh->cmd_key == k_pwd)
-		do_pwd(msh, STDIN_FILENO);
+		do_pwd(msh, STDOUT);
 	else if (msh->cmd_key == k_unset)
 		do_unset(msh);
 	else if (msh->cmd_key == k_exit)
@@ -34,31 +34,31 @@ int		builtins(t_msh *msh)
 void	print_env(t_list *env_list, int fd)
 {
 	t_list	*l;
-	t_kv	*kv;
+	t_dict	*dict;
 
 	l = env_list;
 	while (l)
 	{
-		kv = l->content;
-		ft_putstr_fd(kv->key, fd);
+		dict = l->content;
+		ft_putstr_fd(dict->key, fd);
 		ft_putchar_fd('=', fd);
-		ft_putstr_fd(kv->value, fd);
+		ft_putstr_fd(dict->value, fd);
 		ft_putchar_fd('\n', fd);
 		l = l->next;
 	}
 }
 
-t_kv	*key_value_generator(char *env)
+t_dict	*dict_generator(char *env)
 {
-	t_kv	*kv;
+	t_dict	*dict;
 	char	*chr;
 
-	if (!(kv = (t_kv *)malloc(sizeof(t_kv))))
+	if (!(dict = (t_dict *)malloc(sizeof(t_dict))))
 		return (NULL);
 	chr = ft_strchr(env, '=');
-	kv->key = ft_substr(env, 0, chr - env);
-	kv->value = chr + 1;
-	return (kv);
+	dict->key = ft_substr(env, 0, chr - env);
+	dict->value = chr + 1;
+	return (dict);
 }
 
 t_list	*init_env(char **env)
@@ -71,9 +71,9 @@ t_list	*init_env(char **env)
 	while (env[i])
 	{
 		if (!l)
-			l = ft_lstnew(key_value_generator(env[i]));
+			l = ft_lstnew(dict_generator(env[i]));
 		else
-			ft_lstadd_back(&l, ft_lstnew(key_value_generator(env[i])));
+			ft_lstadd_back(&l, ft_lstnew(dict_generator(env[i])));
 		i++;
 	}
 	return (l);

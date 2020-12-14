@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/13 12:12:03 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/15 02:45:04 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ char		**ft_envjoin(t_list *env_list)
 	char	**temp;
 	int		list_size;
 	int		idx;
-	t_kv	*kv;
+	t_dict	*dict;
 	t_list	*l;
 
 	list_size = ft_lstsize(env_list);
@@ -44,8 +44,8 @@ char		**ft_envjoin(t_list *env_list)
 	idx = 0;
 	while (idx < list_size)
 	{
-		kv = l->content;
-		temp[idx++] = ft_strjoin3(kv->key, "=", kv->value);
+		dict = l->content;
+		temp[idx++] = ft_strjoin3(dict->key, "=", dict->value);
 		l = l->next;
 	}
 	return (temp);
@@ -55,7 +55,7 @@ void		exec_process(t_msh *msh)
 {
 	char		**paths;
 	t_list		*l;
-	t_kv		*kv;
+	t_dict		*dict;
 	char		*temp;
 	char		**av;
 	char		**env;
@@ -64,10 +64,10 @@ void		exec_process(t_msh *msh)
 	l = msh->env_list;
 	while (l)
 	{
-		kv = l->content;
-		if (ft_strncmp(kv->key, "PATH", 4) == 0)
+		dict = l->content;
+		if (ft_strncmp(dict->key, "PATH", 4) == 0)
 		{
-			paths = ft_split(&kv->value[5], ':');
+			paths = ft_split(&dict->value[5], ':');
 			break ;
 		}
 		l = l->next;

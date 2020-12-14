@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 04:22:52 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/02 04:25:40 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/15 02:52:40 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,20 +18,20 @@ void		do_unset(t_msh *msh)
 	t_list	*l;
 	t_list	*prev;
 	t_list	*next;
-	t_kv	*kv;
+	t_dict	*dict;
 
 	str = msh->cmd_list[++msh->cmd_idx];
 	l = msh->env_list;
 	prev = NULL;
 	while (l)
 	{
-		kv = l->content;
+		dict = l->content;
 		next = l->next;
-		if (!ft_strncmp(str, kv->key,
-					ft_max(ft_strlen(str), ft_strlen(kv->key))))
+		if (!ft_strncmp(str, dict->key,
+					ft_max(ft_strlen(str), ft_strlen(dict->key))))
 		{
-			if (kv)
-				free(kv);
+			if (dict)
+				free(dict);
 			free(l);
 			if (prev)
 				prev->next = next;
