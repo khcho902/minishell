@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/15 23:49:13 by kycho            ###   ########.fr       */
+/*   Updated: 2020/12/16 01:05:04 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,7 +163,7 @@ void	split_token(char *input, t_list **tokens, int i)
 	}
 }
 
-int		check_token_valid(t_msh *msh, t_list *now)
+int		check_token_valid(char *program_name, t_list *now)
 {
 	int		before_type;
 
@@ -173,14 +173,14 @@ int		check_token_valid(t_msh *msh, t_list *now)
 		if (((char*)now->content)[0] == '|' || ((char *)now->content)[0] == ';')
 		{
 			if (before_type != 1)
-				return (print_syntax_err(msh->program_name, now->content));
+				return (print_syntax_err(program_name, now->content));
 			before_type = 2;
 		}
 		else if (((char *)now->content)[0] == '>' ||
 				((char *)now->content)[0] == '<')
 		{
 			if (before_type == 3)
-				return (print_syntax_err(msh->program_name, now->content));
+				return (print_syntax_err(program_name, now->content));
 			before_type = 3;
 		}
 		else
@@ -188,7 +188,7 @@ int		check_token_valid(t_msh *msh, t_list *now)
 		now = now->next;
 	}
 	if (before_type == 3)
-		return (print_syntax_err(msh->program_name, "newline"));
+		return (print_syntax_err(program_name, "newline"));
 	return (SUCCESS);
 }
 
@@ -297,14 +297,12 @@ void	making_cmd(t_msh *msh)
 
 int		parsing(t_msh *msh, char *input)
 {
-	int		res;
-
 	if (msh == NULL || input == NULL)
 		return (ERROR);
-	res = SUCCESS;
 	msh->tokens = NULL;
 	split_token(input, &(msh->tokens), 0);
 
+	/*
 	printf("------------------------------\n");
 	printf("lstsize : %d\n", ft_lstsize(msh->tokens));
 	printf("tokens : %p\n", msh->tokens);
@@ -315,14 +313,12 @@ int		parsing(t_msh *msh, char *input)
 		now = now->next;
 	}
 	printf("------------------------------\n");
-	
-	if (check_token_valid(msh, msh->tokens) == SUCCESS)
-	{
-		making_cmd(msh);
-	}
-	else
-		res = ERROR;
-	return (res);
+	*/
+
+	if (check_token_valid(msh->program_name, msh->tokens) == ERROR)
+		return (ERROR);
+	making_cmd(msh);
+	return (SUCCESS);
 }
 
 void	init_msh_env(t_msh *msh, char **env)
