@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/16 01:26:47 by kycho            ###   ########.fr       */
+/*   Updated: 2020/12/16 01:40:50 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,23 +192,28 @@ int		check_token_valid(char *program_name, t_list *now)
 	return (SUCCESS);
 }
 
-t_cmd	*get_new_cmd(void)
+t_cmd	*get_new_cmd(t_cmd *previous)
 {
-	t_cmd	*cmd;
+	t_cmd	*new_cmd;
 
-	if (!(cmd = (t_cmd*)malloc(sizeof(t_cmd))))
+	if (!(new_cmd = (t_cmd*)malloc(sizeof(t_cmd))))
 		exit_print_err("Error", strerror(errno), EXIT_FAILURE);
-	if (!(cmd->args = (char**)malloc(sizeof(char*))))
+	if (!(new_cmd->args = (char**)malloc(sizeof(char*))))
 		exit_print_err("Error", strerror(errno), EXIT_FAILURE);
-	cmd->args[0] = NULL;
-	cmd->length = 0;
-	cmd->type = TYPE_DEFAULT;
-	cmd->pipes[0] = -1;
-	cmd->pipes[1] = -1;
-	cmd->redirection_file = NULL;
-	cmd->previous = NULL;
-	cmd->next = NULL;
-	return (cmd);
+	new_cmd->args[0] = NULL;
+	new_cmd->length = 0;
+	new_cmd->type = TYPE_DEFAULT;
+	new_cmd->pipes[0] = -1;
+	new_cmd->pipes[1] = -1;
+	new_cmd->redirection_file = NULL;
+	new_cmd->previous = NULL;
+	new_cmd->next = NULL;
+	if (previous != NULL)
+	{
+		previous->next = new_cmd;
+		new_cmd->previous = previous;
+	}
+	return (new_cmd);
 }
 
 void	making_cmd(t_msh *msh)
@@ -220,7 +225,7 @@ void	making_cmd(t_msh *msh)
 		printf("msh->tokens NULL임\n");
 		return ;
 	}
-	cmd = get_new_cmd();
+	cmd = get_new_cmd(NULL);
 	msh->cmd = cmd;
 
 	t_list *token = msh->tokens;
@@ -230,20 +235,13 @@ void	making_cmd(t_msh *msh)
 		{
 			if (token->next != NULL)
 			{
-				t_cmd *tmp_cmd = get_new_cmd();
-				cmd->next = tmp_cmd;
-				tmp_cmd->previous = cmd;
-				cmd = tmp_cmd;
-				
+				cmd = get_new_cmd(cmd);
 			}
 		}
 		else if (ft_strcmp("|", token->content) == 0)
 		{
 			cmd->type = TYPE_PIPE;
-			t_cmd *tmp_cmd = get_new_cmd();
-			cmd->next = tmp_cmd;
-			tmp_cmd->previous = cmd;
-			cmd = tmp_cmd;
+			cmd = get_new_cmd(cmd);
 		}
 		else if (ft_strcmp("<", token->content) == 0 ||
 				ft_strcmp(">", token->content) == 0 ||
