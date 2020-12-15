@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/16 02:40:13 by kycho            ###   ########.fr       */
+/*   Updated: 2020/12/16 03:05:34 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -237,6 +237,22 @@ void	add_args(t_cmd *cmd, char *token_content)
 	cmd->length++;
 }
 
+void	add_redirection_file(t_cmd *cmd, t_list **token)
+{
+	t_list *lstnew;
+
+	if (!(lstnew = ft_lstnew((*token)->content)))
+		exit_print_err("Error", strerror(errno), EXIT_FAILURE);
+	if (cmd->redirection_file == NULL)
+		cmd->redirection_file = lstnew;
+	else
+		ft_lstadd_back(&cmd->redirection_file, lstnew);
+	*token = (*token)->next;
+	if (!(lstnew = ft_lstnew((*token)->content)))
+		exit_print_err("Error", strerror(errno), EXIT_FAILURE);
+	ft_lstadd_back(&cmd->redirection_file, lstnew);
+}
+
 void	making_cmd(t_msh *msh)
 {
 	t_cmd	*cmd;
@@ -245,10 +261,10 @@ void	making_cmd(t_msh *msh)
 	cmd = get_new_cmd(NULL);
 	msh->cmd = cmd;
 	token = msh->tokens;
-	while(token)
+	while (token)
 	{
 		if (ft_strcmp(";", token->content) == 0 && token->next != NULL)
-				cmd = get_new_cmd(cmd);
+			cmd = get_new_cmd(cmd);
 		else if (ft_strcmp("|", token->content) == 0)
 		{
 			cmd->type = TYPE_PIPE;
@@ -257,18 +273,9 @@ void	making_cmd(t_msh *msh)
 		else if (ft_strcmp("<", token->content) == 0 ||
 				ft_strcmp(">", token->content) == 0 ||
 				ft_strcmp(">>", token->content) == 0)
-		{
-			if (cmd->redirection_file == NULL)
-				cmd->redirection_file = ft_lstnew(token->content);
-			else
-				ft_lstadd_back(&cmd->redirection_file, ft_lstnew(token->content));
-			token = token->next;
-			ft_lstadd_back(&cmd->redirection_file, ft_lstnew(token->content));
-		}
+			add_redirection_file(cmd, &token);
 		else
-		{
 			add_args(cmd, token->content);
-		}
 		token = token->next;
 	}
 }
