@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/16 01:05:04 by kycho            ###   ########.fr       */
+/*   Updated: 2020/12/16 01:26:47 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ int		ft_strcmp(const char *s1, const char *s2)
 		max_len = s1_len;
 	else
 		max_len = s2_len;
-	return ft_strncmp(s1, s2, max_len);
+	return (ft_strncmp(s1, s2, max_len));
 }
 
 int		is_in_charset(char c, char *str)
@@ -192,6 +192,25 @@ int		check_token_valid(char *program_name, t_list *now)
 	return (SUCCESS);
 }
 
+t_cmd	*get_new_cmd(void)
+{
+	t_cmd	*cmd;
+
+	if (!(cmd = (t_cmd*)malloc(sizeof(t_cmd))))
+		exit_print_err("Error", strerror(errno), EXIT_FAILURE);
+	if (!(cmd->args = (char**)malloc(sizeof(char*))))
+		exit_print_err("Error", strerror(errno), EXIT_FAILURE);
+	cmd->args[0] = NULL;
+	cmd->length = 0;
+	cmd->type = TYPE_DEFAULT;
+	cmd->pipes[0] = -1;
+	cmd->pipes[1] = -1;
+	cmd->redirection_file = NULL;
+	cmd->previous = NULL;
+	cmd->next = NULL;
+	return (cmd);
+}
+
 void	making_cmd(t_msh *msh)
 {
 	t_cmd *cmd;
@@ -201,17 +220,7 @@ void	making_cmd(t_msh *msh)
 		printf("msh->tokens NULL임\n");
 		return ;
 	}
-	cmd = (t_cmd*)malloc(sizeof(t_cmd));
-	cmd->args = (char**)malloc(sizeof(char*));
-	cmd->args[0] = NULL;
-	cmd->length = 0;
-	cmd->type = TYPE_DEFAULT;
-	cmd->pipes[0] = -1;
-	cmd->pipes[1] = -1;
-	cmd->redirection_file = NULL;
-	cmd->previous = NULL;
-	cmd->next = NULL;
-	
+	cmd = get_new_cmd();
 	msh->cmd = cmd;
 
 	t_list *token = msh->tokens;
@@ -221,17 +230,7 @@ void	making_cmd(t_msh *msh)
 		{
 			if (token->next != NULL)
 			{
-				t_cmd *tmp_cmd = (t_cmd*)malloc(sizeof(t_cmd));
-				tmp_cmd->args = (char**)malloc(sizeof(char*));
-				tmp_cmd->args[0] = NULL;
-				tmp_cmd->length = 0;
-				tmp_cmd->type = TYPE_DEFAULT;
-				tmp_cmd->pipes[0] = -1;
-				tmp_cmd->pipes[1] = -1;
-				tmp_cmd->redirection_file = NULL;
-				tmp_cmd->previous = NULL;
-				tmp_cmd->next = NULL;
-
+				t_cmd *tmp_cmd = get_new_cmd();
 				cmd->next = tmp_cmd;
 				tmp_cmd->previous = cmd;
 				cmd = tmp_cmd;
@@ -241,17 +240,7 @@ void	making_cmd(t_msh *msh)
 		else if (ft_strcmp("|", token->content) == 0)
 		{
 			cmd->type = TYPE_PIPE;
-			t_cmd *tmp_cmd = (t_cmd*)malloc(sizeof(t_cmd));
-			tmp_cmd->args = (char**)malloc(sizeof(char*));
-			tmp_cmd->args[0] = NULL;
-			tmp_cmd->length = 0;
-			tmp_cmd->type = TYPE_DEFAULT;
-			tmp_cmd->pipes[0] = -1;
-			tmp_cmd->pipes[1] = -1;
-			tmp_cmd->redirection_file = NULL;
-			tmp_cmd->previous = NULL;
-			tmp_cmd->next = NULL;
-
+			t_cmd *tmp_cmd = get_new_cmd();
 			cmd->next = tmp_cmd;
 			tmp_cmd->previous = cmd;
 			cmd = tmp_cmd;
@@ -302,7 +291,6 @@ int		parsing(t_msh *msh, char *input)
 	msh->tokens = NULL;
 	split_token(input, &(msh->tokens), 0);
 
-	/*
 	printf("------------------------------\n");
 	printf("lstsize : %d\n", ft_lstsize(msh->tokens));
 	printf("tokens : %p\n", msh->tokens);
@@ -313,7 +301,6 @@ int		parsing(t_msh *msh, char *input)
 		now = now->next;
 	}
 	printf("------------------------------\n");
-	*/
 
 	if (check_token_valid(msh->program_name, msh->tokens) == ERROR)
 		return (ERROR);
