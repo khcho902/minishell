@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/15 03:09:15 by kycho            ###   ########.fr       */
+/*   Updated: 2020/12/15 23:49:13 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,14 +134,12 @@ void	split_token_sub(char *input, int *i, int *len)
 	}
 }
 
-void	split_token(char *input, t_list **tokens)	// TODO : 25줄맞추기!!
+void	split_token(char *input, t_list **tokens, int i)
 {
-	int		i;
 	int		len;
 	char	*str;
 	t_list	*lstnew;
 
-	i = 0;
 	while (input[i])
 	{
 		while (input[i] == ' ' || input[i] == '\t')
@@ -149,16 +147,13 @@ void	split_token(char *input, t_list **tokens)	// TODO : 25줄맞추기!!
 		if (input[i] == 0)
 			break ;
 		len = 1;
-		if (is_in_charset(input[i], METACHARACTER))
-		{
-			if (input[i] == '>' && input[i + 1] == '>')
-				len++;
-		}
-		else
+		if (!is_in_charset(input[i], METACHARACTER))
 			split_token_sub(input, &i, &len);
-		if(!(str = ft_substr(input, i, len)))
+		else if (ft_strncmp(&input[i], ">>", 2) == 0)
+			len++;
+		if (!(str = ft_substr(input, i, len)))
 			exit_print_err("Error", strerror(errno), EXIT_FAILURE);
-		if(!(lstnew = ft_lstnew(str)))
+		if (!(lstnew = ft_lstnew(str)))
 			exit_print_err("Error", strerror(errno), EXIT_FAILURE);
 		if (*tokens == NULL)
 			*tokens = lstnew;
@@ -308,7 +303,7 @@ int		parsing(t_msh *msh, char *input)
 		return (ERROR);
 	res = SUCCESS;
 	msh->tokens = NULL;
-	split_token(input, &(msh->tokens));
+	split_token(input, &(msh->tokens), 0);
 
 	printf("------------------------------\n");
 	printf("lstsize : %d\n", ft_lstsize(msh->tokens));
