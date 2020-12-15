@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/16 01:40:50 by kycho            ###   ########.fr       */
+/*   Updated: 2020/12/16 02:40:13 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -216,28 +216,39 @@ t_cmd	*get_new_cmd(t_cmd *previous)
 	return (new_cmd);
 }
 
+void	add_args(t_cmd *cmd, char *token_content)
+{
+	int		i;
+	char	**tmp;
+
+	if (!(tmp = (char**)malloc(sizeof(char*) * (cmd->length + 2))))
+		exit_print_err("Error", strerror(errno), EXIT_FAILURE);
+	tmp[cmd->length + 1] = NULL;
+	i = 0;
+	while (i < cmd->length)
+	{
+		tmp[i] = cmd->args[i];
+		i++;
+	}
+	tmp[i] = token_content;
+	if (cmd->args != NULL)
+		free(cmd->args);
+	cmd->args = tmp;
+	cmd->length++;
+}
+
 void	making_cmd(t_msh *msh)
 {
-	t_cmd *cmd;
+	t_cmd	*cmd;
+	t_list	*token;
 
-	if (msh->tokens == NULL)
-	{
-		printf("msh->tokens NULL임\n");
-		return ;
-	}
 	cmd = get_new_cmd(NULL);
 	msh->cmd = cmd;
-
-	t_list *token = msh->tokens;
+	token = msh->tokens;
 	while(token)
 	{
-		if (ft_strcmp(";", token->content) == 0)
-		{
-			if (token->next != NULL)
-			{
+		if (ft_strcmp(";", token->content) == 0 && token->next != NULL)
 				cmd = get_new_cmd(cmd);
-			}
-		}
 		else if (ft_strcmp("|", token->content) == 0)
 		{
 			cmd->type = TYPE_PIPE;
@@ -248,35 +259,15 @@ void	making_cmd(t_msh *msh)
 				ft_strcmp(">>", token->content) == 0)
 		{
 			if (cmd->redirection_file == NULL)
-			{
 				cmd->redirection_file = ft_lstnew(token->content);
-				token = token->next;
-				ft_lstadd_back(&cmd->redirection_file, ft_lstnew(token->content));
-			}
 			else
-			{
 				ft_lstadd_back(&cmd->redirection_file, ft_lstnew(token->content));
-				token = token->next;
-				ft_lstadd_back(&cmd->redirection_file, ft_lstnew(token->content));	
-			}
+			token = token->next;
+			ft_lstadd_back(&cmd->redirection_file, ft_lstnew(token->content));
 		}
 		else
 		{
-			char **tmp;
-
-			tmp = (char**)malloc(sizeof(char*) * (cmd->length + 1 + 1));
-			tmp[cmd->length + 1] = NULL;
-			int i = 0;
-			while (i < cmd->length)
-			{
-				tmp[i] = cmd->args[i];
-				i++;
-			}
-			tmp[i] = token->content;
-			if (cmd->args != NULL)
-				free(cmd->args);
-			cmd->args = tmp;
-			cmd->length++;
+			add_args(cmd, token->content);
 		}
 		token = token->next;
 	}
