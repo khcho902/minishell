@@ -6,7 +6,7 @@
 #    By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/23 14:34:40 by jiseo             #+#    #+#              #
-#    Updated: 2020/12/04 07:12:45 by jiseo            ###   ########.fr        #
+#    Updated: 2020/12/16 08:56:44 by jiseo            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,10 @@ LIBFT			=	./libft/libft.a
 SRCS_PATH		=	./srcs/
 INCS			=	-Iincludes
 RAW_SRCS		=	main.c \
+					init.c \
 					prompt.c \
+					error.c \
+					parsing.c \
 					\
 					builtins/do_cd.c \
 					builtins/do_echo.c \

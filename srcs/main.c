@@ -6,141 +6,77 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/15 03:47:34 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/16 08:58:59 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	cmdcmp(char *str)
+int		main(int ac, char **av, char **env)
 {
-	int			i;
-	char		*name;
-	const char	*cmd_list[] = {
-		"cd", "echo", "env", "export", "pwd", "unset", "exit", NULL
-	};
-
-	i = 0;
-	while (cmd_list[i] && (name = (char *)cmd_list[i]))
-	{
-		if (!ft_strcmp(str, name))
-			return (i + 1);
-		i++;
-	}
-	return (EXEC_IDX);
-}
-
-char		**ft_envjoin(t_list *env_list)
-{
-	char	**temp;
-	int		list_size;
-	int		idx;
-	t_dict	*dict;
-	t_list	*l;
-
-	list_size = ft_lstsize(env_list);
-	l = env_list;
-	temp = (char **)malloc(sizeof(char *) * (list_size + 1));
-	idx = 0;
-	while (idx < list_size)
-	{
-		dict = l->content;
-		temp[idx++] = ft_strjoin3(dict->key, "=", dict->value);
-		l = l->next;
-	}
-	return (temp);
-}
-
-void		exec_process(t_msh *msh)
-{
-	char		**paths;
-	t_list		*l;
-	t_dict		*dict;
-	char		*temp;
-	char		**av;
-	char		**env;
-	int			i;
-	
-	l = msh->env_list;
-	while (l)
-	{
-		dict = l->content;
-		if (!ft_strncmp(dict->key, "PATH", 4))
-		{
-			paths = ft_split(&dict->value[5], ':');
-			break ;
-		}
-		l = l->next;
-	}
-	i = 0;
-	av = (char **)malloc(sizeof(char *));
-	av[0] = ft_strjoin("./", msh->cmd_list[msh->cmd_idx]);
-	env = ft_envjoin(msh->env_list);
-	while (paths[i])
-	{
-		if (paths[i][ft_strlen(paths[i]) - 1] != '/')
-			paths[i] = ft_strjoin(paths[i], "/");
-		temp = ft_strjoin(paths[i], msh->cmd_list[msh->cmd_idx]);
-		if (execve(temp, av, env) != -1)
-			free(temp);
-		i++;
-		free(temp);
-	}
-	ft_double_free(av);
-	ft_double_free(env);
-	ft_double_free(paths);
-}
-
-void		create_process(t_msh *msh)
-{
-	pid_t		pid;
-
-	pid = fork();
-	if (pid == 0)
-	{
-		exec_process(msh);
-		exit(0);
-	}
-	else
-		wait(NULL);
-}
-
-void		main_loop(t_msh *msh)
-{
-	msh->cmd_list = ft_split(msh->input, ' ');
-	msh->cmd_idx = 0;
-	while (msh->cmd_list[msh->cmd_idx])
-	{
-		msh->cmd_key = cmdcmp(msh->cmd_list[msh->cmd_idx]);
-		if (msh->cmd_key == EXEC_IDX)
-			create_process(msh);
-		else
-			builtins(msh);
-		msh->cmd_idx++;
-	}
-}
-
-void		init_main(t_msh *msh, char **env)
-{
-	show_logo();
-	msh->env_list = init_env(env);
-	msh->wd = getcwd(NULL, 0);
-	msh->prompt = ft_strdup("$USER@$NAME");
-}
-
-int			main(int ac, char **av, char **env)
-{
-	t_msh		msh;
+	t_msh	msh;
+	int		res;
 
 	init_main(&msh, env);
-	while (ac)
+	init_msh(av[0], &msh, env);
+	res = ac;
+	while (res)
 	{
 		show_prompt(&msh);
-		if (get_next_line(STDIN, &(msh.input)) == -1)
-			break ;
+		if ((res = get_next_line(STDIN, &(msh.input))) == -1)
+			exit_print_err("Error", "get_next_line fail!", EXIT_FAILURE);
+		else
+		{
+			parsing(&msh, msh.input);
+			t_cmd *cmd = msh.cmd;
+			while (cmd)
+			{
+				printf("--------@@@@@@@@@@@@@-------------\n");
+				int i = 0;
+				while(cmd->args[i])
+				{
+					printf("|%s|", cmd->args[i]);
+					i++;
+				}
+				printf("\n");
+				printf("length : %d\n", cmd->length);
+				printf("type : %d\n", cmd->type);
+				printf("pipes : %d %d\n", cmd->pipes[0], cmd->pipes[1]);
+				printf("  --redirection start--\n");
+				t_list *tmp = cmd->redirection_file;
+				while(tmp)
+				{
+					printf("%s\n", (char *)tmp->content);
+					tmp = tmp->next;
+				}
+				printf("  --redirection end--\n");
+				cmd = cmd->next;
+				printf("--------@@@@@@@@@@@@@-------------\n");
+			}
+
+			printf("1 msh.cmd : %p\n", msh.cmd);
+			printf("1 msh.tokens : %p\n", msh.tokens);
+
+			while(msh.cmd)
+			{
+				free(msh.cmd->args);
+				while(msh.cmd->redirection_file)
+				{
+					t_list *tmp = msh.cmd->redirection_file->next;
+					free(msh.cmd->redirection_file);
+					msh.cmd->redirection_file = tmp;
+				}
+				t_cmd *tmp_cmd = msh.cmd->next;
+				free(msh.cmd);
+				msh.cmd = tmp_cmd;
+			}
+
+			printf("msh.cmd : %p\n", msh.cmd);
+			ft_lstclear(&msh.tokens, free);
+			printf("msh.tokens : %p\n", msh.tokens);
+		}
 		main_loop(&msh);
 		free(msh.input);
 	}
-	*av = 0;
 	return (0);
 }
