@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/16 15:38:24 by kycho            ###   ########.fr       */
+/*   Updated: 2020/12/16 16:59:07 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,13 +58,12 @@ typedef struct		s_msh
 	char			**path;
 }					t_msh;
 
-void	exit_print_err(char *err_msg1, char *err_msg2, int exit_status)
+void	exit_print_err(char *err_msg)
 {
-	ft_putstr_fd(err_msg1, STDERR);
-	ft_putstr_fd(" : ", STDERR);
-	ft_putstr_fd(err_msg2, STDERR);
+	ft_putstr_fd("Error : ", STDERR);
+	ft_putstr_fd(err_msg, STDERR);
 	ft_putstr_fd("\n", STDERR);
-	exit(exit_status);
+	exit(EXIT_FAILURE);
 }
 
 int		print_syntax_err(char *program_name, char *token)
@@ -152,9 +151,9 @@ void	split_token(char *input, t_list **tokens, int i)
 		else if (ft_strncmp(&input[i], ">>", 2) == 0)
 			len++;
 		if (!(str = ft_substr(input, i, len)))
-			exit_print_err("Error", strerror(errno), EXIT_FAILURE);
+			exit_print_err(strerror(errno));
 		if (!(lstnew = ft_lstnew(str)))
-			exit_print_err("Error", strerror(errno), EXIT_FAILURE);
+			exit_print_err(strerror(errno));
 		if (*tokens == NULL)
 			*tokens = lstnew;
 		else
@@ -197,9 +196,9 @@ t_cmd	*get_new_cmd(t_cmd *previous)
 	t_cmd	*new_cmd;
 
 	if (!(new_cmd = (t_cmd*)malloc(sizeof(t_cmd))))
-		exit_print_err("Error", strerror(errno), EXIT_FAILURE);
+		exit_print_err(strerror(errno));
 	if (!(new_cmd->args = (char**)malloc(sizeof(char*))))
-		exit_print_err("Error", strerror(errno), EXIT_FAILURE);
+		exit_print_err(strerror(errno));
 	new_cmd->args[0] = NULL;
 	new_cmd->length = 0;
 	new_cmd->type = TYPE_DEFAULT;
@@ -222,7 +221,7 @@ void	add_args(t_cmd *cmd, char *token_content)
 	char	**tmp;
 
 	if (!(tmp = (char**)malloc(sizeof(char*) * (cmd->length + 2))))
-		exit_print_err("Error", strerror(errno), EXIT_FAILURE);
+		exit_print_err(strerror(errno));
 	tmp[cmd->length + 1] = NULL;
 	i = 0;
 	while (i < cmd->length)
@@ -241,14 +240,14 @@ void	add_redirection_file(t_cmd *cmd, t_list **token)
 	t_list *lstnew;
 
 	if (!(lstnew = ft_lstnew((*token)->content)))
-		exit_print_err("Error", strerror(errno), EXIT_FAILURE);
+		exit_print_err(strerror(errno));
 	if (cmd->redirection_files == NULL)
 		cmd->redirection_files = lstnew;
 	else
 		ft_lstadd_back(&cmd->redirection_files, lstnew);
 	*token = (*token)->next;
 	if (!(lstnew = ft_lstnew((*token)->content)))
-		exit_print_err("Error", strerror(errno), EXIT_FAILURE);
+		exit_print_err(strerror(errno));
 	ft_lstadd_back(&cmd->redirection_files, lstnew);
 }
 
@@ -284,18 +283,6 @@ int		parsing(t_msh *msh, char *input)
 	if (msh == NULL || input == NULL)
 		return (ERROR);
 	split_token(input, &(msh->tokens), 0);
-	/*
-	printf("------------------------------\n");
-	printf("lstsize : %d\n", ft_lstsize(msh->tokens));
-	printf("tokens : %p\n", msh->tokens);
-	t_list *now = msh->tokens;
-	while (now)
-	{
-		printf("|%s|\n", now->content);
-		now = now->next;
-	}
-	printf("------------------------------\n");
-	*/
 	if (check_token_valid(msh->program_name, msh->tokens) == ERROR)
 		return (ERROR);
 	making_cmd(msh);
@@ -311,19 +298,19 @@ void	init_msh_env(t_msh *msh, char **env)
 	while (env[msh->env_len])
 		msh->env_len++;
 	if (!(msh->env = (t_dict**)malloc(sizeof(t_dict*) * (msh->env_len + 1))))
-		exit_print_err("Error", strerror(errno), EXIT_FAILURE);
+		exit_print_err(strerror(errno));
 	msh->env[msh->env_len] = NULL;
 	i = 0;
 	while (env[i])
 	{
 		key_len = ft_strchr(env[i], '=') - env[i];
 		if (!(msh->env[i] = (t_dict*)malloc(sizeof(t_dict))))
-			exit_print_err("Error", strerror(errno), EXIT_FAILURE);
+			exit_print_err(strerror(errno));
 		if (!(msh->env[i]->key = (char *)malloc(sizeof(char) * (key_len + 1))))
-			exit_print_err("Error", strerror(errno), EXIT_FAILURE);
+			exit_print_err(strerror(errno));
 		ft_strlcat(msh->env[i]->key, env[i], key_len + 1);
 		if (!(msh->env[i]->value = ft_strdup(env[i] + key_len + 1)))
-			exit_print_err("Error", strerror(errno), EXIT_FAILURE);
+			exit_print_err(strerror(errno));
 		i++;
 	}
 }
@@ -343,7 +330,7 @@ void	init_msh_path(t_msh *msh)
 		{
 			msh->path = ft_split(msh->env[i]->value, ':');
 			if (msh->path == NULL)
-				exit_print_err("Error", strerror(errno), EXIT_FAILURE);
+				exit_print_err(strerror(errno));
 			break ;
 		}
 		i++;
@@ -358,7 +345,7 @@ void	init_msh(char *program_name, t_msh *msh, char **env)
 	while (i >= 0 && program_name[i] != '/')
 		i--;
 	if (!(msh->program_name = ft_strdup(program_name + i + 1)))
-		exit_print_err("Error", strerror(errno), EXIT_FAILURE);
+		exit_print_err(strerror(errno));
 	msh->exit_status = 0;
 	msh->tokens = NULL;
 	msh->cmds = NULL;
@@ -403,16 +390,25 @@ int		main(int argc, char **argv, char **env)
 		ft_putstr_fd("$ ", STDOUT);
 		res = get_next_line(STDIN, &input);
 		if (res == -1)
-			exit_print_err("Error", "get_next_line fail!", EXIT_FAILURE);
+			exit_print_err("get_next_line fail!");
 		else
 		{
 			if (parsing(&msh, input) == SUCCESS)
-			{
 				printf("execute cmds!!!\n");
-			}
-			else 
+			else
 				printf("parsing error : no execute cmds!!!\n");
 			/*
+			printf("------------------------------\n");
+			printf("lstsize : %d\n", ft_lstsize(msh.tokens));
+			printf("tokens : %p\n", msh.tokens);
+			t_list *now = msh.tokens;
+			while (now)
+			{
+				printf("|%s|\n", now->content);
+				now = now->next;
+			}
+			printf("------------------------------\n");
+
 			t_cmd *cmd = msh.cmds;
 			while (cmd)
 			{
