@@ -6,7 +6,7 @@
 #    By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/23 14:34:40 by jiseo             #+#    #+#              #
-#    Updated: 2020/12/16 18:36:34 by kycho            ###   ########.fr        #
+#    Updated: 2020/12/16 18:53:50 by kycho            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,6 +15,8 @@ LIBFT			=	./libft/libft.a
 SRCS_PATH		=	./srcs/
 INCS			=	-Iincludes
 RAW_SRCS		=	main.c \
+					init_free_msh/init_msh.c \
+					init_free_msh/free_msh_member.c \
 					parsing/parsing.c \
 					parsing/split_token.c \
 					parsing/check_token_valid.c \

@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/16 18:43:00 by kycho            ###   ########.fr       */
+/*   Updated: 2020/12/16 18:52:46 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,9 @@ typedef struct		s_msh
 	int				env_len;
 	char			**path;
 }					t_msh;
+
+void				init_msh(char *program_name, t_msh *msh, char **env);
+void				free_msh_member(t_msh *msh);
 
 int					parsing(t_msh *msh, char *input);
 void				split_token(char *input, t_list **tokens, int i);
