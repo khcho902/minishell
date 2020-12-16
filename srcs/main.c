@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/16 13:48:42 by kycho            ###   ########.fr       */
+/*   Updated: 2020/12/16 15:13:25 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -205,7 +205,7 @@ t_cmd	*get_new_cmd(t_cmd *previous)
 	new_cmd->type = TYPE_DEFAULT;
 	new_cmd->pipes[0] = -1;
 	new_cmd->pipes[1] = -1;
-	new_cmd->redirection_files= NULL;
+	new_cmd->redirection_files = NULL;
 	new_cmd->previous = NULL;
 	new_cmd->next = NULL;
 	if (previous != NULL)
@@ -231,8 +231,7 @@ void	add_args(t_cmd *cmd, char *token_content)
 		i++;
 	}
 	tmp[i] = token_content;
-	if (cmd->args != NULL)
-		free(cmd->args);
+	free(cmd->args);
 	cmd->args = tmp;
 	cmd->length++;
 }
@@ -284,9 +283,9 @@ int		parsing(t_msh *msh, char *input)
 {
 	if (msh == NULL || input == NULL)
 		return (ERROR);
-	msh->tokens = NULL;
 	split_token(input, &(msh->tokens), 0);
 
+	
 	printf("------------------------------\n");
 	printf("lstsize : %d\n", ft_lstsize(msh->tokens));
 	printf("tokens : %p\n", msh->tokens);
@@ -297,6 +296,7 @@ int		parsing(t_msh *msh, char *input)
 		now = now->next;
 	}
 	printf("------------------------------\n");
+
 
 	if (check_token_valid(msh->program_name, msh->tokens) == ERROR)
 		return (ERROR);
@@ -362,6 +362,7 @@ void	init_msh(char *program_name, t_msh *msh, char **env)
 	if (!(msh->program_name = ft_strdup(program_name + i + 1)))
 		exit_print_err("Error", strerror(errno), EXIT_FAILURE);
 	msh->exit_status = 0;
+	msh->tokens = NULL;
 	msh->cmds = NULL;
 	init_msh_env(msh, env);
 	init_msh_path(msh);
@@ -394,6 +395,8 @@ int		main(int argc, char **argv, char **env)
 			else 
 				printf("parsing error : no execute cmds!!!\n");
 
+			
+
 			t_cmd *cmd = msh.cmds;
 			while (cmd)
 			{
@@ -419,9 +422,10 @@ int		main(int argc, char **argv, char **env)
 				cmd = cmd->next;
 				printf("--------@@@@@@@@@@@@@-------------\n");
 			}
-
 			printf("1 msh.cmds : %p\n", msh.cmds);
 			printf("1 msh.tokens : %p\n", msh.tokens);
+
+
 
 			while(msh.cmds)
 			{
@@ -435,14 +439,16 @@ int		main(int argc, char **argv, char **env)
 				t_cmd *tmp_cmd = msh.cmds->next;
 				free(msh.cmds);
 				msh.cmds = tmp_cmd;
-			}
-
-			printf("msh.cmds : %p\n", msh.cmds);
+			}	
 			ft_lstclear(&msh.tokens, free);
-			printf("msh.tokens : %p\n", msh.tokens);
-
 
 			free(input);
+
+
+
+			printf("msh.cmds : %p\n", msh.cmds);
+			printf("msh.tokens : %p\n", msh.tokens);
+
 		}
 	}
 	return (0);
