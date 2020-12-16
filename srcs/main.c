@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/16 03:05:34 by kycho            ###   ########.fr       */
+/*   Updated: 2020/12/16 13:48:42 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ typedef struct		s_cmd
 	int				length;
 	int				type;
 	int				pipes[2];
-	t_list			*redirection_file;
+	t_list			*redirection_files;
 	struct s_cmd	*previous;
 	struct s_cmd	*next;
 }					t_cmd;
@@ -52,7 +52,7 @@ typedef struct		s_msh
 	char			*program_name;
 	int				exit_status;
 	t_list			*tokens;
-	t_cmd			*cmd;
+	t_cmd			*cmds;
 	t_dict			**env;
 	int				env_len;
 	char			**path;
@@ -205,7 +205,7 @@ t_cmd	*get_new_cmd(t_cmd *previous)
 	new_cmd->type = TYPE_DEFAULT;
 	new_cmd->pipes[0] = -1;
 	new_cmd->pipes[1] = -1;
-	new_cmd->redirection_file = NULL;
+	new_cmd->redirection_files= NULL;
 	new_cmd->previous = NULL;
 	new_cmd->next = NULL;
 	if (previous != NULL)
@@ -243,14 +243,14 @@ void	add_redirection_file(t_cmd *cmd, t_list **token)
 
 	if (!(lstnew = ft_lstnew((*token)->content)))
 		exit_print_err("Error", strerror(errno), EXIT_FAILURE);
-	if (cmd->redirection_file == NULL)
-		cmd->redirection_file = lstnew;
+	if (cmd->redirection_files == NULL)
+		cmd->redirection_files = lstnew;
 	else
-		ft_lstadd_back(&cmd->redirection_file, lstnew);
+		ft_lstadd_back(&cmd->redirection_files, lstnew);
 	*token = (*token)->next;
 	if (!(lstnew = ft_lstnew((*token)->content)))
 		exit_print_err("Error", strerror(errno), EXIT_FAILURE);
-	ft_lstadd_back(&cmd->redirection_file, lstnew);
+	ft_lstadd_back(&cmd->redirection_files, lstnew);
 }
 
 void	making_cmd(t_msh *msh)
@@ -259,7 +259,7 @@ void	making_cmd(t_msh *msh)
 	t_list	*token;
 
 	cmd = get_new_cmd(NULL);
-	msh->cmd = cmd;
+	msh->cmds = cmd;
 	token = msh->tokens;
 	while (token)
 	{
@@ -362,7 +362,7 @@ void	init_msh(char *program_name, t_msh *msh, char **env)
 	if (!(msh->program_name = ft_strdup(program_name + i + 1)))
 		exit_print_err("Error", strerror(errno), EXIT_FAILURE);
 	msh->exit_status = 0;
-	msh->cmd = NULL;
+	msh->cmds = NULL;
 	init_msh_env(msh, env);
 	init_msh_path(msh);
 }
@@ -394,7 +394,7 @@ int		main(int argc, char **argv, char **env)
 			else 
 				printf("parsing error : no execute cmds!!!\n");
 
-			t_cmd *cmd = msh.cmd;
+			t_cmd *cmd = msh.cmds;
 			while (cmd)
 			{
 				printf("--------@@@@@@@@@@@@@-------------\n");
@@ -409,7 +409,7 @@ int		main(int argc, char **argv, char **env)
 				printf("type : %d\n", cmd->type);
 				printf("pipes : %d %d\n", cmd->pipes[0], cmd->pipes[1]);
 				printf("  --redirection start--\n");
-				t_list *tmp = cmd->redirection_file;
+				t_list *tmp = cmd->redirection_files;
 				while(tmp)
 				{
 					printf("%s\n", tmp->content);
@@ -420,24 +420,24 @@ int		main(int argc, char **argv, char **env)
 				printf("--------@@@@@@@@@@@@@-------------\n");
 			}
 
-			printf("1 msh.cmd : %p\n", msh.cmd);
+			printf("1 msh.cmds : %p\n", msh.cmds);
 			printf("1 msh.tokens : %p\n", msh.tokens);
 
-			while(msh.cmd)
+			while(msh.cmds)
 			{
-				free(msh.cmd->args);
-				while(msh.cmd->redirection_file)
+				free(msh.cmds->args);
+				while(msh.cmds->redirection_files)
 				{
-					t_list *tmp = msh.cmd->redirection_file->next;
-					free(msh.cmd->redirection_file);
-					msh.cmd->redirection_file = tmp;
+					t_list *tmp = msh.cmds->redirection_files->next;
+					free(msh.cmds->redirection_files);
+					msh.cmds->redirection_files = tmp;
 				}
-				t_cmd *tmp_cmd = msh.cmd->next;
-				free(msh.cmd);
-				msh.cmd = tmp_cmd;
+				t_cmd *tmp_cmd = msh.cmds->next;
+				free(msh.cmds);
+				msh.cmds = tmp_cmd;
 			}
 
-			printf("msh.cmd : %p\n", msh.cmd);
+			printf("msh.cmds : %p\n", msh.cmds);
 			ft_lstclear(&msh.tokens, free);
 			printf("msh.tokens : %p\n", msh.tokens);
 
