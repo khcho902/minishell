@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/16 07:08:46 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/16 10:11:02 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,7 @@ t_cmd	*get_new_cmd(t_cmd *previous)
 	new_cmd->type = TYPE_DEFAULT;
 	new_cmd->pipes[0] = -1;
 	new_cmd->pipes[1] = -1;
-	new_cmd->redirection_file = NULL;
+	new_cmd->redirection_files = NULL;
 	new_cmd->previous = NULL;
 	new_cmd->next = NULL;
 	if (previous != NULL)
@@ -149,14 +149,14 @@ void	add_redirection_file(t_cmd *cmd, t_list **token)
 
 	if (!(lstnew = ft_lstnew((*token)->content)))
 		exit_print_err("Error", strerror(errno), EXIT_FAILURE);
-	if (cmd->redirection_file == NULL)
-		cmd->redirection_file = lstnew;
+	if (cmd->redirection_files == NULL)
+		cmd->redirection_files = lstnew;
 	else
-		ft_lstadd_back(&cmd->redirection_file, lstnew);
+		ft_lstadd_back(&cmd->redirection_files, lstnew);
 	*token = (*token)->next;
 	if (!(lstnew = ft_lstnew((*token)->content)))
 		exit_print_err("Error", strerror(errno), EXIT_FAILURE);
-	ft_lstadd_back(&cmd->redirection_file, lstnew);
+	ft_lstadd_back(&cmd->redirection_files, lstnew);
 }
 
 void	making_cmd(t_msh *msh)
@@ -165,7 +165,7 @@ void	making_cmd(t_msh *msh)
 	t_list	*token;
 
 	cmd = get_new_cmd(NULL);
-	msh->cmd = cmd;
+	msh->cmds = cmd;
 	token = msh->tokens;
 	while (token)
 	{
@@ -268,7 +268,7 @@ void	init_msh(char *program_name, t_msh *msh, char **env)
 	if (!(msh->program_name = ft_strdup(program_name + i + 1)))
 		exit_print_err("Error", strerror(errno), EXIT_FAILURE);
 	msh->exit_status = 0;
-	msh->cmd = NULL;
+	msh->cmds = NULL;
 	init_msh_env(msh, env);
 	init_msh_path(msh);
 }

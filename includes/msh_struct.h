@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/15 02:36:28 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/16 08:56:13 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/16 10:06:50 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ typedef struct		s_cmd
 	int				length;
 	int				type;
 	int				pipes[2];
-	t_list			*redirection_file;
+	t_list			*redirection_files;
 	struct s_cmd	*previous;
 	struct s_cmd	*next;
 }					t_cmd;
@@ -51,7 +51,7 @@ typedef struct		s_msh
 	char			*program_name;
 	int				exit_status;
 	t_list			*tokens;
-	t_cmd			*cmd;
+	t_cmd			*cmds;
 	t_dict			**env;
 	int				env_len;
 	char			**path;
