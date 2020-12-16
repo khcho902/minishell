@@ -6,57 +6,11 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/16 16:59:07 by kycho            ###   ########.fr       */
+/*   Updated: 2020/12/16 17:26:26 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include <string.h>
-#include <sys/errno.h>
-
-#define MAX_PATH 256
-#define FALSE 0
-#define TRUE 1
-
-#define SUCCESS 1
-#define ERROR -1
-
-#define STDIN 0
-#define STDOUT 1
-#define STDERR 2
-
-#define TYPE_DEFAULT 0
-#define TYPE_PIPE 1
-
-#define METACHARACTER " \t\n|;<>"
-
-typedef struct		s_cmd
-{
-	char			**args;
-	int				length;
-	int				type;
-	int				pipes[2];
-	t_list			*redirection_files;
-	struct s_cmd	*previous;
-	struct s_cmd	*next;
-}					t_cmd;
-
-typedef struct		s_dict
-{
-	char			*key;
-	char			*value;
-}					t_dict;
-
-typedef struct		s_msh
-{
-	char			*program_name;
-	int				exit_status;
-	t_list			*tokens;
-	t_cmd			*cmds;
-	t_dict			**env;
-	int				env_len;
-	char			**path;
-}					t_msh;
 
 void	exit_print_err(char *err_msg)
 {
@@ -397,6 +351,7 @@ int		main(int argc, char **argv, char **env)
 				printf("execute cmds!!!\n");
 			else
 				printf("parsing error : no execute cmds!!!\n");
+			
 			/*
 			printf("------------------------------\n");
 			printf("lstsize : %d\n", ft_lstsize(msh.tokens));
@@ -437,6 +392,7 @@ int		main(int argc, char **argv, char **env)
 			printf("1 msh.cmds : %p\n", msh.cmds);
 			printf("1 msh.tokens : %p\n", msh.tokens);
 			*/
+
 			free_msh_member(&msh);
 			free(input);
 			/*
