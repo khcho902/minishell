@@ -6,29 +6,11 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/16 17:26:26 by kycho            ###   ########.fr       */
+/*   Updated: 2020/12/16 18:09:52 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	exit_print_err(char *err_msg)
-{
-	ft_putstr_fd("Error : ", STDERR);
-	ft_putstr_fd(err_msg, STDERR);
-	ft_putstr_fd("\n", STDERR);
-	exit(EXIT_FAILURE);
-}
-
-int		print_syntax_err(char *program_name, char *token)
-{
-	ft_putstr_fd("-", STDERR);
-	ft_putstr_fd(program_name, STDERR);
-	ft_putstr_fd(": syntax error near unexpected token `", STDERR);
-	ft_putstr_fd(token, STDERR);
-	ft_putstr_fd("'\n", STDERR);
-	return (ERROR);
-}
 
 int		ft_strcmp(const char *s1, const char *s2)
 {
@@ -351,7 +333,7 @@ int		main(int argc, char **argv, char **env)
 				printf("execute cmds!!!\n");
 			else
 				printf("parsing error : no execute cmds!!!\n");
-			
+
 			/*
 			printf("------------------------------\n");
 			printf("lstsize : %d\n", ft_lstsize(msh.tokens));

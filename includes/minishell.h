@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/16 17:23:23 by kycho            ###   ########.fr       */
+/*   Updated: 2020/12/16 18:00:55 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,5 +62,8 @@ typedef struct		s_msh
 }					t_msh;
 
 void				ft_double_free(char **ptr);
+
+void				exit_print_err(char *err_msg);
+int					print_syntax_err(char *program_name, char *token);
 
 #endif

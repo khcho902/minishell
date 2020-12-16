@@ -1,27 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   print_syntax_err.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
+/*   By: kycho <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/10/20 16:32:07 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/16 17:56:26 by kycho            ###   ########.fr       */
+/*   Created: 2020/12/16 17:55:14 by kycho             #+#    #+#             */
+/*   Updated: 2020/12/16 18:04:07 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	ft_double_free(char **ptr)
+int		print_syntax_err(char *program_name, char *token)
 {
-	int		i;
-
-	i = 0;
-	while (ptr[i])
-	{
-		free(ptr[i]);
-		i++;
-	}
-	if (ptr)
-		free(ptr);
+	ft_putstr_fd("-", STDERR);
+	ft_putstr_fd(program_name, STDERR);
+	ft_putstr_fd(": syntax error near unexpected token `", STDERR);
+	ft_putstr_fd(token, STDERR);
+	ft_putstr_fd("'\n", STDERR);
+	return (ERROR);
 }

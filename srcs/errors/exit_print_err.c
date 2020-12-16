@@ -1,27 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   exit_print_err.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
+/*   By: kycho <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/10/20 16:32:07 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/16 17:56:26 by kycho            ###   ########.fr       */
+/*   Created: 2020/12/16 17:54:41 by kycho             #+#    #+#             */
+/*   Updated: 2020/12/16 17:55:57 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	ft_double_free(char **ptr)
+void	exit_print_err(char *err_msg)
 {
-	int		i;
-
-	i = 0;
-	while (ptr[i])
-	{
-		free(ptr[i]);
-		i++;
-	}
-	if (ptr)
-		free(ptr);
+	ft_putstr_fd("Error : ", STDERR);
+	ft_putstr_fd(err_msg, STDERR);
+	ft_putstr_fd("\n", STDERR);
+	exit(EXIT_FAILURE);
 }
