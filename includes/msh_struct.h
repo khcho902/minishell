@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/15 02:36:28 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/16 10:06:50 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/17 02:57:52 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,13 +55,6 @@ typedef struct		s_msh
 	t_dict			**env;
 	int				env_len;
 	char			**path;
-
-	char			*input;
-	t_list			*env_list;
-	char			**cmd_list;
-	int				cmd_idx;
-	int				cmd_key;
-	char			*prompt;
 	char			*wd;
 }					t_msh;
 

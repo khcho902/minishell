@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/16 07:08:23 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/17 03:03:31 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 # include <sys/errno.h>
 
 # include <stdio.h>
+# include <string.h>
+# include <sys/errno.h>
 
 /*
  ** builtins/
@@ -43,27 +45,25 @@ int		builtin_compare(char *str);
 void	exec_process(t_msh *msh);
 void	create_process(t_msh *msh);
 void	main_loop(t_msh *msh);
-void	init_main(t_msh *msh, char **env);
 
 /*
- ** parsing.c
+ ** init_free_msh/
  */
-void	split_token_sub(char *input, int *i, int *len);
+void	init_msh(char *program_name, t_msh *msh, char **env);
+void	free_msh_member(t_msh *msh);
+
+/*
+ ** parsing/
+ */
+int		parsing(t_msh *msh, char *input);
 void	split_token(char *input, t_list **tokens, int i);
 int		check_token_valid(char *program_name, t_list *now);
-t_cmd	*get_new_cmd(t_cmd *previous);
-void	add_args(t_cmd *cmd, char *token_content);
-void	add_redirection_file(t_cmd *cmd, t_list **token);
 void	making_cmd(t_msh *msh);
-int		parsing(t_msh *msh, char *input);
-void	init_msh_env(t_msh *msh, char **env);
-void	init_msh_path(t_msh *msh);
-void	init_msh(char *program_name, t_msh *msh, char **env);
 
 /*
- ** error.c
+ ** errors/
  */
-void	exit_print_err(char *err_msg1, char *err_msg2, int exit_status);
+void	exit_print_err(char *err_msg);
 int		print_syntax_err(char *program_name, char *token);
 
 /*
@@ -73,8 +73,9 @@ void	show_logo();
 void	show_prompt(t_msh *msh);
 
 /*
- ** utils.c
+ ** utils/
  */
 void	ft_double_free(char **ptr);
 int		is_in_charset(char c, char *str);
+int		ft_strcmp(const char *s1, const char *s2);
 #endif

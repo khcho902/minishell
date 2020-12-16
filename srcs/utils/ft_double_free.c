@@ -1,28 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strcmp.c                                        :+:      :+:    :+:   */
+/*   ft_double_free.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/12/15 03:38:18 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/15 03:39:59 by jiseo            ###   ########.fr       */
+/*   Created: 2020/10/20 16:32:07 by jiseo             #+#    #+#             */
+/*   Updated: 2020/12/16 18:13:56 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-int		ft_strcmp(const char *s1, const char *s2)
+void	ft_double_free(char **ptr)
 {
-	size_t	max_len;
-	size_t	s1_len;
-	size_t	s2_len;
+	int		i;
 
-	s1_len = ft_strlen(s1);
-	s2_len = ft_strlen(s2);
-	if (s1_len > s2_len)
-		max_len = s1_len;
-	else
-		max_len = s2_len;
-	return (ft_strncmp(s1, s2, max_len));
+	i = 0;
+	while (ptr[i])
+	{
+		free(ptr[i]);
+		i++;
+	}
+	if (ptr)
+		free(ptr);
 }

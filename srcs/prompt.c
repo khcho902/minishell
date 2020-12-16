@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 23:11:23 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/13 12:04:09 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/17 03:01:06 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,6 @@ void		show_prompt(t_msh *msh)
 	int			home_length;
 
 	msh->wd = getcwd(NULL, 0);
-	ft_putstr_fd(COLOR_BR_GREEN, STDOUT);
-	ft_putstr_fd(msh->prompt, STDOUT);
-	ft_putstr_fd(COLOR_WHITE, STDOUT);
-	ft_putchar_fd(':', STDOUT);
 	home_length = ft_strlen(home);
 	if (ft_strncmp(msh->wd, home, home_length) == 0)
 		temp = ft_strjoin("~", &msh->wd[home_length]);

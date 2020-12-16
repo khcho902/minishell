@@ -1,30 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   is_in_charset.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
+/*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/10/20 16:32:07 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/16 06:06:23 by jiseo            ###   ########.fr       */
+/*   Created: 2020/12/16 18:16:09 by kycho             #+#    #+#             */
+/*   Updated: 2020/12/16 18:16:29 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	ft_double_free(char **ptr)
-{
-	int		i;
-
-	i = 0;
-	while (ptr[i])
-	{
-		free(ptr[i]);
-		i++;
-	}
-	if (ptr)
-		free(ptr);
-}
 
 int		is_in_charset(char c, char *str)
 {

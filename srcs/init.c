@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 05:44:26 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/16 06:02:31 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/17 03:04:10 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int		builtin_compare(char *str)
 	return (EXEC_IDX);
 }
 
-char		**ft_envjoin(t_list *env_list)
+char	**ft_envjoin(t_list *env_list)
 {
 	char	**temp;
 	int		list_size;
@@ -118,12 +118,4 @@ void	main_loop(t_msh *msh)
 			builtins(msh);
 		msh->cmd_idx++;
 	}
-}
-
-void	init_main(t_msh *msh, char **env)
-{
-	show_logo();
-	msh->env_list = init_env(env);
-	msh->wd = getcwd(NULL, 0);
-	msh->prompt = ft_strdup("$USER@$NAME");
 }
