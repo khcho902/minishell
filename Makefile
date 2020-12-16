@@ -6,7 +6,7 @@
 #    By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/23 14:34:40 by jiseo             #+#    #+#              #
-#    Updated: 2020/10/20 16:33:11 by jiseo            ###   ########.fr        #
+#    Updated: 2020/12/16 18:53:50 by kycho            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,17 @@ LIBFT			=	./libft/libft.a
 SRCS_PATH		=	./srcs/
 INCS			=	-Iincludes
 RAW_SRCS		=	main.c \
-					utils.c
+					init_free_msh/init_msh.c \
+					init_free_msh/free_msh_member.c \
+					parsing/parsing.c \
+					parsing/split_token.c \
+					parsing/check_token_valid.c \
+					parsing/making_cmd.c \
+					utils/ft_double_free.c \
+					utils/ft_strcmp.c \
+					utils/is_in_charset.c \
+					errors/exit_print_err.c \
+					errors/print_syntax_err.c \
 
 SRCS			=	$(addprefix $(SRCS_PATH), $(RAW_SRCS))
 OBJS			=	$(SRCS:.c=.o)
