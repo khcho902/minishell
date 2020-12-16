@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/16 18:00:55 by kycho            ###   ########.fr       */
+/*   Updated: 2020/12/16 18:17:31 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,8 @@ typedef struct		s_msh
 	char			**path;
 }					t_msh;
 
+int					ft_strcmp(const char *s1, const char *s2);
+int					is_in_charset(char c, char *str);
 void				ft_double_free(char **ptr);
 
 void				exit_print_err(char *err_msg);
