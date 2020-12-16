@@ -6,7 +6,7 @@
 #    By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/23 14:34:40 by jiseo             #+#    #+#              #
-#    Updated: 2020/12/16 18:24:39 by kycho            ###   ########.fr        #
+#    Updated: 2020/12/16 18:36:34 by kycho            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,6 +16,9 @@ SRCS_PATH		=	./srcs/
 INCS			=	-Iincludes
 RAW_SRCS		=	main.c \
 					parsing/parsing.c \
+					parsing/split_token.c \
+					parsing/check_token_valid.c \
+					parsing/making_cmd.c \
 					utils/ft_double_free.c \
 					utils/ft_strcmp.c \
 					utils/is_in_charset.c \

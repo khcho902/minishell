@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/16 18:25:18 by kycho            ###   ########.fr       */
+/*   Updated: 2020/12/16 18:43:00 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,9 @@ typedef struct		s_msh
 }					t_msh;
 
 int					parsing(t_msh *msh, char *input);
+void				split_token(char *input, t_list **tokens, int i);
+int					check_token_valid(char *program_name, t_list *now);
+void				making_cmd(t_msh *msh);
 
 int					ft_strcmp(const char *s1, const char *s2);
 int					is_in_charset(char c, char *str);
