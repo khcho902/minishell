@@ -1,27 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   do_echo.c                                          :+:      :+:    :+:   */
+/*   command_not_found.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/25 21:51:59 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/17 12:52:01 by jiseo            ###   ########.fr       */
+/*   Created: 2020/12/17 04:02:54 by jiseo             #+#    #+#             */
+/*   Updated: 2020/12/17 05:11:35 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void		do_echo(t_msh *msh, int fd)
+void		command_not_found(char *str)
 {
-	int		idx;
-	
-	idx = 1;
-	while (idx < msh->cmds->length)
-	{
-		ft_putstr_fd(msh->cmds->args[idx], fd);
-		ft_putchar_fd(' ', fd);
-		idx++;
-	}
-	ft_putchar_fd('\n', fd);
+	char	*temp;
+
+	temp = ft_strjoin(str, ": ", "command not found.\n");
+	ft_putstr_fd(temp, STDERR);
+	free(temp);
 }

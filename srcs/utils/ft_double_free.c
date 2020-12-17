@@ -6,13 +6,13 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/20 16:32:07 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/16 18:13:56 by kycho            ###   ########.fr       */
+/*   Updated: 2020/12/17 12:37:15 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	ft_double_free(char **ptr)
+void	ft_double_free(void **ptr)
 {
 	int		i;
 

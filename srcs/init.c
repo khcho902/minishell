@@ -6,116 +6,74 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 05:44:26 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/17 03:04:10 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/17 12:37:53 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int		builtin_compare(char *str)
-{
-	int			i;
-	char		*name;
-	const char	*cmd_list[] = {
-		"cd", "echo", "env", "export", "pwd", "unset", "exit", NULL
-	};
-
-	i = 0;
-	while (cmd_list[i] && (name = (char *)cmd_list[i]))
-	{
-		if (!ft_strcmp(str, name))
-			return (i + 1);
-		i++;
-	}
-	return (EXEC_IDX);
-}
-
-char	**ft_envjoin(t_list *env_list)
+char	**ft_envjoin(t_dict **env, int env_len)
 {
 	char	**temp;
-	int		list_size;
 	int		idx;
-	t_dict	*dict;
-	t_list	*l;
 
-	list_size = ft_lstsize(env_list);
-	l = env_list;
-	temp = (char **)malloc(sizeof(char *) * (list_size + 1));
+	if (!(temp = (char **)malloc(sizeof(char *) * (env_len + 1))))
+		exit_print_err(strerror(errno));
 	idx = 0;
-	while (idx < list_size)
+	while (idx < env_len)
 	{
-		dict = l->content;
-		temp[idx++] = ft_strjoin3(dict->key, "=", dict->value);
-		l = l->next;
+		if (!(temp[idx] = ft_strjoin3(env[idx]->key, "=", env[idx]->value)))
+			exit_print_err(strerror(errno));
+		idx++;
 	}
+	temp[idx] = NULL;
 	return (temp);
 }
 
-void	exec_process(t_msh *msh)
+void	exec_process(t_msh *msh, char **av, char **env)
 {
-	char		**paths;
-	t_list		*l;
-	t_dict		*dict;
 	char		*temp;
-	char		**av;
-	char		**env;
-	int			i;
-	
-	l = msh->env_list;
-	while (l)
+	int			idx;
+	int			ret;
+
+	idx = 0;
+	while (msh->path[idx])
 	{
-		dict = l->content;
-		if (!ft_strncmp(dict->key, "PATH", 4))
-		{
-			paths = ft_split(&dict->value[5], ':');
-			break ;
-		}
-		l = l->next;
-	}
-	i = 0;
-	av = (char **)malloc(sizeof(char *));
-	av[0] = ft_strjoin("./", msh->cmd_list[msh->cmd_idx]);
-	env = ft_envjoin(msh->env_list);
-	while (paths[i])
-	{
-		if (paths[i][ft_strlen(paths[i]) - 1] != '/')
-			paths[i] = ft_strjoin(paths[i], "/");
-		temp = ft_strjoin(paths[i], msh->cmd_list[msh->cmd_idx]);
-		if (execve(temp, av, env) != -1)
-			free(temp);
-		i++;
+		if (!(temp = ft_strjoin3(msh->path[idx], "/", msh->cmds->args[0])))
+			exit_print_err(strerror(errno));
+		ret = execve(temp, av, env);
+		if (ret == -1)
+			exit_print_err(strerror(errno));
 		free(temp);
+		idx++;
 	}
-	ft_double_free(av);
-	ft_double_free(env);
-	ft_double_free(paths);
+	ft_double_free((void **)av);
+	ft_double_free((void **)env);
 }
 
-void	create_process(t_msh *msh)
+void	executor(t_msh *msh)
 {
 	pid_t		pid;
+	char		**av;
+	char		**env;
+	int			idx;
 
+	if (!(av = (char **)malloc(sizeof(char *) * (msh->cmds->length + 1))))
+		exit_print_err(strerror(errno));
+	if (!(av[0] = ft_strjoin("./", msh->cmds->args[0])))
+		exit_print_err(strerror(errno));
+	idx = -1;
+	while (++idx < msh->cmds->length)
+		if (!(av[idx] = ft_strdup(msh->cmds->args[idx])))
+			exit_print_err(strerror(errno));
+	av[idx] = NULL;
+	env = ft_envjoin(msh->env, msh->env_len);
 	pid = fork();
 	if (pid == 0)
 	{
-		exec_process(msh);
-		exit(0);
+		exec_process(msh, av, env);
+		exit(EXIT_SUCCESS);
 	}
 	else
 		wait(NULL);
-}
-
-void	main_loop(t_msh *msh)
-{
-	msh->cmd_list = ft_split(msh->input, ' ');
-	msh->cmd_idx = 0;
-	while (msh->cmd_list[msh->cmd_idx])
-	{
-		msh->cmd_key = builtin_compare(msh->cmd_list[msh->cmd_idx]);
-		if (msh->cmd_key == EXEC_IDX)
-			create_process(msh);
-		else
-			builtins(msh);
-		msh->cmd_idx++;
-	}
 }

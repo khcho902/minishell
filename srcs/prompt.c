@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 23:11:23 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/17 03:01:06 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/17 12:41:19 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,19 +28,9 @@ void		show_logo()
 
 void		show_prompt(t_msh *msh)
 {
-	char		*temp;
-	const char	*home = "/home/jiseo";
-	int			home_length;
-
 	msh->wd = getcwd(NULL, 0);
-	home_length = ft_strlen(home);
-	if (ft_strncmp(msh->wd, home, home_length) == 0)
-		temp = ft_strjoin("~", &msh->wd[home_length]);
-	else
-		temp = ft_strdup(msh->wd);
 	ft_putstr_fd(COLOR_BR_BLUE, STDOUT);
-	ft_putstr_fd(temp, STDOUT);
+	ft_putstr_fd(msh->wd, STDOUT);
 	ft_putstr_fd(COLOR_WHITE, STDOUT);
 	ft_putstr_fd("$ ", STDOUT);
-	free(temp);
 }

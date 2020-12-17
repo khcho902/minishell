@@ -6,7 +6,7 @@
 #    By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/23 14:34:40 by jiseo             #+#    #+#              #
-#    Updated: 2020/12/17 02:16:49 by jiseo            ###   ########.fr        #
+#    Updated: 2020/12/17 05:19:40 by jiseo            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,7 @@ RAW_SRCS		=	main.c \
 					builtins/do_export.c \
 					builtins/do_pwd.c \
 					builtins/do_unset.c \
-					builtins/env_utils.c \
+					builtins/builtins.c \
 					\
 					init_free_msh/init_msh.c \
 					init_free_msh/free_msh_member.c \
