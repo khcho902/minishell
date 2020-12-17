@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/17 14:19:33 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/17 15:06:35 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	main_loop(t_msh *msh)
 	{
 		cmd_key = builtin_compare(cmd->args[0]);
 		if (cmd_key == EXEC_IDX)
-			executor(msh);
+			executor(msh, cmd);
 		else if (cmd_key > EXEC_IDX)
 			builtins(msh, cmd_key);
 		cmd = cmd->next;

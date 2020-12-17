@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/17 12:36:55 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/17 15:08:11 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,8 @@ int		builtins(t_msh *msh, int cmd_key);
  ** init.c
  */
 int		builtin_compare(char *str);
-void	exec_process(t_msh *msh, char **av, char **env);
-void	executor(t_msh *msh);
+void	exec_process(t_msh *msh, t_cmd *cmd, char **av, char **env);
+void	executor(t_msh *msh, t_cmd *cmd);
 
 /*
  ** init_free_msh/
