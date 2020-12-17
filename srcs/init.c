@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 05:44:26 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/17 12:37:53 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/17 13:08:57 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,10 +42,10 @@ void	exec_process(t_msh *msh, char **av, char **env)
 		if (!(temp = ft_strjoin3(msh->path[idx], "/", msh->cmds->args[0])))
 			exit_print_err(strerror(errno));
 		ret = execve(temp, av, env);
-		if (ret == -1)
-			exit_print_err(strerror(errno));
 		free(temp);
 		idx++;
+		if (ret == -1)
+			continue ;
 	}
 	ft_double_free((void **)av);
 	ft_double_free((void **)env);
