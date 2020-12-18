@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/17 15:08:11 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/18 10:48:07 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 # include "../libft/libft.h"
 # include "prompt.h"
-# include "msh_struct.h"
+# include "minishell_struct.h"
 # include <string.h>
 # include <sys/wait.h>
 # include <sys/errno.h>
@@ -36,11 +36,9 @@ void	do_unset(t_msh *msh);
 int		builtins(t_msh *msh, int cmd_key);
 
 /*
- ** init.c
+ ** executor/
  */
-int		builtin_compare(char *str);
-void	exec_process(t_msh *msh, t_cmd *cmd, char **av, char **env);
-void	executor(t_msh *msh, t_cmd *cmd);
+void	executor(t_msh *msh);
 
 /*
  ** init_free_msh/
@@ -64,7 +62,7 @@ int		print_syntax_err(char *program_name, char *token);
 void	command_not_found(char *str);
 
 /*
- ** prompt.c
+ ** prompt/
  */
 void	show_logo();
 void	show_prompt(t_msh *msh);
@@ -75,4 +73,7 @@ void	show_prompt(t_msh *msh);
 void	ft_double_free(void **ptr);
 int		is_in_charset(char c, char *str);
 int		ft_strcmp(const char *s1, const char *s2);
+t_dict	*get_env_dict(t_dict **env, char *key);
+char	**ft_envjoin(t_dict **env, int env_len);
+void	quick_sort_env(int left, int right, t_dict **env);
 #endif

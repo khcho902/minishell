@@ -6,13 +6,13 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/17 15:06:35 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/18 10:30:24 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int		builtin_compare(char *str)
+int		compare_argument(char *str)
 {
 	int			i;
 	char		*name;
@@ -33,18 +33,16 @@ int		builtin_compare(char *str)
 
 void	main_loop(t_msh *msh)
 {
-	t_cmd	*cmd;
 	int		cmd_key;
 
-	cmd = msh->cmds;
-	while (cmd)
+	while (msh->cmds)
 	{
-		cmd_key = builtin_compare(cmd->args[0]);
+		cmd_key = compare_argument(msh->cmds->args[0]);
 		if (cmd_key == EXEC_IDX)
-			executor(msh, cmd);
+			executor(msh);
 		else if (cmd_key > EXEC_IDX)
 			builtins(msh, cmd_key);
-		cmd = cmd->next;
+		msh->cmds = msh->cmds->next;
 	}
 }
 

@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   msh_struct.h                                       :+:      :+:    :+:   */
+/*   minishell_struct.h                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/15 02:36:28 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/17 12:45:04 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/18 08:28:50 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MSH_STRUCT_H
-# define MSH_STRUCT_H
+#ifndef MINISHELL_STRUCT_H
+# define MINISHELL_STRUCT_H
 
 # define FALSE 0
 # define TRUE 1

@@ -6,46 +6,11 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 04:22:01 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/17 14:14:04 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/18 10:41:44 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-static void		dict_swap(t_dict **a, t_dict **b)
-{
-	t_dict		*tmp;
-
-	tmp = *a;
-	*a = *b;
-	*b = tmp;
-}
-
-static void		quick_sort_env(int left, int right, t_dict **env)
-{
-	int			pivot;
-	int			i;
-	int			j;
-
-	pivot = left;
-	i = left + 1;
-	j = pivot;
-	if (!(left < right))
-		return ;
-	while (i <= right)
-	{
-		if (ft_strcmp(env[i]->key, env[pivot]->key) < 0)
-		{
-			j++;
-			dict_swap(&env[j], &env[i]);
-		}
-		i++;
-	}
-	dict_swap(&env[left], &env[j]);
-	pivot = j;
-	quick_sort_env(left, pivot - 1, env);
-	quick_sort_env(pivot + 1, right, env);
-}
 
 static t_dict	**copy_env(t_msh *msh, t_dict **dest)
 {
@@ -87,6 +52,7 @@ static t_dict	**export_env(t_msh *msh, t_dict **dest)
 		idx++;
 	}
 	dest[msh->env_len + msh->cmds->length - 1] = NULL;
+		printf("%d %d\n", msh->env_len, msh->env_len + msh->cmds->length - 1);
 	return (dest);
 }
 
@@ -111,6 +77,7 @@ void			do_export(t_msh *msh, int fd)
 		if (!(env_temp = (t_dict **)malloc(
 						sizeof(t_dict *) * (msh->env_len + (cmd->length - 1)))))
 			exit_print_err(strerror(errno));
+		printf("%d = envlen%d + cmd%d\n", msh->env_len + cmd->length - 1, msh->env_len, cmd->length - 1);
 		env_temp = export_env(msh, env_temp);
 		ft_double_free((void **)msh->env);
 		msh->env_len += (cmd->length - 1);

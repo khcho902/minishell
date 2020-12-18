@@ -6,7 +6,7 @@
 #    By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/23 14:34:40 by jiseo             #+#    #+#              #
-#    Updated: 2020/12/17 05:19:40 by jiseo            ###   ########.fr        #
+#    Updated: 2020/12/18 10:48:22 by jiseo            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,8 +15,8 @@ LIBFT			=	./libft/libft.a
 SRCS_PATH		=	./srcs/
 INCS			=	-Iincludes
 RAW_SRCS		=	main.c \
-					init.c \
-					prompt.c \
+					\
+					prompt/prompt.c \
 					\
 					builtins/do_cd.c \
 					builtins/do_echo.c \
@@ -25,6 +25,8 @@ RAW_SRCS		=	main.c \
 					builtins/do_pwd.c \
 					builtins/do_unset.c \
 					builtins/builtins.c \
+					\
+					executor/executor.c \
 					\
 					init_free_msh/init_msh.c \
 					init_free_msh/free_msh_member.c \
@@ -37,9 +39,13 @@ RAW_SRCS		=	main.c \
 					utils/ft_double_free.c \
 					utils/ft_strcmp.c \
 					utils/is_in_charset.c \
+					utils/get_env_dict.c \
+					utils/ft_envjoin.c \
+					utils/quick_sort_env.c \
 					\
 					errors/exit_print_err.c \
 					errors/print_syntax_err.c \
+					errors/command_not_found.c
 
 SRCS			=	$(addprefix $(SRCS_PATH), $(RAW_SRCS))
 OBJS			=	$(SRCS:.c=.o)

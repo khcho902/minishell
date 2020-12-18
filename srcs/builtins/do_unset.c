@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 04:22:52 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/17 12:53:40 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/18 10:26:56 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ static int	check_args(char **args, char *key)
 {
 	int		idx;
 
+	if (!args || !*args)
+		return (0);
 	idx = 0;
 	while (args[idx])
 	{
@@ -31,18 +33,20 @@ void		do_unset(t_msh *msh)
 	t_dict		**temp;
 	int			idx;
 	int			env_idx;
+	t_cmd		*cmd;
 
-	if (!(temp = (t_dict **)malloc(sizeof(t_dict *) * (msh->env_len))))
+	cmd = msh->cmds;
+	if (!(temp = (t_dict **)malloc(sizeof(t_dict *) * (msh->env_len + 2 - cmd->length))))
 		exit_print_err(strerror(errno));
 	idx = 0;
-	while (idx < msh->env_len - (msh->cmds->length - 1))
+	while (idx < msh->env_len - (cmd->length - 1))
 		if (!(temp[idx++] = (t_dict *)malloc(sizeof(t_dict))))
 			exit_print_err(strerror(errno));
 	idx = 0;
 	env_idx = 0;
 	while (msh->env[env_idx])
 	{
-		if (!check_args(&msh->cmds->args[1], msh->env[env_idx]->key))
+		if (!check_args(&cmd->args[1], msh->env[env_idx]->key))
 		{
 			if (!(temp[idx]->key = ft_strdup(msh->env[env_idx]->key)))
 				exit_print_err(strerror(errno));
@@ -54,6 +58,6 @@ void		do_unset(t_msh *msh)
 	}
 	temp[idx] = NULL;
 	ft_double_free((void **)msh->env);
-	msh->env_len -= (msh->cmds->length - 1);
+	msh->env_len -= (cmd->length - 1);
 	msh->env = temp;
 }

@@ -1,22 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   command_not_found.c                                :+:      :+:    :+:   */
+/*   get_env_dict.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
+/*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/12/17 04:02:54 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/18 08:43:36 by jiseo            ###   ########.fr       */
+/*   Created: 2020/12/17 15:57:09 by kycho             #+#    #+#             */
+/*   Updated: 2020/12/18 10:46:55 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void		command_not_found(char *str)
+t_dict		*get_env_dict(t_dict **env, char *key)
 {
-	char	*temp;
+	int i;
 
-	temp = ft_strjoin3(str, ": ", "command not found.\n");
-	ft_putstr_fd(temp, STDERR);
-	free(temp);
+	i = 0;
+	while (env[i])
+	{
+		if (ft_strcmp(env[i]->key, key) == 0)
+			return (env[i]);
+		i++;
+	}
+	return (NULL);
 }
