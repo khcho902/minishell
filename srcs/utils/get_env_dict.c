@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_env_value.c                                    :+:      :+:    :+:   */
+/*   get_env_dict.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/17 15:57:09 by kycho             #+#    #+#             */
-/*   Updated: 2020/12/17 15:57:27 by kycho            ###   ########.fr       */
+/*   Updated: 2020/12/18 11:57:26 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*get_env_value(t_dict **env, char *key)
+t_dict	*get_env_dict(t_dict **env, char *key)
 {
 	int i;
 
@@ -20,7 +20,7 @@ char	*get_env_value(t_dict **env, char *key)
 	while (env[i])
 	{
 		if (ft_strcmp(env[i]->key, key) == 0)
-			return env[i]->value;
+			return (env[i]);
 		i++;
 	}
 	return (NULL);

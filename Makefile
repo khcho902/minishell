@@ -6,7 +6,7 @@
 #    By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/23 14:34:40 by jiseo             #+#    #+#              #
-#    Updated: 2020/12/16 18:53:50 by kycho            ###   ########.fr        #
+#    Updated: 2020/12/18 11:54:00 by kycho            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,6 +24,7 @@ RAW_SRCS		=	main.c \
 					utils/ft_double_free.c \
 					utils/ft_strcmp.c \
 					utils/is_in_charset.c \
+					utils/get_env_dict.c \
 					errors/exit_print_err.c \
 					errors/print_syntax_err.c \
 

@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/16 18:52:46 by kycho            ###   ########.fr       */
+/*   Updated: 2020/12/18 11:57:48 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ void				making_cmd(t_msh *msh);
 int					ft_strcmp(const char *s1, const char *s2);
 int					is_in_charset(char c, char *str);
 void				ft_double_free(char **ptr);
+t_dict				*get_env_dict(t_dict **env, char *key);
 
 void				exit_print_err(char *err_msg);
 int					print_syntax_err(char *program_name, char *token);
