@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/18 17:57:01 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/18 19:17:32 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,12 @@ int		main_loop(t_msh *msh)
 {
 	pid_t			pid;
 	int				ret;
+	int				status;
+	int				pipe_open;
 	t_execute_func	func;
 
 	ret = EXIT_SUCCESS;
+	pipe_open = 0;
 	while (msh->cmds)
 	{
 		func = compare_arg(msh);
@@ -27,17 +30,38 @@ int		main_loop(t_msh *msh)
 		else
 		{
 			if (msh->cmds->type == TYPE_PIPE)
+			{
+				pipe_open = 1;
 				if (pipe(msh->cmds->pipes) == -1)
 					exit_print_err(strerror(errno));
+			}
 			if ((pid = fork()) == -1)
 				exit_print_err(strerror(errno));
 			if (pid == 0)
 			{
+				if (msh->cmds->type == TYPE_PIPE &&
+						dup2(msh->cmds->pipes[PIPE_IN], STDOUT) < 0)
+					exit_print_err(strerror(errno));
+				if (msh->cmds->prev && msh->cmds->prev->type == TYPE_PIPE &&
+						dup2(msh->cmds->prev->pipes[PIPE_OUT], STDIN) < 0)
+					exit_print_err(strerror(errno));
 				ret = func(msh);
 				exit(ret);
 			}
 			else
-				wait(NULL);
+			{
+				waitpid(pid, &status, 0);
+				if (pipe_open)
+				{
+					close(msh->cmds->pipes[PIPE_IN]);
+					if (!msh->cmds->next || msh->cmds->type == TYPE_DEFAULT)
+						close(msh->cmds->pipes[PIPE_OUT]);
+				}
+				if (msh->cmds->prev && msh->cmds->prev->type == TYPE_PIPE)
+					close(msh->cmds->prev->pipes[PIPE_OUT]);
+				if (WIFEXITED(status))
+					ret = WEXITSTATUS(status);
+			}
 		}
 		msh->cmds = msh->cmds->next;
 	}

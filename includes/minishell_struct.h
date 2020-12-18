@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/15 02:36:28 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/18 16:17:56 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/18 18:44:16 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ typedef struct		s_cmd
 	int				type;
 	int				pipes[2];
 	t_list			*redirection_files;
-	struct s_cmd	*previous;
+	struct s_cmd	*prev;
 	struct s_cmd	*next;
 }					t_cmd;
 
