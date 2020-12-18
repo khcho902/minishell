@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/18 16:49:47 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/18 17:57:01 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,24 +21,23 @@ int		main_loop(t_msh *msh)
 	ret = EXIT_SUCCESS;
 	while (msh->cmds)
 	{
-		if (msh->cmds->type == TYPE_PIPE)
-			if (pipe(msh->cmds->pipes) == -1)
-				exit_print_err(strerror(errno));
-		if ((pid = fork()) == -1)
-			exit_print_err(strerror(errno));
 		func = compare_arg(msh);
-		if (pid == 0)
-		{
-			if ((func != &executor && msh->cmds->type == TYPE_PIPE)
-					|| (func == &executor))
-				ret = func(msh);
-			exit(ret);
-		}
+		if (func != &executor && msh->cmds->type != TYPE_PIPE)
+			ret = func(msh);
 		else
 		{
-			if (func != &executor)
+			if (msh->cmds->type == TYPE_PIPE)
+				if (pipe(msh->cmds->pipes) == -1)
+					exit_print_err(strerror(errno));
+			if ((pid = fork()) == -1)
+				exit_print_err(strerror(errno));
+			if (pid == 0)
+			{
 				ret = func(msh);
-			wait(NULL);
+				exit(ret);
+			}
+			else
+				wait(NULL);
 		}
 		msh->cmds = msh->cmds->next;
 	}
