@@ -1,32 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtins.c                                         :+:      :+:    :+:   */
+/*   print_err.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/12/02 04:35:43 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/17 12:39:38 by jiseo            ###   ########.fr       */
+/*   Created: 2020/12/18 11:55:29 by jiseo             #+#    #+#             */
+/*   Updated: 2020/12/18 12:05:39 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int		builtins(t_msh *msh, int cmd_key)
+int		print_err(char *where, char *arg, char *msg)
 {
-	if (cmd_key == k_cd)
-		do_cd(msh);
-	else if (cmd_key == k_echo)
-		do_echo(msh, STDOUT);
-	else if (cmd_key == k_env)
-		do_env(msh->env, STDOUT);
-	else if (cmd_key == k_export)
-		do_export(msh, STDOUT);
-	else if (cmd_key == k_pwd)
-		do_pwd(msh, STDOUT);
-	else if (cmd_key == k_unset)
-		do_unset(msh);
-	else if (cmd_key == k_exit)
-		exit(0);
-	return (0);
+	char	*temp;
+
+	temp = ft_strjoin3("-minishell: ", where, ": ");
+	ft_putstr_fd(temp, STDERR);
+	free(temp);
+	temp = ft_strjoin3(arg, ": ", msg);
+	ft_putstr_fd(temp, STDERR);
+	free(temp);
+	ft_putchar_fd('\n', STDERR);
+	return (EXIT_FAILURE);
 }

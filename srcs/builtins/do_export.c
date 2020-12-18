@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 04:22:01 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/18 10:41:44 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/18 15:53:26 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,35 +52,34 @@ static t_dict	**export_env(t_msh *msh, t_dict **dest)
 		idx++;
 	}
 	dest[msh->env_len + msh->cmds->length - 1] = NULL;
-		printf("%d %d\n", msh->env_len, msh->env_len + msh->cmds->length - 1);
 	return (dest);
 }
 
-void			do_export(t_msh *msh, int fd)
+int				do_export(t_msh *msh)
 {
-	t_dict		**env_temp;
-	t_cmd		*cmd;
+	t_dict		**temp;
+	int			ret;
 
-	cmd = msh->cmds;
-	if (!cmd->args[1])
+	ret = EXIT_SUCCESS;
+	if (!msh->cmds->args[1])
 	{
-		if (!(env_temp = (t_dict **)malloc(
-						sizeof(t_dict *) * (msh->env_len + 1))))
+		if (!(temp = (t_dict **)malloc(
+				sizeof(t_dict *) * (msh->env_len + 1))))
 			exit_print_err(strerror(errno));
-		env_temp = copy_env(msh, env_temp);
-		quick_sort_env(0, msh->env_len - 1, env_temp);
-		do_env(env_temp, fd);
-		ft_double_free((void **)env_temp);
+		temp = copy_env(msh, temp);
+		quick_sort_env(0, msh->env_len - 1, temp);
+		ret = print_env(temp, msh->env_len, "export");
+		ft_double_free((void **)temp);
 	}
 	else
 	{
-		if (!(env_temp = (t_dict **)malloc(
-						sizeof(t_dict *) * (msh->env_len + (cmd->length - 1)))))
+		if (!(temp = (t_dict **)malloc(
+				sizeof(t_dict *) * (msh->env_len + msh->cmds->length - 1))))
 			exit_print_err(strerror(errno));
-		printf("%d = envlen%d + cmd%d\n", msh->env_len + cmd->length - 1, msh->env_len, cmd->length - 1);
-		env_temp = export_env(msh, env_temp);
+		temp = export_env(msh, temp);
 		ft_double_free((void **)msh->env);
-		msh->env_len += (cmd->length - 1);
-		msh->env = env_temp;
+		msh->env_len += (msh->cmds->length - 1);
+		msh->env = temp;
 	}
+	return (ret);
 }

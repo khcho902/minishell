@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/18 10:48:07 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/18 16:03:56 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,24 +21,24 @@
 # include <sys/errno.h>
 
 # include <stdio.h>
-# include <string.h>
-# include <sys/errno.h>
 
 /*
  ** builtins/
  */
-void	do_cd(t_msh *msh);
-void	do_echo(t_msh *msh, int fd);
-void	do_env(t_dict **env_arr, int fd);
-void	do_export(t_msh *msh, int fd);
-void	do_pwd(t_msh *msh, int fd);
-void	do_unset(t_msh *msh);
-int		builtins(t_msh *msh, int cmd_key);
+void	*compare_arg(t_msh *msh);
+int		do_cd(t_msh *msh);
+int		do_echo(t_msh *msh);
+int		do_env(t_msh *msh);
+int		do_exit(t_msh *msh);
+int		do_export(t_msh *msh);
+int		do_pwd(t_msh *msh);
+int		do_unset(t_msh *msh);
+int		print_env(t_dict **env_arr, int env_len, char *command);
 
 /*
  ** executor/
  */
-void	executor(t_msh *msh);
+int		executor(t_msh *msh);
 
 /*
  ** init_free_msh/
@@ -59,7 +59,8 @@ void	making_cmd(t_msh *msh);
  */
 void	exit_print_err(char *err_msg);
 int		print_syntax_err(char *program_name, char *token);
-void	command_not_found(char *str);
+int		command_not_found(char *str);
+int		print_err(char *where, char *arg, char *msg);
 
 /*
  ** prompt/

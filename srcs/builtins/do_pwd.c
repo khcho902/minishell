@@ -6,14 +6,17 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 16:10:13 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/13 10:49:26 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/18 15:54:19 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void		do_pwd(t_msh *msh, int fd)
+int		do_pwd(t_msh *msh)
 {
-	ft_putstr_fd(msh->wd, fd);
-	ft_putchar_fd('\n', fd);
+	if (!msh->wd)
+		return (EXIT_FAILURE);
+	ft_putstr_fd(msh->wd, STDOUT);
+	ft_putchar_fd('\n', STDOUT);
+	return (EXIT_SUCCESS);
 }

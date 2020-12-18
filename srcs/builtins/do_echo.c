@@ -6,13 +6,13 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/25 21:51:59 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/17 13:58:39 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/18 15:42:23 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void		do_echo(t_msh *msh, int fd)
+int		do_echo(t_msh *msh)
 {
 	int		idx;
 	int		n_option;
@@ -27,10 +27,11 @@ void		do_echo(t_msh *msh, int fd)
 	idx = 1 + n_option;
 	while (idx < msh->cmds->length)
 	{
-		ft_putstr_fd(msh->cmds->args[idx], fd);
-		ft_putchar_fd(' ', fd);
+		ft_putstr_fd(msh->cmds->args[idx], STDOUT);
+		ft_putchar_fd(' ', STDOUT);
 		idx++;
 	}
 	if (!n_option)
-		ft_putchar_fd('\n', fd);
+		ft_putchar_fd('\n', STDOUT);
+	return (EXIT_SUCCESS);
 }

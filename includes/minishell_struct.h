@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/15 02:36:28 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/18 08:28:50 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/18 16:17:56 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,12 @@
 # define STDIN 0
 # define STDOUT 1
 # define STDERR 2
-# define EXEC_IDX 0
 
 # define TYPE_DEFAULT 0
 # define TYPE_PIPE 1
+
+# define PIPE_OUT 0
+# define PIPE_IN 1
 
 # define METACHARACTER " \t\n|;<>"
 
@@ -58,14 +60,5 @@ typedef struct		s_msh
 	char			*wd;
 }					t_msh;
 
-enum
-{
-	k_cd = 1,
-	k_echo = 2,
-	k_env = 3,
-	k_export = 4,
-	k_pwd = 5,
-	k_unset = 6,
-	k_exit = 7
-};
+typedef int			(*t_execute_func)(t_msh *);
 #endif

@@ -6,13 +6,13 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 05:44:26 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/18 10:32:32 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/18 14:12:25 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void		exec_process(t_msh *msh, char **av, char **env)
+static int		exec_process(t_msh *msh, char **av, char **env)
 {
 	char		*temp;
 	int			idx;
@@ -29,13 +29,16 @@ static void		exec_process(t_msh *msh, char **av, char **env)
 		if (ret == -1)
 			continue ;
 	}
+	if (ret == -1)
+		command_not_found(msh->cmds->args[0]);
 	ft_double_free((void **)av);
 	ft_double_free((void **)env);
+	ret = EXIT_FAILURE;
+	return (ret);
 }
 
-void			executor(t_msh *msh)
+int				executor(t_msh *msh)
 {
-	pid_t		pid;
 	char		**av;
 	char		**env;
 	int			idx;
@@ -50,16 +53,5 @@ void			executor(t_msh *msh)
 			exit_print_err(strerror(errno));
 	av[idx] = NULL;
 	env = ft_envjoin(msh->env, msh->env_len);
-	pid = fork();
-	if (pid == 0)
-	{
-		exec_process(msh, av, env);
-		exit(EXIT_SUCCESS);
-	}
-	else
-	{
-		wait(NULL);
-		ft_double_free((void **)av);
-		ft_double_free((void **)env);
-	}
+	return (exec_process(msh, av, env));
 }

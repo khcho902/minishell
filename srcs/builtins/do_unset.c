@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 04:22:52 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/18 10:26:56 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/18 15:54:39 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static int	check_args(char **args, char *key)
 	return (0);
 }
 
-void		do_unset(t_msh *msh)
+int			do_unset(t_msh *msh)
 {
 	t_dict		**temp;
 	int			idx;
@@ -60,4 +60,5 @@ void		do_unset(t_msh *msh)
 	ft_double_free((void **)msh->env);
 	msh->env_len -= (cmd->length - 1);
 	msh->env = temp;
+	return (EXIT_SUCCESS);
 }

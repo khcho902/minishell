@@ -6,44 +6,43 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/18 10:30:24 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/18 16:49:47 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int		compare_argument(char *str)
+int		main_loop(t_msh *msh)
 {
-	int			i;
-	char		*name;
-	const char	*cmd_list[] = {
-		"cd", "echo", "env", "export", "pwd", "unset", "exit", NULL
-	};
+	pid_t			pid;
+	int				ret;
+	t_execute_func	func;
 
-	i = 0;
-	while (cmd_list[i])
-	{
-		name = (char *)cmd_list[i];
-		if (!ft_strcmp(str, name))
-			return (i + 1);
-		i++;
-	}
-	return (EXEC_IDX);
-}
-
-void	main_loop(t_msh *msh)
-{
-	int		cmd_key;
-
+	ret = EXIT_SUCCESS;
 	while (msh->cmds)
 	{
-		cmd_key = compare_argument(msh->cmds->args[0]);
-		if (cmd_key == EXEC_IDX)
-			executor(msh);
-		else if (cmd_key > EXEC_IDX)
-			builtins(msh, cmd_key);
+		if (msh->cmds->type == TYPE_PIPE)
+			if (pipe(msh->cmds->pipes) == -1)
+				exit_print_err(strerror(errno));
+		if ((pid = fork()) == -1)
+			exit_print_err(strerror(errno));
+		func = compare_arg(msh);
+		if (pid == 0)
+		{
+			if ((func != &executor && msh->cmds->type == TYPE_PIPE)
+					|| (func == &executor))
+				ret = func(msh);
+			exit(ret);
+		}
+		else
+		{
+			if (func != &executor)
+				ret = func(msh);
+			wait(NULL);
+		}
 		msh->cmds = msh->cmds->next;
 	}
+	return (ret);
 }
 
 int		main(int argc, char **argv, char **env)
