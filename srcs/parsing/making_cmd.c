@@ -6,7 +6,7 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 18:34:02 by kycho             #+#    #+#             */
-/*   Updated: 2020/12/19 20:52:47 by kycho            ###   ########.fr       */
+/*   Updated: 2020/12/19 23:08:54 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	append_char_to_str(char **str, char c)
 }
 
 
-int		sanitize_token_env(char **res_str, char *og_str, t_dict **env)
+int		sanitize_token_env(char **res_str, char *og_str, t_msh *msh)
 {
 	int env_len;
 	char *env_key;
@@ -39,12 +39,27 @@ int		sanitize_token_env(char **res_str, char *og_str, t_dict **env)
 		return (2);
 	if (og_str[1] == '0')
 	{
-		if (!(tmp = ft_strjoin(*res_str, "-bash")))
+		char *tmp2 = ft_strjoin("-", msh->program_name);
+	
+		if (!(tmp = ft_strjoin(*res_str, tmp2)))
 			exit_print_err(strerror(errno));
 		free(*res_str);
 		*res_str = tmp;
 		return (2);
 	}
+	if (og_str[1] == '?')
+	{
+		if (!(tmp = ft_itoa(msh->exit_status)))
+			exit_print_err(strerror(errno));
+		char *tmp2 = ft_strjoin(*res_str, tmp);
+
+		free(*res_str);
+		*res_str = tmp2;
+		return (2);
+	}
+
+	if (og_str[1] == '\0')
+		return (1);
 
 	env_len = 1;
 	while (og_str[env_len] != '\0' && !is_in_charset(og_str[env_len], " '\"$\\"))
@@ -52,7 +67,7 @@ int		sanitize_token_env(char **res_str, char *og_str, t_dict **env)
 	if (!(env_key = (char *)malloc(sizeof(char) * (env_len + 1))))
 		exit_print_err(strerror(errno));
 	ft_strlcpy(env_key, og_str + 1, env_len);
-	env_dict = get_env_dict(env, env_key);
+	env_dict = get_env_dict(msh->env, env_key);
 	free(env_key);
 	if (env_dict != NULL)
 	{
@@ -65,7 +80,7 @@ int		sanitize_token_env(char **res_str, char *og_str, t_dict **env)
 }
 
 
-void	sanitize_token(t_list *token, t_dict **env)
+void	sanitize_token(t_list *token, t_msh *msh)
 {
 	char	*og_str;
 	char	*res_str;
@@ -101,9 +116,9 @@ void	sanitize_token(t_list *token, t_dict **env)
 		{
 			i++;
 		}
-		else if (og_str[i] == '$' && og_str[i + 1]  != '\0')
+		else if (og_str[i] == '$')
 		{
-			i += sanitize_token_env(&res_str, og_str + i, env);
+			i += sanitize_token_env(&res_str, og_str + i, msh);
 		}
 		else
 		{
@@ -142,7 +157,7 @@ t_cmd	*get_new_cmd(t_cmd *previous)
 	return (new_cmd);
 }
 
-void	add_args(t_cmd *cmd, t_list *token, t_dict **env)
+void	add_args(t_cmd *cmd, t_list *token, t_msh *msh)
 {
 	int		i;
 	char	**tmp;
@@ -156,18 +171,18 @@ void	add_args(t_cmd *cmd, t_list *token, t_dict **env)
 		tmp[i] = cmd->args[i];
 		i++;
 	}
-	sanitize_token(token, env);
+	sanitize_token(token, msh);
 	tmp[i] = token->content;
 	free(cmd->args);
 	cmd->args = tmp;
 	cmd->length++;
 }
 
-void	add_redirection_file(t_cmd *cmd, t_list **token, t_dict **env)
+void	add_redirection_file(t_cmd *cmd, t_list **token, t_msh *msh)
 {
 	t_list *lstnew;
 
-	sanitize_token(*token, env);
+	sanitize_token(*token, msh);
 	if (!(lstnew = ft_lstnew((*token)->content)))
 		exit_print_err(strerror(errno));
 	if (cmd->redirection_files == NULL)
@@ -175,7 +190,7 @@ void	add_redirection_file(t_cmd *cmd, t_list **token, t_dict **env)
 	else
 		ft_lstadd_back(&cmd->redirection_files, lstnew);
 	*token = (*token)->next;
-	sanitize_token(*token, env);
+	sanitize_token(*token, msh);
 	if (!(lstnew = ft_lstnew((*token)->content)))
 		exit_print_err(strerror(errno));
 	ft_lstadd_back(&cmd->redirection_files, lstnew);
@@ -201,9 +216,9 @@ void	making_cmd(t_msh *msh)
 		else if (ft_strcmp("<", token->content) == 0 ||
 				ft_strcmp(">", token->content) == 0 ||
 				ft_strcmp(">>", token->content) == 0)
-			add_redirection_file(cmd, &token, msh->env);
+			add_redirection_file(cmd, &token, msh);
 		else
-			add_args(cmd, token, msh->env);
+			add_args(cmd, token, msh);
 		token = token->next;
 	}
 }
