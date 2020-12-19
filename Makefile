@@ -6,7 +6,7 @@
 #    By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/23 14:34:40 by jiseo             #+#    #+#              #
-#    Updated: 2020/12/18 15:40:52 by jiseo            ###   ########.fr        #
+#    Updated: 2020/12/19 07:44:18 by jiseo            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,6 @@ RAW_SRCS		=	main.c \
 					\
 					prompt/prompt.c \
 					\
-					builtins/compare_arg.c \
 					builtins/do_cd.c \
 					builtins/do_echo.c \
 					builtins/do_env.c \

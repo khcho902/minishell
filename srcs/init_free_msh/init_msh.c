@@ -6,7 +6,7 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 18:48:11 by kycho             #+#    #+#             */
-/*   Updated: 2020/12/17 09:53:41 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/19 11:53:33 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,13 +31,12 @@ void	init_msh_env(t_msh *msh, char **env)
 			exit_print_err(strerror(errno));
 		if (!(msh->env[i]->key = (char *)malloc(sizeof(char) * (key_len + 1))))
 			exit_print_err(strerror(errno));
-		ft_strlcat(msh->env[i]->key, env[i], key_len + 1);
+		ft_strlcpy(msh->env[i]->key, env[i], key_len + 1);
 		if (!(msh->env[i]->value = ft_strdup(env[i] + key_len + 1)))
 			exit_print_err(strerror(errno));
 		i++;
 	}
 	show_logo();
-	msh->wd = getcwd(NULL, 0);
 }
 
 void	init_msh_path(t_msh *msh)

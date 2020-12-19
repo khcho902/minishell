@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/18 16:03:56 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/19 07:44:25 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@
 /*
  ** builtins/
  */
-void	*compare_arg(t_msh *msh);
 int		do_cd(t_msh *msh);
 int		do_echo(t_msh *msh);
 int		do_env(t_msh *msh);

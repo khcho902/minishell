@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 16:10:13 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/18 15:54:19 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/19 12:23:29 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,14 @@
 
 int		do_pwd(t_msh *msh)
 {
-	if (!msh->wd)
+	char	*temp;
+
+	if (!msh)
 		return (EXIT_FAILURE);
-	ft_putstr_fd(msh->wd, STDOUT);
+	if (!(temp = getcwd(NULL, 0)))
+		exit_print_err(strerror(errno));
+	ft_putstr_fd(temp, STDOUT);
 	ft_putchar_fd('\n', STDOUT);
+	free(temp);
 	return (EXIT_SUCCESS);
 }
