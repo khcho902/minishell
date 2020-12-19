@@ -6,7 +6,7 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 18:34:02 by kycho             #+#    #+#             */
-/*   Updated: 2020/12/19 17:25:05 by kycho            ###   ########.fr       */
+/*   Updated: 2020/12/19 20:52:47 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,23 +69,39 @@ void	sanitize_token(t_list *token, t_dict **env)
 {
 	char	*og_str;
 	char	*res_str;
-	int		check_single_quote;
-	int		backslash_cnt;
 	int		i;
-	int		j;
 
-	check_single_quote = FALSE;
-	backslash_cnt = 0;
 	og_str = token->content;
 	res_str = malloc(sizeof(char));
 	res_str[0] = '\0';
 	i = 0;
 	while (og_str[i])
 	{
-		j = i;
-		if (check_single_quote == FALSE && og_str[i] == '$' && og_str[i + 1]  != '\0' 
-				&& og_str[i + 1] != '\\'
-				&& (i == 0 || ( backslash_cnt % 2 == 0)))
+		if (og_str[i] == '\\')
+		{
+			i++;
+			if (og_str[i])
+			{
+				append_char_to_str(&res_str, og_str[i]);
+				i++;
+			}
+		}
+		else if (og_str[i] == '\'')
+		{
+			i++;
+			while(og_str[i] && og_str[i] != '\'')
+			{
+				append_char_to_str(&res_str, og_str[i]);
+				i++;
+			}
+			if (og_str[i] == '\'')
+				i++;
+		}
+		else if (og_str[i] == '"')
+		{
+			i++;
+		}
+		else if (og_str[i] == '$' && og_str[i + 1]  != '\0')
 		{
 			i += sanitize_token_env(&res_str, og_str + i, env);
 		}
@@ -94,15 +110,6 @@ void	sanitize_token(t_list *token, t_dict **env)
 			append_char_to_str(&res_str, og_str[i]);
 			i++;
 		}
-		if (check_single_quote == FALSE 
-				&& og_str[j] == '\'' && (j == 0 || og_str[j - 1] != '\\'))
-			check_single_quote = TRUE;
-		else if (check_single_quote == TRUE && og_str[j] == '\'')
-			check_single_quote= FALSE;
-		if (og_str[j] == '\\')
-			backslash_cnt++;
-		else
-			backslash_cnt = 0;
 	}
 	free(token->content);
 	token->content = res_str;
