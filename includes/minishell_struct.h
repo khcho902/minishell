@@ -6,30 +6,35 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/15 02:36:28 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/19 12:07:30 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/19 18:16:50 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_STRUCT_H
 # define MINISHELL_STRUCT_H
 
-# define FALSE 0
-# define TRUE 1
+# define FALSE			0
+# define TRUE			1
 
-# define SUCCESS 1
-# define ERROR -1
+# define SUCCESS		1
+# define ERROR			-1
 
-# define STDIN 0
-# define STDOUT 1
-# define STDERR 2
+# define STDIN			0
+# define STDOUT			1
+# define STDERR			2
 
-# define TYPE_DEFAULT 0
-# define TYPE_PIPE 1
+# define TYPE_DEFAULT	0
+# define TYPE_PIPE		1
 
-# define PIPE_OUT 0
-# define PIPE_IN 1
+# define PIPE_OUT		0
+# define PIPE_IN		1
 
-# define METACHARACTER " \t\n|;<>"
+# define OPEN_MODE		S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
+# define FLAG_I			O_RDONLY
+# define FLAG_O			O_WRONLY | O_TRUNC | O_CREAT
+# define FLAG_AO		O_WRONLY | O_APPEND | O_CREAT
+
+# define METACHARACTER	" \t\n|;<>"
 
 typedef struct		s_cmd
 {
@@ -38,6 +43,8 @@ typedef struct		s_cmd
 	int				type;
 	int				pipes[2];
 	t_list			*redirection_files;
+	int				input_fd;
+	int				output_fd;
 	struct s_cmd	*prev;
 	struct s_cmd	*next;
 }					t_cmd;

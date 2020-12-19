@@ -6,7 +6,7 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 18:34:02 by kycho             #+#    #+#             */
-/*   Updated: 2020/12/19 11:25:58 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/19 17:47:32 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ t_cmd	*get_new_cmd(t_cmd *previous)
 	new_cmd->pipes[0] = -1;
 	new_cmd->pipes[1] = -1;
 	new_cmd->redirection_files = NULL;
+	new_cmd->input_fd = -1;
+	new_cmd->output_fd = -1;
 	new_cmd->prev = NULL;
 	new_cmd->next = NULL;
 	if (previous != NULL)

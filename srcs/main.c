@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/19 14:55:36 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/19 19:04:51 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,102 +35,23 @@ void	*compare_arg(t_msh *msh)
 int		main_loop(t_msh *msh)
 {
 	int			ret;
-	int			fd_in;
-	int			fd_out;
 	t_exe_fn	func;
 
-	ret = EXIT_SUCCESS;
+	ret = EXIT_FAILURE;
 	while (msh->cmds)
 	{
+		if (msh->cmds->args[0] == NULL)
+			break ;
 		func = compare_arg(msh);
-
-		t_list		*l;
-
-		l = msh->cmds->redirection_files;
-		fd_in = -1;
-		fd_out = -1;
-		while (l)
-		{
-			if (!ft_strcmp("<", l->content))
-			{
-				if (fd_in != -1)
-					close(fd_in);
-				l = l->next;
-				if (l && (fd_in = open(l->content, O_RDONLY,
-							S_IRUSR | S_IWUSR | S_IRWXG | S_IROTH)) == -1)
-						exit_print_err(strerror(errno));
-			}
-			else if (!ft_strcmp(">", l->content))
-			{
-				if (fd_out != -1)
-					close(fd_out);
-				l = l->next;
-				if (l && (fd_out = open(l->content,
-							O_WRONLY | O_TRUNC | O_CREAT,
-							S_IRUSR | S_IWUSR | S_IRWXG | S_IROTH)) == -1)
-						exit_print_err(strerror(errno));
-			}
-			else if (!ft_strcmp(">>", l->content))
-			{
-				if (fd_out != -1)
-					close(fd_out);
-				l = l->next;
-				if (l && (fd_out = open(l->content,
-							O_WRONLY | O_APPEND | O_CREAT,
-							S_IRUSR | S_IWUSR | S_IRWXG | S_IROTH)) == -1)
-						exit_print_err(strerror(errno));
-			}
-			l = l->next;
-		}
+		redirection_input_fd(msh, msh->cmds->redirection_files);
+		redirection_output_fd(msh, msh->cmds->redirection_files);
 		if (func != &executor && msh->cmds->type == TYPE_DEFAULT &&
-				fd_in == -1 && fd_out == -1 && (msh->cmds->prev == NULL ||
-				(msh->cmds->prev && msh->cmds->prev->type == TYPE_DEFAULT)))
+			msh->cmds->input_fd == -1 && msh->cmds->output_fd == -1 &&
+			(msh->cmds->prev == NULL ||
+			(msh->cmds->prev && msh->cmds->prev->type == TYPE_DEFAULT)))
 			ret = func(msh);
 		else
-		{
-			pid_t	pid;
-			int		pipe_open;
-			int		status;
-
-			pipe_open = 0;
-			if (msh->cmds->type == TYPE_PIPE)
-			{
-				pipe_open = 1;
-				if (pipe(msh->cmds->pipes) == -1)
-					exit_print_err(strerror(errno));
-			}
-			if ((pid = fork()) == -1)
-				exit_print_err(strerror(errno));
-			if (pid == 0)
-			{
-				if (msh->cmds->type == TYPE_PIPE &&
-						dup2(msh->cmds->pipes[PIPE_IN], STDOUT) < 0)
-					exit_print_err(strerror(errno));
-				if (msh->cmds->prev && msh->cmds->prev->type == TYPE_PIPE &&
-						dup2(msh->cmds->prev->pipes[PIPE_OUT], STDIN) < 0)
-					exit_print_err(strerror(errno));
-				if (fd_in != -1 && dup2(fd_in, STDIN) < 0)
-					exit_print_err(strerror(errno));
-				if (fd_out != -1 && dup2(fd_out, STDOUT) < 0)
-					exit_print_err(strerror(errno));
-				ret = func(msh);
-				exit(ret);
-			}
-			else
-			{
-				waitpid(pid, &status, 0);
-				if (pipe_open)
-				{
-					close(msh->cmds->pipes[PIPE_IN]);
-					if (!msh->cmds->next || msh->cmds->type == TYPE_DEFAULT)
-						close(msh->cmds->pipes[PIPE_OUT]);
-				}
-				if (msh->cmds->prev && msh->cmds->prev->type == TYPE_PIPE)
-					close(msh->cmds->prev->pipes[PIPE_OUT]);
-				if (WIFEXITED(status))
-					ret = WEXITSTATUS(status);
-			}
-		}
+			ret = create_process(msh, func);
 		msh->cmds = msh->cmds->next;
 	}
 	return (ret);

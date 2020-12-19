@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/19 07:44:25 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/19 19:05:55 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,11 @@ int		print_env(t_dict **env_arr, int env_len, char *command);
  ** executor/
  */
 int		executor(t_msh *msh);
+void	redirection_input_fd(t_msh *msh, t_list *list);
+void	redirection_output_fd(t_msh *msh, t_list *list);
+int		close_fds(t_msh *msh, pid_t pid, int pipe_open);
+void	child_process(t_msh *msh, t_exe_fn func);
+int		create_process(t_msh *msh, t_exe_fn func);
 
 /*
  ** init_free_msh/
