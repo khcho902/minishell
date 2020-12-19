@@ -6,11 +6,110 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 18:34:02 by kycho             #+#    #+#             */
-/*   Updated: 2020/12/16 18:34:45 by kycho            ###   ########.fr       */
+/*   Updated: 2020/12/19 17:25:05 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	append_char_to_str(char **str, char c)
+{
+	char	*tmp;
+	size_t	str_len;
+
+	str_len = ft_strlen(*str);
+	if (!(tmp = malloc(sizeof(char) * (str_len + 2))))
+		exit_print_err(strerror(errno));
+	ft_strlcpy(tmp, *str, str_len + 1);
+	tmp[str_len] = c;
+	tmp[str_len + 1] = '\0';
+	free(*str);
+	*str = tmp;
+}
+
+
+int		sanitize_token_env(char **res_str, char *og_str, t_dict **env)
+{
+	int env_len;
+	char *env_key;
+	t_dict *env_dict;
+	char *tmp;
+
+	if (og_str[1] == '$')
+		return (2);
+	if (og_str[1] == '0')
+	{
+		if (!(tmp = ft_strjoin(*res_str, "-bash")))
+			exit_print_err(strerror(errno));
+		free(*res_str);
+		*res_str = tmp;
+		return (2);
+	}
+
+	env_len = 1;
+	while (og_str[env_len] != '\0' && !is_in_charset(og_str[env_len], " '\"$\\"))
+			env_len++;
+	if (!(env_key = (char *)malloc(sizeof(char) * (env_len + 1))))
+		exit_print_err(strerror(errno));
+	ft_strlcpy(env_key, og_str + 1, env_len);
+	env_dict = get_env_dict(env, env_key);
+	free(env_key);
+	if (env_dict != NULL)
+	{
+		if (!(tmp = ft_strjoin(*res_str, env_dict->value)))
+			exit_print_err(strerror(errno));
+		free(*res_str);
+		*res_str = tmp;
+	}
+	return (env_len);
+}
+
+
+void	sanitize_token(t_list *token, t_dict **env)
+{
+	char	*og_str;
+	char	*res_str;
+	int		check_single_quote;
+	int		backslash_cnt;
+	int		i;
+	int		j;
+
+	check_single_quote = FALSE;
+	backslash_cnt = 0;
+	og_str = token->content;
+	res_str = malloc(sizeof(char));
+	res_str[0] = '\0';
+	i = 0;
+	while (og_str[i])
+	{
+		j = i;
+		if (check_single_quote == FALSE && og_str[i] == '$' && og_str[i + 1]  != '\0' 
+				&& og_str[i + 1] != '\\'
+				&& (i == 0 || ( backslash_cnt % 2 == 0)))
+		{
+			i += sanitize_token_env(&res_str, og_str + i, env);
+		}
+		else
+		{
+			append_char_to_str(&res_str, og_str[i]);
+			i++;
+		}
+		if (check_single_quote == FALSE 
+				&& og_str[j] == '\'' && (j == 0 || og_str[j - 1] != '\\'))
+			check_single_quote = TRUE;
+		else if (check_single_quote == TRUE && og_str[j] == '\'')
+			check_single_quote= FALSE;
+		if (og_str[j] == '\\')
+			backslash_cnt++;
+		else
+			backslash_cnt = 0;
+	}
+	free(token->content);
+	token->content = res_str;
+}
+
+
+//----------------------------------------------------------------------------
 
 t_cmd	*get_new_cmd(t_cmd *previous)
 {
@@ -36,7 +135,7 @@ t_cmd	*get_new_cmd(t_cmd *previous)
 	return (new_cmd);
 }
 
-void	add_args(t_cmd *cmd, char *token_content)
+void	add_args(t_cmd *cmd, t_list *token, t_dict **env)
 {
 	int		i;
 	char	**tmp;
@@ -50,16 +149,18 @@ void	add_args(t_cmd *cmd, char *token_content)
 		tmp[i] = cmd->args[i];
 		i++;
 	}
-	tmp[i] = token_content;
+	sanitize_token(token, env);
+	tmp[i] = token->content;
 	free(cmd->args);
 	cmd->args = tmp;
 	cmd->length++;
 }
 
-void	add_redirection_file(t_cmd *cmd, t_list **token)
+void	add_redirection_file(t_cmd *cmd, t_list **token, t_dict **env)
 {
 	t_list *lstnew;
 
+	sanitize_token(*token, env);
 	if (!(lstnew = ft_lstnew((*token)->content)))
 		exit_print_err(strerror(errno));
 	if (cmd->redirection_files == NULL)
@@ -67,6 +168,7 @@ void	add_redirection_file(t_cmd *cmd, t_list **token)
 	else
 		ft_lstadd_back(&cmd->redirection_files, lstnew);
 	*token = (*token)->next;
+	sanitize_token(*token, env);
 	if (!(lstnew = ft_lstnew((*token)->content)))
 		exit_print_err(strerror(errno));
 	ft_lstadd_back(&cmd->redirection_files, lstnew);
@@ -92,9 +194,9 @@ void	making_cmd(t_msh *msh)
 		else if (ft_strcmp("<", token->content) == 0 ||
 				ft_strcmp(">", token->content) == 0 ||
 				ft_strcmp(">>", token->content) == 0)
-			add_redirection_file(cmd, &token);
+			add_redirection_file(cmd, &token, msh->env);
 		else
-			add_args(cmd, token->content);
+			add_args(cmd, token, msh->env);
 		token = token->next;
 	}
 }
