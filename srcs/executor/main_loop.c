@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/19 19:03:05 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/19 19:05:59 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/21 02:47:50 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ int		close_fds(t_msh *msh, pid_t pid, int pipe_open)
 	int		status;
 	int		ret;
 
+	ret = EXIT_SUCCESS;
 	waitpid(pid, &status, 0);
 	if (pipe_open)
 	{

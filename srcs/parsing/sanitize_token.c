@@ -6,7 +6,7 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/20 19:37:19 by kycho             #+#    #+#             */
-/*   Updated: 2020/12/20 19:39:28 by kycho            ###   ########.fr       */
+/*   Updated: 2020/12/21 02:43:53 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,6 @@
 
 int		sanitize_env_sub(char **res_str, char *og_str, t_msh *msh, char *tmp)
 {
-	char *tmp2;
-
 	if (og_str[1] == '$' || ('1' <= og_str[1] && og_str[1] <= '9'))
 		return (2);
 	else if (og_str[1] == '\0')
@@ -25,13 +23,10 @@ int		sanitize_env_sub(char **res_str, char *og_str, t_msh *msh, char *tmp)
 	}
 	else if (og_str[1] == '0')
 	{
-		if (!(tmp = ft_strjoin("-", msh->program_name)))
+		if (!(tmp = ft_strjoin3(*res_str, "-", msh->program_name)))
 			exit_print_err(strerror(errno));
-		if (!(tmp2 = ft_strjoin(*res_str, tmp)))
-			exit_print_err(strerror(errno));
-		free(tmp);
 		free(*res_str);
-		*res_str = tmp2;
+		*res_str = tmp;
 		return (2);
 	}
 	else if (og_str[1] == '?')
