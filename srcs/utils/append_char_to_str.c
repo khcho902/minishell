@@ -1,27 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_env_dict.c                                     :+:      :+:    :+:   */
+/*   append_char_to_str.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/12/17 15:57:09 by kycho             #+#    #+#             */
-/*   Updated: 2020/12/21 02:24:23 by jiseo            ###   ########.fr       */
+/*   Created: 2020/12/20 19:38:37 by kycho             #+#    #+#             */
+/*   Updated: 2020/12/20 19:39:02 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_dict	*get_env_dict(t_dict **env, char *key)
+void	append_char_to_str(char **str, char c)
 {
-	int i;
+	char	*tmp;
+	size_t	str_len;
 
-	i = 0;
-	while (env[i])
-	{
-		if (ft_strcmp(env[i]->key, key) == 0)
-			return (env[i]);
-		i++;
-	}
-	return (NULL);
+	str_len = ft_strlen(*str);
+	if (!(tmp = malloc(sizeof(char) * (str_len + 2))))
+		exit_print_err(strerror(errno));
+	ft_strlcpy(tmp, *str, str_len + 1);
+	tmp[str_len] = c;
+	tmp[str_len + 1] = '\0';
+	free(*str);
+	*str = tmp;
 }

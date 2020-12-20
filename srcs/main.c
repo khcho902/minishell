@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/19 19:04:51 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/21 02:27:21 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,12 +61,10 @@ int		main(int argc, char **argv, char **env)
 {
 	char	*input;
 	int		res;
-	int		ret;
 	t_msh	msh;
 
 	init_msh(argv[0], &msh, env);
 	res = argc;
-	ret = EXIT_SUCCESS;
 	while (res)
 	{
 		show_prompt(&msh);
@@ -76,10 +74,10 @@ int		main(int argc, char **argv, char **env)
 		else
 		{
 			if (parsing(&msh, input) == SUCCESS)
-				ret = main_loop(&msh);
+				main_loop(&msh);
 			free_msh_member(&msh);
 			free(input);
 		}
 	}
-	return (ret);
+	return (EXIT_SUCCESS);
 }

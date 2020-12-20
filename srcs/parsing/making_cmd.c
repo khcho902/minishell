@@ -6,7 +6,7 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 18:34:02 by kycho             #+#    #+#             */
-/*   Updated: 2020/12/19 17:47:32 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/21 02:27:41 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ t_cmd	*get_new_cmd(t_cmd *previous)
 	return (new_cmd);
 }
 
-void	add_args(t_cmd *cmd, char *token_content)
+void	add_args(t_cmd *cmd, t_list *token, t_msh *msh)
 {
 	int		i;
 	char	**tmp;
@@ -52,16 +52,18 @@ void	add_args(t_cmd *cmd, char *token_content)
 		tmp[i] = cmd->args[i];
 		i++;
 	}
-	tmp[i] = token_content;
+	sanitize_token(token, msh);
+	tmp[i] = token->content;
 	free(cmd->args);
 	cmd->args = tmp;
 	cmd->length++;
 }
 
-void	add_redirection_file(t_cmd *cmd, t_list **token)
+void	add_redirection_file(t_cmd *cmd, t_list **token, t_msh *msh)
 {
 	t_list *lstnew;
 
+	sanitize_token(*token, msh);
 	if (!(lstnew = ft_lstnew((*token)->content)))
 		exit_print_err(strerror(errno));
 	if (cmd->redirection_files == NULL)
@@ -69,6 +71,7 @@ void	add_redirection_file(t_cmd *cmd, t_list **token)
 	else
 		ft_lstadd_back(&cmd->redirection_files, lstnew);
 	*token = (*token)->next;
+	sanitize_token(*token, msh);
 	if (!(lstnew = ft_lstnew((*token)->content)))
 		exit_print_err(strerror(errno));
 	ft_lstadd_back(&cmd->redirection_files, lstnew);
@@ -94,9 +97,9 @@ void	making_cmd(t_msh *msh)
 		else if (ft_strcmp("<", token->content) == 0 ||
 				ft_strcmp(">", token->content) == 0 ||
 				ft_strcmp(">>", token->content) == 0)
-			add_redirection_file(cmd, &token);
+			add_redirection_file(cmd, &token, msh);
 		else
-			add_args(cmd, token->content);
+			add_args(cmd, token, msh);
 		token = token->next;
 	}
 }

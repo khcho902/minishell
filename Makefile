@@ -6,7 +6,7 @@
 #    By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/23 14:34:40 by jiseo             #+#    #+#              #
-#    Updated: 2020/12/19 19:06:22 by jiseo            ###   ########.fr        #
+#    Updated: 2020/12/21 02:28:51 by jiseo            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,6 +36,7 @@ RAW_SRCS		=	main.c \
 					parsing/split_token.c \
 					parsing/check_token_valid.c \
 					parsing/making_cmd.c \
+					parsing/sanitize_token.c \
 					\
 					utils/ft_double_free.c \
 					utils/ft_strcmp.c \
@@ -43,6 +44,7 @@ RAW_SRCS		=	main.c \
 					utils/get_env_dict.c \
 					utils/ft_envjoin.c \
 					utils/quick_sort_env.c \
+					utils/append_char_to_str.c \
 					\
 					errors/exit_print_err.c \
 					errors/print_syntax_err.c \
