@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/18 12:15:49 by kycho            ###   ########.fr       */
+/*   Updated: 2020/12/20 19:44:08 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,11 +68,13 @@ int					parsing(t_msh *msh, char *input);
 void				split_token(char *input, t_list **tokens, int i);
 int					check_token_valid(char *program_name, t_list *now);
 void				making_cmd(t_msh *msh);
+void				sanitize_token(t_list *token, t_msh *msh);
 
 int					ft_strcmp(const char *s1, const char *s2);
 int					is_in_charset(char c, char *str);
 void				ft_double_free(char **ptr);
 t_dict				*get_env_dict(t_dict **env, char *key);
+void				append_char_to_str(char **str, char c);
 
 void				exit_print_err(char *err_msg);
 int					print_syntax_err(char *program_name, char *token);
