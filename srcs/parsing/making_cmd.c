@@ -6,7 +6,7 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 18:34:02 by kycho             #+#    #+#             */
-/*   Updated: 2020/12/20 00:40:01 by kycho            ###   ########.fr       */
+/*   Updated: 2020/12/20 15:45:23 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,39 @@ void	append_char_to_str(char **str, char c)
 	*str = tmp;
 }
 
+int		sanitize_token_env_sub(
+		char **res_str, char *og_str, t_msh *msh, char *tmp)
+{
+	char *tmp2;
+	
+	if (og_str[1] == '$' || ('1' <= og_str[1] && og_str[1] <= '9'))
+		return (2);
+	else if (og_str[1] == '\0')
+	{
+		append_char_to_str(res_str, '$');
+		return (1);
+	}
+	else if (og_str[1] == '0')
+	{
+		if (!(tmp = ft_strjoin("-", msh->program_name)))
+			exit_print_err(strerror(errno));
+		if (!(tmp2 = ft_strjoin(*res_str, tmp)))
+			exit_print_err(strerror(errno));
+		free(tmp);
+		free(*res_str);
+		*res_str = tmp2;
+		return (2);
+	}
+	else if (og_str[1] == '?')
+	{
+		if (!(tmp = ft_strjoin(*res_str, ft_itoa(msh->exit_status))))
+			exit_print_err(strerror(errno));
+		free(*res_str);
+		*res_str = tmp;
+		return (2);
+	}
+	return (-1);
+}
 
 int		sanitize_token_env(char **res_str, char *og_str, t_msh *msh)
 {
@@ -34,58 +67,26 @@ int		sanitize_token_env(char **res_str, char *og_str, t_msh *msh)
 	char *env_key;
 	t_dict *env_dict;
 	char *tmp;
-
-	if (og_str[1] == '$')
-		return (2);
-	if (og_str[1] == '0')
-	{
-		char *tmp2 = ft_strjoin("-", msh->program_name);
 	
-		if (!(tmp = ft_strjoin(*res_str, tmp2)))
-			exit_print_err(strerror(errno));
-		free(*res_str);
-		*res_str = tmp;
-		return (2);
-	}
-	if (og_str[1] == '?')
-	{
-		if (!(tmp = ft_itoa(msh->exit_status)))
-			exit_print_err(strerror(errno));
-		char *tmp2 = ft_strjoin(*res_str, tmp);
-
-		free(*res_str);
-		*res_str = tmp2;
-		return (2);
-	}
-	if ('1' <= og_str[1] && og_str[1] <= '9')
-	{
-		return (2);
-	}
-
-
-	if (og_str[1] == '\0')
-		return (1);
-
+	if ((env_len = sanitize_token_env_sub(res_str, og_str, msh, NULL)) != -1)
+		return (env_len);
 	env_len = 1;
-//	while (og_str[env_len] != '\0' && !is_in_charset(og_str[env_len], " '\"$\\"))
-	while (og_str[env_len] != '\0' && 
-			(('0' <= og_str[env_len] && og_str[env_len] <= '9')
-			 || ('a' <= og_str[env_len] && og_str[env_len] <= 'z')
-			 || ('A' <= og_str[env_len] && og_str[env_len] <= 'Z')
-			 || og_str[env_len] == '_'))
+	while (og_str[env_len] != '\0' && (og_str[env_len] == '_'
+				|| ('0' <= og_str[env_len] && og_str[env_len] <= '9')
+				|| ('a' <= og_str[env_len] && og_str[env_len] <= 'z')
+				|| ('A' <= og_str[env_len] && og_str[env_len] <= 'Z')))
 			env_len++;
 	if (!(env_key = (char *)malloc(sizeof(char) * (env_len + 1))))
 		exit_print_err(strerror(errno));
 	ft_strlcpy(env_key, og_str + 1, env_len);
 	env_dict = get_env_dict(msh->env, env_key);
 	free(env_key);
-	if (env_dict != NULL)
-	{
-		if (!(tmp = ft_strjoin(*res_str, env_dict->value)))
-			exit_print_err(strerror(errno));
-		free(*res_str);
-		*res_str = tmp;
-	}
+	if (env_dict == NULL)
+		return (env_len);
+	if (!(tmp = ft_strjoin(*res_str, env_dict->value)))
+		exit_print_err(strerror(errno));
+	free(*res_str);
+	*res_str = tmp;
 	return (env_len);
 }
 
@@ -99,7 +100,8 @@ void	sanitize_token(t_list *token, t_msh *msh)
 
 	in_double_quotes = FALSE;
 	og_str = token->content;
-	res_str = malloc(sizeof(char));
+	if (!(res_str = malloc(sizeof(char))))
+		exit_print_err(strerror(errno));
 	res_str[0] = '\0';
 	i = 0;
 	while (og_str[i])
@@ -108,24 +110,15 @@ void	sanitize_token(t_list *token, t_msh *msh)
 		{
 			i++;
 			if (in_double_quotes && og_str[i] != '"' && og_str[i] != '\\')
-			{
 				append_char_to_str(&res_str, '\\');
-			}
-
 			if (og_str[i])
-			{
-				append_char_to_str(&res_str, og_str[i]);
-				i++;
-			}
+				append_char_to_str(&res_str, og_str[i++]);
 		}
 		else if (og_str[i] == '\'' && in_double_quotes == FALSE)
 		{
 			i++;
 			while(og_str[i] && og_str[i] != '\'')
-			{
-				append_char_to_str(&res_str, og_str[i]);
-				i++;
-			}
+				append_char_to_str(&res_str, og_str[i++]);
 			if (og_str[i] == '\'')
 				i++;
 		}
@@ -135,14 +128,9 @@ void	sanitize_token(t_list *token, t_msh *msh)
 			i++;
 		}
 		else if (og_str[i] == '$')
-		{
 			i += sanitize_token_env(&res_str, og_str + i, msh);
-		}
 		else
-		{
-			append_char_to_str(&res_str, og_str[i]);
-			i++;
-		}
+			append_char_to_str(&res_str, og_str[i++]);
 	}
 	free(token->content);
 	token->content = res_str;
