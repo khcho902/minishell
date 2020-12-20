@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/19 15:12:21 by kycho            ###   ########.fr       */
+/*   Updated: 2020/12/20 10:52:27 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,21 +34,21 @@ int		main(int argc, char **argv, char **env)
 
 
 
-			printf("------------------------------\n");
+			printf("~~~~~~~~~~~~~ token ~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 			printf("lstsize : %d\n", ft_lstsize(msh.tokens));
 			printf("tokens : %p\n", msh.tokens);
 			t_list *now = msh.tokens;
 			while (now)
 			{
-				printf("|%s|\n", now->content);
+				printf("|%s| ", now->content);
 				now = now->next;
 			}
-			printf("------------------------------\n");
+			printf("\n");
 
 			t_cmd *cmd = msh.cmds;
 			while (cmd)
 			{
-				printf("--------@@@@@@@@@@@@@-------------\n");
+				printf("--------@@@@@@  cmd  @@@@-------------\n");
 				int i = 0;
 				while(cmd->args[i])
 				{
@@ -68,7 +68,6 @@ int		main(int argc, char **argv, char **env)
 				}
 				printf("  --redirection end--\n");
 				cmd = cmd->next;
-				printf("--------@@@@@@@@@@@@@-------------\n");
 			}
 
 

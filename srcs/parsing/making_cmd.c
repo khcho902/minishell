@@ -6,7 +6,7 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 18:34:02 by kycho             #+#    #+#             */
-/*   Updated: 2020/12/19 23:08:54 by kycho            ###   ########.fr       */
+/*   Updated: 2020/12/20 00:40:01 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,12 +57,22 @@ int		sanitize_token_env(char **res_str, char *og_str, t_msh *msh)
 		*res_str = tmp2;
 		return (2);
 	}
+	if ('1' <= og_str[1] && og_str[1] <= '9')
+	{
+		return (2);
+	}
+
 
 	if (og_str[1] == '\0')
 		return (1);
 
 	env_len = 1;
-	while (og_str[env_len] != '\0' && !is_in_charset(og_str[env_len], " '\"$\\"))
+//	while (og_str[env_len] != '\0' && !is_in_charset(og_str[env_len], " '\"$\\"))
+	while (og_str[env_len] != '\0' && 
+			(('0' <= og_str[env_len] && og_str[env_len] <= '9')
+			 || ('a' <= og_str[env_len] && og_str[env_len] <= 'z')
+			 || ('A' <= og_str[env_len] && og_str[env_len] <= 'Z')
+			 || og_str[env_len] == '_'))
 			env_len++;
 	if (!(env_key = (char *)malloc(sizeof(char) * (env_len + 1))))
 		exit_print_err(strerror(errno));
@@ -85,7 +95,9 @@ void	sanitize_token(t_list *token, t_msh *msh)
 	char	*og_str;
 	char	*res_str;
 	int		i;
+	int		in_double_quotes;
 
+	in_double_quotes = FALSE;
 	og_str = token->content;
 	res_str = malloc(sizeof(char));
 	res_str[0] = '\0';
@@ -95,13 +107,18 @@ void	sanitize_token(t_list *token, t_msh *msh)
 		if (og_str[i] == '\\')
 		{
 			i++;
+			if (in_double_quotes && og_str[i] != '"' && og_str[i] != '\\')
+			{
+				append_char_to_str(&res_str, '\\');
+			}
+
 			if (og_str[i])
 			{
 				append_char_to_str(&res_str, og_str[i]);
 				i++;
 			}
 		}
-		else if (og_str[i] == '\'')
+		else if (og_str[i] == '\'' && in_double_quotes == FALSE)
 		{
 			i++;
 			while(og_str[i] && og_str[i] != '\'')
@@ -114,6 +131,7 @@ void	sanitize_token(t_list *token, t_msh *msh)
 		}
 		else if (og_str[i] == '"')
 		{
+			in_double_quotes ^= TRUE;
 			i++;
 		}
 		else if (og_str[i] == '$')
