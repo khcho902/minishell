@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/25 21:51:59 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/18 15:42:23 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/21 02:52:19 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,10 @@ int		do_echo(t_msh *msh)
 	int		idx;
 	int		n_option;
 	
+	n_option = 0;
 	if (msh->cmds->length > 1)
-	{
 		if (!ft_strcmp(msh->cmds->args[1], "-n"))
 			n_option = 1;
-		else
-			n_option = 0;
-	}
 	idx = 1 + n_option;
 	while (idx < msh->cmds->length)
 	{
