@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/21 02:27:21 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/21 20:27:41 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,12 +32,10 @@ void	*compare_arg(t_msh *msh)
 		return (&executor);
 }
 
-int		main_loop(t_msh *msh)
+void	main_loop(t_msh *msh)
 {
-	int			ret;
 	t_exe_fn	func;
 
-	ret = EXIT_FAILURE;
 	while (msh->cmds)
 	{
 		if (msh->cmds->args[0] == NULL)
@@ -45,16 +43,15 @@ int		main_loop(t_msh *msh)
 		func = compare_arg(msh);
 		redirection_input_fd(msh, msh->cmds->redirection_files);
 		redirection_output_fd(msh, msh->cmds->redirection_files);
-		if (func != &executor && msh->cmds->type == TYPE_DEFAULT &&
+		if ((void *)func != &executor && msh->cmds->type == TYPE_DEFAULT &&
 			msh->cmds->input_fd == -1 && msh->cmds->output_fd == -1 &&
 			(msh->cmds->prev == NULL ||
 			(msh->cmds->prev && msh->cmds->prev->type == TYPE_DEFAULT)))
-			ret = func(msh);
+			func(msh);
 		else
-			ret = create_process(msh, func);
+			create_process(msh, func);
 		msh->cmds = msh->cmds->next;
 	}
-	return (ret);
 }
 
 int		main(int argc, char **argv, char **env)
@@ -70,7 +67,7 @@ int		main(int argc, char **argv, char **env)
 		show_prompt(&msh);
 		res = get_next_line(STDIN, &input);
 		if (res == -1)
-			exit_print_err("get_next_line fail!");
+			exit_print_err("get_next_line fail");
 		else
 		{
 			if (parsing(&msh, input) == SUCCESS)

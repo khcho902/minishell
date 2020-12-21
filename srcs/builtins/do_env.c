@@ -6,19 +6,22 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/17 19:00:35 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/18 15:45:03 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/21 20:18:40 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int		print_env(t_dict **env_arr, int env_len, char *command)
+void	print_env(t_msh *msh, t_dict **env_arr, int env_len, char *command)
 {
 	char	**temp;
 	int		idx;
 
 	if (!env_arr)
-		return (command_not_found(command));
+	{
+		command_not_found(msh->program_name, command);
+		return ;
+	}
 	idx = 0;
 	temp = ft_envjoin(env_arr, env_len);
 	if (!temp)
@@ -30,10 +33,9 @@ int		print_env(t_dict **env_arr, int env_len, char *command)
 		idx++;
 	}
 	ft_double_free((void **)temp);
-	return (EXIT_SUCCESS);
 }
 
-int		do_env(t_msh *msh)
+void	do_env(t_msh *msh)
 {
-	return (print_env(msh->env, msh->env_len, "env"));
+	print_env(msh, msh->env, msh->env_len, "env");
 }

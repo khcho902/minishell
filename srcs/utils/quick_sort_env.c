@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 09:13:17 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/18 09:13:36 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/21 03:40:35 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,5 +46,3 @@ void			quick_sort_env(int left, int right, t_dict **env)
 	quick_sort_env(left, pivot - 1, env);
 	quick_sort_env(pivot + 1, right, env);
 }
-
-

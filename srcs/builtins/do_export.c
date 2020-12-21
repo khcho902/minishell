@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 04:22:01 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/18 15:53:26 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/21 20:08:15 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,12 +55,10 @@ static t_dict	**export_env(t_msh *msh, t_dict **dest)
 	return (dest);
 }
 
-int				do_export(t_msh *msh)
+void			do_export(t_msh *msh)
 {
 	t_dict		**temp;
-	int			ret;
 
-	ret = EXIT_SUCCESS;
 	if (!msh->cmds->args[1])
 	{
 		if (!(temp = (t_dict **)malloc(
@@ -68,7 +66,7 @@ int				do_export(t_msh *msh)
 			exit_print_err(strerror(errno));
 		temp = copy_env(msh, temp);
 		quick_sort_env(0, msh->env_len - 1, temp);
-		ret = print_env(temp, msh->env_len, "export");
+		print_env(msh, temp, msh->env_len, "export");
 		ft_double_free((void **)temp);
 	}
 	else
@@ -81,5 +79,4 @@ int				do_export(t_msh *msh)
 		msh->env_len += (msh->cmds->length - 1);
 		msh->env = temp;
 	}
-	return (ret);
 }

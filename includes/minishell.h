@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/21 02:23:59 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/21 20:20:04 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,14 @@
 /*
  ** builtins/
  */
-int		do_cd(t_msh *msh);
-int		do_echo(t_msh *msh);
-int		do_env(t_msh *msh);
-int		do_exit(t_msh *msh);
-int		do_export(t_msh *msh);
-int		do_pwd(t_msh *msh);
-int		do_unset(t_msh *msh);
-int		print_env(t_dict **env_arr, int env_len, char *command);
+void	do_cd(t_msh *msh);
+void	do_echo(t_msh *msh);
+void	do_env(t_msh *msh);
+void		do_exit(t_msh *msh);
+void	do_export(t_msh *msh);
+void	do_pwd(t_msh *msh);
+void	do_unset(t_msh *msh);
+void	print_env(t_msh *msh, t_dict **env_arr, int env_len, char *command);
 
 /*
  ** executor/
@@ -64,8 +64,7 @@ void	sanitize_token(t_list *token, t_msh *msh);
  */
 void	exit_print_err(char *err_msg);
 int		print_syntax_err(char *program_name, char *token);
-int		command_not_found(char *str);
-int		print_err(char *where, char *arg, char *msg);
+void	command_not_found(char *program_name, char *cmd);
 
 /*
  ** prompt/

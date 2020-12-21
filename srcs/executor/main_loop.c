@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/19 19:03:05 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/19 19:05:59 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/21 20:19:39 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,8 @@ int		close_fds(t_msh *msh, pid_t pid, int pipe_open)
 	int		status;
 	int		ret;
 
+	ret = EXIT_SUCCESS;
+	status = 0;
 	waitpid(pid, &status, 0);
 	if (pipe_open)
 	{
@@ -72,14 +74,13 @@ int		close_fds(t_msh *msh, pid_t pid, int pipe_open)
 		close(msh->cmds->output_fd);
 	if (WIFEXITED(status))
 		ret = WEXITSTATUS(status);
+	if (ret != EXIT_SUCCESS)
+		ret = EXIT_FAILURE;
 	return (ret);
 }
 
 void	child_process(t_msh *msh, t_exe_fn func)
 {
-	int		ret;
-
-	ret = EXIT_SUCCESS;
 	if (msh->cmds->type == TYPE_PIPE &&
 			dup2(msh->cmds->pipes[PIPE_IN], STDOUT) < 0)
 		exit_print_err(strerror(errno));
@@ -90,8 +91,8 @@ void	child_process(t_msh *msh, t_exe_fn func)
 		exit_print_err(strerror(errno));
 	if (msh->cmds->output_fd != -1 && dup2(msh->cmds->output_fd, STDOUT) < 0)
 		exit_print_err(strerror(errno));
-	ret = func(msh);
-	exit(ret);
+	func(msh);
+	exit(EXIT_SUCCESS);
 }
 
 int		create_process(t_msh *msh, t_exe_fn func)

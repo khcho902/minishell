@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 05:44:26 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/19 16:09:43 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/21 12:25:23 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,14 +26,11 @@ static int	exec_process(t_msh *msh, char **av, char **env)
 		ret = execve(temp, av, env);
 		free(temp);
 		idx++;
-		if (ret == -1)
-			continue ;
 	}
 	if (ret == -1)
-		command_not_found(msh->cmds->args[0]);
+		ret = command_not_found(msh->program_name, msh->cmds->args[0]);
 	ft_double_free((void **)av);
 	ft_double_free((void **)env);
-	ret = EXIT_FAILURE;
 	return (ret);
 }
 
