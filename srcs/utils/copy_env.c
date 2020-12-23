@@ -1,27 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   command_not_found.c                                :+:      :+:    :+:   */
+/*   copy_env.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/12/17 04:02:54 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/22 08:58:25 by jiseo            ###   ########.fr       */
+/*   Created: 2020/12/23 17:03:20 by jiseo             #+#    #+#             */
+/*   Updated: 2020/12/23 17:03:31 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int		command_not_found(char *program_name, char *cmd)
+t_dict		**copy_env(t_msh *msh, t_dict **dst)
 {
-	char	*temp;
+	int		idx;
 
-	temp = ft_strjoin3("-", program_name, ": ");
-	ft_putstr_fd(temp, STDERR);
-	free(temp);
-	temp = ft_strjoin3(cmd, ": ", "command not found");
-	ft_putstr_fd(temp, STDERR);
-	free(temp);
-	ft_putchar_fd('\n', STDERR);
-	return (EXIT_FAILURE);
+	idx = 0;
+	while (idx < msh->env_len)
+	{
+		if (!(dst[idx] = (t_dict *)malloc(sizeof(t_dict))))
+			exit_print_err(strerror(errno));
+		if (!(dst[idx]->key = ft_strdup(msh->env[idx]->key)))
+			exit_print_err(strerror(errno));
+		if (!(dst[idx]->value = ft_strdup(msh->env[idx]->value)))
+			exit_print_err(strerror(errno));
+		idx++;
+	}
+	dst[idx] = NULL;
+	return (dst);
 }

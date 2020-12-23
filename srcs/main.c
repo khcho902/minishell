@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/21 20:27:41 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/22 08:52:27 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ int		main(int argc, char **argv, char **env)
 	t_msh	msh;
 
 	init_msh(argv[0], &msh, env);
+	show_logo();
 	res = argc;
 	while (res)
 	{

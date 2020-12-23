@@ -6,7 +6,7 @@
 #    By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/23 14:34:40 by jiseo             #+#    #+#              #
-#    Updated: 2020/12/21 20:02:29 by jiseo            ###   ########.fr        #
+#    Updated: 2020/12/23 17:05:10 by jiseo            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -45,6 +45,7 @@ RAW_SRCS		=	main.c \
 					utils/ft_envjoin.c \
 					utils/quick_sort_env.c \
 					utils/append_char_to_str.c \
+					utils/copy_env.c \
 					\
 					errors/exit_print_err.c \
 					errors/print_syntax_err.c \

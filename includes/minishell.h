@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/21 20:20:04 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/23 17:04:42 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ void	sanitize_token(t_list *token, t_msh *msh);
  */
 void	exit_print_err(char *err_msg);
 int		print_syntax_err(char *program_name, char *token);
-void	command_not_found(char *program_name, char *cmd);
+int		command_not_found(char *program_name, char *cmd);
 
 /*
  ** prompt/
@@ -82,4 +82,5 @@ t_dict	*get_env_dict(t_dict **env, char *key);
 char	**ft_envjoin(t_dict **env, int env_len);
 void	append_char_to_str(char **str, char c);
 void	quick_sort_env(int left, int right, t_dict **env);
+t_dict	**copy_env(t_msh *msh, t_dict **dst);
 #endif

@@ -6,7 +6,7 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 18:48:11 by kycho             #+#    #+#             */
-/*   Updated: 2020/12/21 02:27:59 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/22 08:52:20 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ void	init_msh_env(t_msh *msh, char **env)
 			exit_print_err(strerror(errno));
 		i++;
 	}
-	show_logo();
 }
 
 void	init_msh_path(t_msh *msh)
