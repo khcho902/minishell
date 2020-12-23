@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 04:22:01 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/23 19:26:32 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/23 22:47:39 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,13 @@
 
 char		*key_valid_test(char *key, char *chr, char *arg)
 {
-	int		idx;
+	int			idx;
+	const char	*reserved_variable[] = {"TERM_SESSION_ID", "SSH_AUTH_SOCK",
+	"LC_TERMINAL_VERSION", "Apple_PubSub_Socket_Render", "COLORFGBG",
+	"ITERM_PROFILE", "XPC_FLAGS", "LANG", "PWD", "SHELL", "TERM_PROGRAM",
+	"TERM_PROGRAM_VERSION", "PATH", "LC_TERMINAL", "COLORTERM", "TERM", "HOME",
+	"TMPDIR", "USER", "XPC_SERVICE_NAME", "LOGNAME", "ITERM_SESSION_ID",
+	"__CF_USER_TEXT_ENCODING", "SHLVL", "OLDPWD", NULL};
 
 	if (!(key = ft_substr(arg, 0, chr - arg)))
 		exit_print_err(strerror(errno));
@@ -25,6 +31,13 @@ char		*key_valid_test(char *key, char *chr, char *arg)
 	{
 		if (!(ft_isalnum(key[idx]) || key[idx] == '_'))
 			return (NULL);
+	}
+	idx = 0;
+	while (reserved_variable[idx])
+	{
+		if (!(ft_strcmp(reserved_variable[idx], key)))
+			return (NULL);
+		idx++;
 	}
 	return (key);
 }
