@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/24 17:55:26 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/25 00:08:34 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,4 +86,10 @@ void	append_char_to_str(char **str, char c);
 void	quick_sort_env(int left, int right, t_dict **env);
 void	copy_env(t_msh *msh, t_dict **dst);
 void	free_and_get_value(char **dst, char *src);
+
+/*
+ ** signal.c
+ */
+void	sig_handler(int signo);
+void	init_signal(void);
 #endif
