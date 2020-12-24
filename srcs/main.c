@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/24 16:17:26 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/24 23:27:32 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,22 @@ void	main_loop(t_msh *msh)
 	}
 }
 
+void	sig_handler(int signo)
+{
+	if (signo == SIGQUIT)
+	{
+		printf("quit %d\n", signo);
+		exit(0);
+	}
+	else if (signo == SIGINT)
+	{
+		printf("int %d\n", signo);
+		exit(0);
+	}
+	else
+		printf("else [%d]\n", signo);
+}
+
 int		main(int argc, char **argv, char **env)
 {
 	char	*input;
@@ -64,6 +80,9 @@ int		main(int argc, char **argv, char **env)
 	init_msh(argv[0], &msh, env);
 	show_logo();
 	res = argc;
+//	signal(SIGINT, sig_handler);
+//	signal(EOF, sig_handler);
+	//signal(SIGQUIT, sig_handler);
 	while (res)
 	{
 		show_prompt(&msh);

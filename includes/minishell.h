@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/24 15:43:59 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/24 17:55:26 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <string.h>
 # include <sys/wait.h>
 # include <sys/errno.h>
+# include <signal.h>
 
 # include <stdio.h>
 
