@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/23 17:04:42 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/24 14:56:57 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ void	sanitize_token(t_list *token, t_msh *msh);
  ** errors/
  */
 void	exit_print_err(char *err_msg);
+void	nonexit_print_err(char *err_msg);
 int		print_syntax_err(char *program_name, char *token);
 int		command_not_found(char *program_name, char *cmd);
 

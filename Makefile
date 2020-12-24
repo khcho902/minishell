@@ -6,7 +6,7 @@
 #    By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/23 14:34:40 by jiseo             #+#    #+#              #
-#    Updated: 2020/12/23 17:05:10 by jiseo            ###   ########.fr        #
+#    Updated: 2020/12/24 14:57:18 by jiseo            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -48,6 +48,7 @@ RAW_SRCS		=	main.c \
 					utils/copy_env.c \
 					\
 					errors/exit_print_err.c \
+					errors/nonexit_print_err.c \
 					errors/print_syntax_err.c \
 					errors/command_not_found.c \
 

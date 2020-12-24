@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 04:22:01 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/23 22:47:39 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/23 22:52:29 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,8 @@ char		*key_valid_test(char *key, char *chr, char *arg)
 	if (!(ft_isalpha(key[idx])))
 		return (NULL);
 	while (key[++idx])
-	{
 		if (!(ft_isalnum(key[idx]) || key[idx] == '_'))
 			return (NULL);
-	}
 	idx = 0;
 	while (reserved_variable[idx])
 	{
