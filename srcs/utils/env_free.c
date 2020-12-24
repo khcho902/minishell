@@ -1,26 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   do_pwd.c                                           :+:      :+:    :+:   */
+/*   env_free.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/20 16:10:13 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/25 02:43:20 by jiseo            ###   ########.fr       */
+/*   Created: 2020/12/25 01:12:02 by jiseo             #+#    #+#             */
+/*   Updated: 2020/12/25 01:29:51 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	do_pwd(t_msh *msh)
+void	env_free(t_dict **env)
 {
-	char	temp[PATH_MAX + 1];
+	int		idx;
 
-	if (!msh)
-		return ;
-	if (getcwd(temp, PATH_MAX) == NULL)
-		exit_print_err(strerror(errno));
-	ft_putstr_fd(temp, STDOUT);
-	ft_putchar_fd('\n', STDOUT);
-	free(temp);
+	idx = 0;
+	while (env[idx])
+	{
+		free(env[idx]->key);
+		free(env[idx]->value);
+		free(env[idx]);
+		idx++;
+	}
+	if (env)
+		free(env);
 }
