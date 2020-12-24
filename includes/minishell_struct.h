@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/15 02:36:28 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/21 20:14:25 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/25 02:58:47 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@
 # define FLAG_I			O_RDONLY
 # define FLAG_O			O_WRONLY | O_TRUNC | O_CREAT
 # define FLAG_AO		O_WRONLY | O_APPEND | O_CREAT
+
+# define BUFFER_SIZE	256
 
 # define METACHARACTER	" \t\n|;<>"
 

@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 04:22:01 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/25 01:56:14 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/25 02:56:59 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ void		do_export(t_msh *msh)
 		copy_env(msh, temp);
 		quick_sort_env(0, msh->env_len - 1, temp);
 		print_env(msh, temp, msh->env_len, "export");
-		free_env((void **)temp);
+		env_free(temp);
 	}
 	else
 	{
@@ -124,7 +124,7 @@ void		do_export(t_msh *msh)
 		copy_env(msh, temp);
 		export_env(msh, temp, msh->cmds->args);
 		temp[msh->env_len] = NULL;
-		free_env((void **)msh->env);
+		env_free(msh->env);
 		msh->env = temp;
 	}
 }

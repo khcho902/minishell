@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 04:22:52 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/25 01:56:24 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/25 02:46:42 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ void	do_unset(t_msh *msh)
 		}
 	}
 	temp[temp_idx] = NULL;
-	env_free((void **)msh->env);
+	env_free(msh->env);
 	msh->env_len = temp_idx;
 	msh->env = temp;
 }
