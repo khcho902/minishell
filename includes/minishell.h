@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/24 14:56:57 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/24 15:43:59 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@
 void	do_cd(t_msh *msh);
 void	do_echo(t_msh *msh);
 void	do_env(t_msh *msh);
-void		do_exit(t_msh *msh);
+void	do_exit(t_msh *msh);
 void	do_export(t_msh *msh);
 void	do_pwd(t_msh *msh);
 void	do_unset(t_msh *msh);
@@ -83,5 +83,6 @@ t_dict	*get_env_dict(t_dict **env, char *key);
 char	**ft_envjoin(t_dict **env, int env_len);
 void	append_char_to_str(char **str, char c);
 void	quick_sort_env(int left, int right, t_dict **env);
-t_dict	**copy_env(t_msh *msh, t_dict **dst);
+void	copy_env(t_msh *msh, t_dict **dst);
+void	free_and_get_value(char **dst, char *src);
 #endif

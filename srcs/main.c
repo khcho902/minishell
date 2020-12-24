@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/22 08:52:27 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/24 16:17:26 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ void	main_loop(t_msh *msh)
 {
 	t_exe_fn	func;
 
+	func = NULL;
 	while (msh->cmds)
 	{
 		if (msh->cmds->args[0] == NULL)

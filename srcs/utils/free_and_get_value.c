@@ -1,31 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   copy_env.c                                         :+:      :+:    :+:   */
+/*   free_and_get_value.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/12/23 17:03:20 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/24 15:19:53 by jiseo            ###   ########.fr       */
+/*   Created: 2020/12/24 15:29:41 by jiseo             #+#    #+#             */
+/*   Updated: 2020/12/24 15:48:50 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	copy_env(t_msh *msh, t_dict **dst)
+void	free_and_get_value(char **dst, char *src)
 {
-	int		idx;
-
-	idx = 0;
-	while (idx < msh->env_len)
-	{
-		if (!(dst[idx] = (t_dict *)malloc(sizeof(t_dict))))
-			exit_print_err(strerror(errno));
-		if (!(dst[idx]->key = ft_strdup(msh->env[idx]->key)))
-			exit_print_err(strerror(errno));
-		if (!(dst[idx]->value = ft_strdup(msh->env[idx]->value)))
-			exit_print_err(strerror(errno));
-		idx++;
-	}
-	dst[idx] = NULL;
+	if (*dst != NULL)
+		free(*dst);
+	if (!(*dst = ft_strdup(src)))
+		exit_print_err(strerror(errno));
 }

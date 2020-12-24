@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 04:22:01 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/23 22:52:29 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/24 16:17:59 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ void		export_env_oneline(t_msh *msh, t_dict **temp, char *arg, char *chr)
 	msh->env_len += 1;
 }
 
-t_dict		**export_env(t_msh *msh, t_dict **temp, char **args)
+void		export_env(t_msh *msh, t_dict **temp, char **args)
 {
 	char	*chr;
 	char	*key;
@@ -83,7 +83,8 @@ t_dict		**export_env(t_msh *msh, t_dict **temp, char **args)
 	int		idx;
 
 	idx = 0;
-	while (++idx < msh->cmds->length)
+	while (idx < msh->cmds->length)
+	{
 		if ((chr = ft_strchr(args[idx], '=')) != NULL)
 		{
 			if (!(key = key_valid_test(key, chr, args[idx])))
@@ -91,29 +92,26 @@ t_dict		**export_env(t_msh *msh, t_dict **temp, char **args)
 			else
 			{
 				if ((dict = get_env_dict(temp, key)) != NULL)
-				{
-					free(dict->value);
-					if (!(dict->value = ft_strdup(chr + 1)))
-						exit_print_err(strerror(errno));
-				}
+					free_and_get_value(&(dict->value), chr + 1);
 				else
 					export_env_oneline(msh, temp, args[idx], chr);
 			}
 			free(key);
 		}
-	temp[msh->env_len] = NULL;
-	return (temp);
+		idx++;
+	}
 }
 
 void		do_export(t_msh *msh)
 {
 	t_dict	**temp;
 
-	if (!msh->cmds->args[1])
+	temp = NULL;
+	if (msh->cmds->args[1] == NULL)
 	{
 		if (!(temp = (t_dict **)malloc(sizeof(t_dict *) * (msh->env_len + 1))))
 			exit_print_err(strerror(errno));
-		temp = copy_env(msh, temp);
+		copy_env(msh, temp);
 		quick_sort_env(0, msh->env_len - 1, temp);
 		print_env(msh, temp, msh->env_len, "export");
 		ft_double_free((void **)temp);
@@ -123,9 +121,9 @@ void		do_export(t_msh *msh)
 		if (!(temp = (t_dict **)malloc(sizeof(t_dict *) *
 						(get_export_len(msh, msh->cmds->args) + 1))))
 			exit_print_err(strerror(errno));
-		temp = copy_env(msh, temp);
-		temp = export_env(msh, temp, msh->cmds->args);
-
+		copy_env(msh, temp);
+		export_env(msh, temp, msh->cmds->args);
+		temp[msh->env_len] = NULL;
 		ft_double_free((void **)msh->env);
 		msh->env = temp;
 	}

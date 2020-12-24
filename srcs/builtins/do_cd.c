@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 00:57:53 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/24 15:04:23 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/24 15:54:44 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,7 @@ void	set_env_values(t_msh *msh)
 	if ((pwd_dict = get_env_dict(msh->env, "PWD")) != NULL)
 	{
 		if ((oldpwd_dict = get_env_dict(msh->env, "OLDPWD")) != NULL)
-		{
-			free(oldpwd_dict->value);
-			oldpwd_dict->value = ft_strdup(pwd_dict->value);
-		}
+			free_and_get_value(&(oldpwd_dict->value), pwd_dict->value);
 	}
 	else
 		free(oldpwd_dict->value);

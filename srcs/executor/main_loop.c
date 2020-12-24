@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/19 19:03:05 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/21 20:19:39 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/24 16:02:06 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@ void	redirection_input_fd(t_msh *msh, t_list *list)
 		{
 			if (msh->cmds->input_fd != -1)
 				close(msh->cmds->input_fd);
-			if ((list = list->next) && (msh->cmds->input_fd =
+			list = list->next;
+			if ((msh->cmds->input_fd =
 					open(list->content, FLAG_I, OPEN_MODE)) == -1)
 				exit_print_err(strerror(errno));
 		}
@@ -36,7 +37,8 @@ void	redirection_output_fd(t_msh *msh, t_list *list)
 		{ 
 			if (msh->cmds->output_fd != -1)
 				close(msh->cmds->output_fd);
-			if ((list = list->next) && (msh->cmds->output_fd =
+			list = list->next;
+			if ((msh->cmds->output_fd =
 					open(list->content, FLAG_O, OPEN_MODE)) == -1)
 				exit_print_err(strerror(errno));
 		}
@@ -44,7 +46,8 @@ void	redirection_output_fd(t_msh *msh, t_list *list)
 		{
 			if (msh->cmds->output_fd != -1)
 				close(msh->cmds->output_fd);
-			if ((list = list->next) && (msh->cmds->output_fd =
+			list = list->next;
+			if ((msh->cmds->output_fd =
 					open(list->content, FLAG_AO, OPEN_MODE)) == -1)
 				exit_print_err(strerror(errno));
 		}
