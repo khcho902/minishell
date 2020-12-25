@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 04:22:01 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/25 15:35:35 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/25 17:29:52 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,7 @@ void		export_env(t_msh *msh, t_dict **temp, char **args)
 	int		idx;
 
 	idx = 0;
+	dict = NULL;
 	while (idx < msh->cmds->length)
 	{
 		if ((chr = ft_strchr(args[idx], '=')) != NULL)
@@ -106,7 +107,6 @@ void		do_export(t_msh *msh, t_cmd *cmd)
 {
 	t_dict	**temp;
 
-	temp = NULL;
 	if (cmd->args[1] == NULL)
 	{
 		if (!(temp = (t_dict **)malloc(sizeof(t_dict *) * (msh->env_len + 1))))

@@ -6,7 +6,7 @@
 #    By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/23 14:34:40 by jiseo             #+#    #+#              #
-#    Updated: 2020/12/25 14:16:53 by jiseo            ###   ########.fr        #
+#    Updated: 2020/12/25 17:56:35 by jiseo            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -69,10 +69,10 @@ all:			$(NAME)
 
 $(NAME): $(OBJS)
 	$(MAKE) -C $(LIBFT)
-	$(CC) $(CFLAGS) $^ -o $@ $(LIB) $(INCS) # -g -fsanitize=address
+	$(CC) $(CFLAGS) $^ -o $@ $(LIB) $(INCS)
 
 .c.o:
-	$(CC) $(CFLAGS) $(INCS) -c $< -o $(<:.c=.o) # -g -fsanitize=address
+	$(CC) $(CFLAGS) $(INCS) -c $< -o $(<:.c=.o)
 
 clean:
 	$(MAKE) -C $(LIBFT) clean
@@ -85,7 +85,7 @@ fclean: clean
 re: fclean all
 
 val:
-	valgrind --leak-check=full --error-limit=no ./minishell
+	valgrind --leak-check=full --show-leak-kinds=all --error-limit=no --track-origins=yes ./minishell
 
 r: all
 	./minishell
