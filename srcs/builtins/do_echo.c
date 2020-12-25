@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/25 21:51:59 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/25 15:45:34 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/25 18:38:35 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,8 @@ void	do_echo(t_msh *msh, t_cmd *cmd)
 	while (idx < cmd->length)
 	{
 		ft_putstr_fd(cmd->args[idx], STDOUT);
-		ft_putchar_fd(' ', STDOUT);
+		if (cmd->length != (idx + 1))
+			ft_putchar_fd(' ', STDOUT);
 		idx++;
 	}
 	if (!n_option)
