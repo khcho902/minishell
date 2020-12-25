@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/15 02:36:28 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/25 02:58:47 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/25 15:29:55 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,5 +68,5 @@ typedef struct		s_msh
 	char			**path;
 }					t_msh;
 
-typedef void		(*t_exe_fn)(t_msh *);
+typedef void		(*t_exe_fn)(t_msh *, t_cmd *);
 #endif

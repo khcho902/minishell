@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 04:22:52 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/25 02:46:42 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/25 15:36:31 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,20 +50,20 @@ int		check_args(char *key, char **args, int args_len)
 	return (1);
 }
 
-void	do_unset(t_msh *msh)
+void	do_unset(t_msh *msh, t_cmd *cmd)
 {
 	t_dict		**temp;
 	int			idx;
 	int			temp_idx;
 
 	if (!(temp = (t_dict **)malloc(sizeof(t_dict *) *
-					(get_unset_len(msh, msh->cmds->args) + 1))))
+					(get_unset_len(msh, cmd->args) + 1))))
 		exit_print_err(strerror(errno));
 	idx = -1;
 	temp_idx = 0;
 	while (++idx < msh->env_len)
 	{
-		if (check_args(msh->env[idx]->key, msh->cmds->args, msh->cmds->length))
+		if (check_args(msh->env[idx]->key, cmd->args, cmd->length))
 		{
 			if (!(temp[temp_idx] = (t_dict *)malloc(sizeof(t_dict))))
 				exit_print_err(strerror(errno));

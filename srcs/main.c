@@ -6,27 +6,29 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/25 13:58:49 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/25 15:47:51 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	*compare_arg(t_msh *msh)
+void	*compare_arg(t_msh *msh, t_cmd *cmd)
 {
-	if (!ft_strcmp(msh->cmds->args[0], "exit"))
+	if (!msh)
+		return (NULL);
+	if (!ft_strcmp(cmd->args[0], "exit"))
 		return (&do_exit);
-	else if (!ft_strcmp(msh->cmds->args[0], "echo"))
+	else if (!ft_strcmp(cmd->args[0], "echo"))
 		return (&do_echo);
-	else if (!ft_strcmp(msh->cmds->args[0], "env"))
+	else if (!ft_strcmp(cmd->args[0], "env"))
 		return (&do_env);
-	else if (!ft_strcmp(msh->cmds->args[0], "export"))
+	else if (!ft_strcmp(cmd->args[0], "export"))
 		return (&do_export);
-	else if (!ft_strcmp(msh->cmds->args[0], "pwd"))
+	else if (!ft_strcmp(cmd->args[0], "pwd"))
 		return (&do_pwd);
-	else if (!ft_strcmp(msh->cmds->args[0], "unset"))
+	else if (!ft_strcmp(cmd->args[0], "unset"))
 		return (&do_unset);
-	else if (!ft_strcmp(msh->cmds->args[0], "cd"))
+	else if (!ft_strcmp(cmd->args[0], "cd"))
 		return (&do_cd);
 	else
 		return (&executor);
@@ -35,23 +37,24 @@ void	*compare_arg(t_msh *msh)
 void	main_loop(t_msh *msh)
 {
 	t_exe_fn	func;
+	t_cmd		*cmd;
 
-	func = NULL;
-	while (msh->cmds)
+	cmd = msh->cmds;
+	while (cmd)
 	{
-		if (msh->cmds->args[0] == NULL)
+		if (cmd->args[0] == NULL)
 			break ;
-		func = compare_arg(msh);
-		redirection_input_fd(msh, msh->cmds->redirection_files);
-		redirection_output_fd(msh, msh->cmds->redirection_files);
-		if ((void *)func != &executor && msh->cmds->type == TYPE_DEFAULT &&
-			msh->cmds->input_fd == -1 && msh->cmds->output_fd == -1 &&
-			(msh->cmds->prev == NULL ||
-			(msh->cmds->prev && msh->cmds->prev->type == TYPE_DEFAULT)))
-			func(msh);
+		func = compare_arg(msh, cmd);
+		redirection_input_fd(cmd, cmd->redirection_files);
+		redirection_output_fd(cmd, cmd->redirection_files);
+		if ((void *)func != &executor && cmd->type == TYPE_DEFAULT &&
+			cmd->input_fd == -1 && cmd->output_fd == -1 &&
+			(cmd->prev == NULL ||
+			 (cmd->prev && cmd->prev->type == TYPE_DEFAULT)))
+			func(msh, cmd);
 		else
-			create_process(msh, func);
-		msh->cmds = msh->cmds->next;
+			create_process(msh, cmd, func);
+		cmd = cmd->next;
 	}
 }
 

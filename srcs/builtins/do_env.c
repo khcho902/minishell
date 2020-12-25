@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/17 19:00:35 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/21 20:18:40 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/25 15:34:37 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,8 @@ void	print_env(t_msh *msh, t_dict **env_arr, int env_len, char *command)
 	ft_double_free((void **)temp);
 }
 
-void	do_env(t_msh *msh)
+void	do_env(t_msh *msh, t_cmd *cmd)
 {
 	print_env(msh, msh->env, msh->env_len, "env");
+	(void)cmd;
 }

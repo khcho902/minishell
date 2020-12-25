@@ -6,56 +6,55 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/19 19:03:05 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/24 16:02:06 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/25 15:47:21 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	redirection_input_fd(t_msh *msh, t_list *list)
+void	redirection_input_fd(t_cmd *cmd, t_list *list)
 {
 	while (list)
 	{
 		if (!ft_strcmp("<", list->content))
 		{
-			if (msh->cmds->input_fd != -1)
-				close(msh->cmds->input_fd);
+			if (cmd->input_fd != -1)
+				close(cmd->input_fd);
 			list = list->next;
-			if ((msh->cmds->input_fd =
-					open(list->content, FLAG_I, OPEN_MODE)) == -1)
+			if ((cmd->input_fd = open(list->content, FLAG_I, OPEN_MODE)) == -1)
 				exit_print_err(strerror(errno));
 		}
 		list = list->next;
 	}
 }
 
-void	redirection_output_fd(t_msh *msh, t_list *list)
+void	redirection_output_fd(t_cmd *cmd, t_list *list)
 {
 	while (list)
 	{
 		if (!ft_strcmp(">", list->content))
 		{ 
-			if (msh->cmds->output_fd != -1)
-				close(msh->cmds->output_fd);
+			if (cmd->output_fd != -1)
+				close(cmd->output_fd);
 			list = list->next;
-			if ((msh->cmds->output_fd =
-					open(list->content, FLAG_O, OPEN_MODE)) == -1)
+			if ((cmd->output_fd =
+						open(list->content, FLAG_O, OPEN_MODE)) == -1)
 				exit_print_err(strerror(errno));
 		}
 		else if (!ft_strcmp(">>", list->content))
 		{
-			if (msh->cmds->output_fd != -1)
-				close(msh->cmds->output_fd);
+			if (cmd->output_fd != -1)
+				close(cmd->output_fd);
 			list = list->next;
-			if ((msh->cmds->output_fd =
-					open(list->content, FLAG_AO, OPEN_MODE)) == -1)
+			if ((cmd->output_fd =
+						open(list->content, FLAG_AO, OPEN_MODE)) == -1)
 				exit_print_err(strerror(errno));
 		}
 		list = list->next;
 	}
 }
 
-int		close_fds(t_msh *msh, pid_t pid, int pipe_open)
+int		close_fds(t_cmd *cmd, pid_t pid, int pipe_open)
 {
 	int		status;
 	int		ret;
@@ -65,16 +64,16 @@ int		close_fds(t_msh *msh, pid_t pid, int pipe_open)
 	waitpid(pid, &status, 0);
 	if (pipe_open)
 	{
-		close(msh->cmds->pipes[PIPE_IN]);
-		if (!msh->cmds->next || msh->cmds->type == TYPE_DEFAULT)
-			close(msh->cmds->pipes[PIPE_OUT]);
+		close(cmd->pipes[PIPE_IN]);
+		if (!cmd->next || cmd->type == TYPE_DEFAULT)
+			close(cmd->pipes[PIPE_OUT]);
 	}
-	if (msh->cmds->prev && msh->cmds->prev->type == TYPE_PIPE)
-		close(msh->cmds->prev->pipes[PIPE_OUT]);
-	if (msh->cmds->input_fd != -1)
-		close(msh->cmds->input_fd);
-	if (msh->cmds->output_fd != -1)
-		close(msh->cmds->output_fd);
+	if (cmd->prev && cmd->prev->type == TYPE_PIPE)
+		close(cmd->prev->pipes[PIPE_OUT]);
+	if (cmd->input_fd != -1)
+		close(cmd->input_fd);
+	if (cmd->output_fd != -1)
+		close(cmd->output_fd);
 	if (WIFEXITED(status))
 		ret = WEXITSTATUS(status);
 	if (ret != EXIT_SUCCESS)
@@ -82,23 +81,23 @@ int		close_fds(t_msh *msh, pid_t pid, int pipe_open)
 	return (ret);
 }
 
-void	child_process(t_msh *msh, t_exe_fn func)
+void	child_process(t_msh *msh, t_cmd *cmd, t_exe_fn func)
 {
-	if (msh->cmds->type == TYPE_PIPE &&
-			dup2(msh->cmds->pipes[PIPE_IN], STDOUT) < 0)
+	if (cmd->type == TYPE_PIPE &&
+			dup2(cmd->pipes[PIPE_IN], STDOUT) < 0)
 		exit_print_err(strerror(errno));
-	if (msh->cmds->prev && msh->cmds->prev->type == TYPE_PIPE &&
-			dup2(msh->cmds->prev->pipes[PIPE_OUT], STDIN) < 0)
+	if (cmd->prev && cmd->prev->type == TYPE_PIPE &&
+			dup2(cmd->prev->pipes[PIPE_OUT], STDIN) < 0)
 		exit_print_err(strerror(errno));
-	if (msh->cmds->input_fd != -1 && dup2(msh->cmds->input_fd, STDIN) < 0)
+	if (cmd->input_fd != -1 && dup2(cmd->input_fd, STDIN) < 0)
 		exit_print_err(strerror(errno));
-	if (msh->cmds->output_fd != -1 && dup2(msh->cmds->output_fd, STDOUT) < 0)
+	if (cmd->output_fd != -1 && dup2(cmd->output_fd, STDOUT) < 0)
 		exit_print_err(strerror(errno));
-	func(msh);
+	func(msh, cmd);
 	exit(EXIT_SUCCESS);
 }
 
-int		create_process(t_msh *msh, t_exe_fn func)
+int		create_process(t_msh *msh, t_cmd *cmd, t_exe_fn func)
 {
 	pid_t	pid;
 	int		ret;
@@ -106,17 +105,17 @@ int		create_process(t_msh *msh, t_exe_fn func)
 
 	pipe_open = 0;
 	ret = EXIT_SUCCESS;
-	if (msh->cmds->type == TYPE_PIPE)
+	if (cmd->type == TYPE_PIPE)
 	{
 		pipe_open = 1;
-		if (pipe(msh->cmds->pipes) == -1)
+		if (pipe(cmd->pipes) == -1)
 			exit_print_err(strerror(errno));
 	}
 	if ((pid = fork()) == -1)
 		exit_print_err(strerror(errno));
 	if (pid == 0)
-		child_process(msh, func);
+		child_process(msh, cmd, func);
 	else
-		ret = close_fds(msh, pid, pipe_open);
+		ret = close_fds(cmd, pid, pipe_open);
 	return (ret);
 }

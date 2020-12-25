@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 00:57:53 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/24 15:54:44 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/25 15:33:07 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,16 +34,16 @@ void	set_env_values(t_msh *msh)
 	}
 }
 
-void	do_cd(t_msh *msh)
+void	do_cd(t_msh *msh, t_cmd *cmd)
 {
 	char	*path;
 
-	if (msh->cmds->args[1] == NULL)
+	if (cmd->args[1] == NULL)
 		path = get_env_dict(msh->env, "HOME")->value;
-	else if (!ft_strcmp(msh->cmds->args[1], "-"))
+	else if (!ft_strcmp(cmd->args[1], "-"))
 		path = get_env_dict(msh->env, "OLDPWD")->value;
 	else
-		path = msh->cmds->args[1];
+		path = cmd->args[1];
 	if (chdir(path))
 		nonexit_print_err(strerror(errno));
 	set_env_values(msh);

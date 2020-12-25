@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/25 01:41:34 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/25 15:46:28 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,24 +26,24 @@
 /*
  ** builtins/
  */
-void	do_cd(t_msh *msh);
-void	do_echo(t_msh *msh);
-void	do_env(t_msh *msh);
-void	do_exit(t_msh *msh);
-void	do_export(t_msh *msh);
-void	do_pwd(t_msh *msh);
-void	do_unset(t_msh *msh);
+void	do_cd(t_msh *msh, t_cmd *cmd);
+void	do_echo(t_msh *msh, t_cmd *cmd);
+void	do_env(t_msh *msh, t_cmd *cmd);
+void	do_exit(t_msh *msh, t_cmd *cmd);
+void	do_export(t_msh *msh, t_cmd *cmd);
+void	do_pwd(t_msh *msh, t_cmd *cmd);
+void	do_unset(t_msh *msh, t_cmd *cmd);
 void	print_env(t_msh *msh, t_dict **env_arr, int env_len, char *command);
 
 /*
  ** executor/
  */
-int		executor(t_msh *msh);
-void	redirection_input_fd(t_msh *msh, t_list *list);
-void	redirection_output_fd(t_msh *msh, t_list *list);
-int		close_fds(t_msh *msh, pid_t pid, int pipe_open);
-void	child_process(t_msh *msh, t_exe_fn func);
-int		create_process(t_msh *msh, t_exe_fn func);
+int		executor(t_msh *msh, t_cmd *cmd);
+void	redirection_input_fd(t_cmd *cmd, t_list *list);
+void	redirection_output_fd(t_cmd *cmd, t_list *list);
+int		close_fds(t_cmd *cmd, pid_t pid, int pipe_open);
+void	child_process(t_msh *msh, t_cmd *cmd, t_exe_fn func);
+int		create_process(t_msh *msh, t_cmd *cmd, t_exe_fn func);
 
 /*
  ** init_free_msh/

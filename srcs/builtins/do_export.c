@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 04:22:01 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/25 02:56:59 by jiseo            ###   ########.fr       */
+/*   Updated: 2020/12/25 15:35:35 by jiseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,12 +102,12 @@ void		export_env(t_msh *msh, t_dict **temp, char **args)
 	}
 }
 
-void		do_export(t_msh *msh)
+void		do_export(t_msh *msh, t_cmd *cmd)
 {
 	t_dict	**temp;
 
 	temp = NULL;
-	if (msh->cmds->args[1] == NULL)
+	if (cmd->args[1] == NULL)
 	{
 		if (!(temp = (t_dict **)malloc(sizeof(t_dict *) * (msh->env_len + 1))))
 			exit_print_err(strerror(errno));
@@ -119,10 +119,10 @@ void		do_export(t_msh *msh)
 	else
 	{
 		if (!(temp = (t_dict **)malloc(sizeof(t_dict *) *
-						(get_export_len(msh, msh->cmds->args) + 1))))
+						(get_export_len(msh, cmd->args) + 1))))
 			exit_print_err(strerror(errno));
 		copy_env(msh, temp);
-		export_env(msh, temp, msh->cmds->args);
+		export_env(msh, temp, cmd->args);
 		temp[msh->env_len] = NULL;
 		env_free(msh->env);
 		msh->env = temp;
