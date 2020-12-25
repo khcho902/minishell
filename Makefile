@@ -6,7 +6,7 @@
 #    By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/23 14:34:40 by jiseo             #+#    #+#              #
-#    Updated: 2020/12/25 03:00:06 by jiseo            ###   ########.fr        #
+#    Updated: 2020/12/25 14:16:53 by jiseo            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -63,16 +63,16 @@ LIB				=	-Llibft -lft
 LIBFT			=	./libft
 RM				= 	rm -f
 
-.PHONY : all clean fclean re valgrind run
+.PHONY : all clean fclean re val r
 
 all:			$(NAME)
 
 $(NAME): $(OBJS)
 	$(MAKE) -C $(LIBFT)
-	$(CC) $(CFLAGS) $^ -o $@ $(LIB) $(INCS)
+	$(CC) $(CFLAGS) $^ -o $@ $(LIB) $(INCS) # -g -fsanitize=address
 
 .c.o:
-	$(CC) $(CFLAGS) $(INCS) -c $< -o $(<:.c=.o)
+	$(CC) $(CFLAGS) $(INCS) -c $< -o $(<:.c=.o) # -g -fsanitize=address
 
 clean:
 	$(MAKE) -C $(LIBFT) clean
