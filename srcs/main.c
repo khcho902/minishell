@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/25 19:08:26 by jiseo            ###   ########.fr       */
+/*   Updated: 2021/01/01 16:51:17 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,22 @@ int		main(int argc, char **argv, char **env)
 
 	init_msh(argv[0], &msh, env);
 	init_signal();
+
+	/****************************************************/
+	if (argc == 3 && ft_strcmp("-c", argv[1]) == 0)
+	{
+		input = argv[2];
+
+		if (parsing(&msh, input) == SUCCESS)
+		{
+			main_loop(&msh);
+		}
+
+		free_msh_member(&msh);
+		return (msh.exit_status & 255);
+	}
+	/****************************************************/
+
 	show_logo();
 	res = argc;
 	while (res)
