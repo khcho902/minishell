@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/19 19:03:05 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/01 17:29:50 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/01 18:58:00 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,7 +143,8 @@ int	exec_process(t_msh *msh, t_cmd *cmd, char **av, char **env)
 	return (ret);
 }
 
-int			executor(t_msh *msh, t_cmd *cmd)
+//int			basic_executor(t_msh *msh, t_cmd *cmd)
+void			basic_executor(t_msh *msh, t_cmd *cmd)
 {
 	char	**av;
 	char	**env;
@@ -162,52 +163,37 @@ int			executor(t_msh *msh, t_cmd *cmd)
 	}
 	av[idx] = NULL;
 	env = ft_envjoin(msh->env, msh->env_len);
-	return (exec_process(msh, cmd, av, env));
-}
 
-
-void	*compare_arg(t_msh *msh, t_cmd *cmd)
-{
-	if (!msh)
-		return (NULL);
-	if (!ft_strcmp(cmd->args[0], "exit"))
-		return (&do_exit);
-	else if (!ft_strcmp(cmd->args[0], "echo"))
-		return (&do_echo);
-	else if (!ft_strcmp(cmd->args[0], "env"))
-		return (&do_env);
-	else if (!ft_strcmp(cmd->args[0], "export"))
-		return (&do_export);
-	else if (!ft_strcmp(cmd->args[0], "pwd"))
-		return (&do_pwd);
-	else if (!ft_strcmp(cmd->args[0], "unset"))
-		return (&do_unset);
-	else if (!ft_strcmp(cmd->args[0], "cd"))
-		return (&do_cd);
-	else
-		return (&executor);
+	exec_process(msh, cmd, av, env);
+//	return (exec_process(msh, cmd, av, env));
 }
 
 void	executing(t_msh *msh)
 {
-	t_exe_fn	func;
+	t_exe_fn	executor;
 	t_cmd		*cmd;
 
 	cmd = msh->cmds;
 	while (cmd)
 	{
-		if (cmd->args[0] == NULL)
-			break ;
-		func = compare_arg(msh, cmd);
+		executor = get_builtin_executor(cmd->args[0]);
+		if (executor == NULL)
+			executor = &basic_executor;
+
 		redirection_input_fd(cmd, cmd->redirection_files);
 		redirection_output_fd(cmd, cmd->redirection_files);
-		if ((void *)func != &executor && cmd->type == TYPE_DEFAULT &&
+
+		if ((void *)executor != &basic_executor && cmd->type == TYPE_DEFAULT &&
 			cmd->input_fd == -1 && cmd->output_fd == -1 &&
 			(cmd->prev == NULL ||
 			 (cmd->prev && cmd->prev->type == TYPE_DEFAULT)))
-			func(msh, cmd);
+		{
+			executor(msh, cmd);
+		}
 		else
-			create_process(msh, cmd, func);
+		{
+			create_process(msh, cmd, executor);
+		}
 		cmd = cmd->next;
 	}
 }
