@@ -6,52 +6,46 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/19 19:03:05 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/02 15:35:39 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/02 17:15:08 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	redirection_input_fd(t_cmd *cmd, t_list *list)
+int		set_redirection_fd(t_msh *msh, t_cmd *cmd)
 {
-	while (list)
-	{
-		if (!ft_strcmp("<", list->content))
-		{
-			if (cmd->input_fd != -1)
-				close(cmd->input_fd);
-			list = list->next;
-			if ((cmd->input_fd = open(list->content, FLAG_I, OPEN_MODE)) == -1)
-				exit_print_err(strerror(errno));
-		}
-		list = list->next;
-	}
-}
+	t_list *list;
 
-void	redirection_output_fd(t_cmd *cmd, t_list *list)
-{
-	while (list)
+	list = cmd->redirection_files;
+	while(list)
 	{
 		if (!ft_strcmp(">", list->content))
-		{ 
+		{
 			if (cmd->output_fd != -1)
 				close(cmd->output_fd);
 			list = list->next;
-			if ((cmd->output_fd =
-						open(list->content, FLAG_O, OPEN_MODE)) == -1)
-				exit_print_err(strerror(errno));
+			if ((cmd->output_fd = open(list->content, FLAG_O, OPEN_MODE)) == -1)
+				return (print_execute_err(msh->program_name, list->content, strerror(errno)));
 		}
 		else if (!ft_strcmp(">>", list->content))
 		{
 			if (cmd->output_fd != -1)
 				close(cmd->output_fd);
 			list = list->next;
-			if ((cmd->output_fd =
-						open(list->content, FLAG_AO, OPEN_MODE)) == -1)
-				exit_print_err(strerror(errno));
+			if ((cmd->output_fd = open(list->content, FLAG_AO, OPEN_MODE)) == -1)
+				return (print_execute_err(msh->program_name, list->content, strerror(errno)));
+		}
+		else if (!ft_strcmp("<", list->content))
+		{
+			if (cmd->input_fd != -1)
+				close(cmd->input_fd);
+			list = list->next;
+			if ((cmd->input_fd = open(list->content, FLAG_I, OPEN_MODE)) == -1)
+				return (print_execute_err(msh->program_name, list->content, strerror(errno)));
 		}
 		list = list->next;
 	}
+	return (SUCCESS);
 }
 
 int		close_fds(t_cmd *cmd, pid_t pid)
@@ -240,8 +234,10 @@ t_cmd	*piping(t_msh *msh, t_cmd *cmd)
 
 			
 			executor  = get_builtin_executor(cmd->args[0]);	
-			redirection_input_fd(cmd, cmd->redirection_files);
-			redirection_output_fd(cmd, cmd->redirection_files);
+			if (set_redirection_fd(msh, cmd) == ERROR)
+			{
+				exit(1);
+			}
 
 			if (executor)
 			{
@@ -286,8 +282,17 @@ void	executing(t_msh *msh)
 		
 		executor = get_builtin_executor(cmd->args[0]);
 		
-		redirection_input_fd(cmd, cmd->redirection_files);
-		redirection_output_fd(cmd, cmd->redirection_files);
+
+		if (set_redirection_fd(msh, cmd) == ERROR)
+		{
+			if (cmd->input_fd != -1)
+				close(cmd->input_fd);
+			if (cmd->output_fd != -1)
+				close(cmd->output_fd);
+			cmd = cmd->next;
+			msh->exit_status = 1;
+			continue;
+		}
 
 		if (executor)
 		{

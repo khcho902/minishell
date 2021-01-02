@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/01 19:03:02 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/02 16:43:46 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ void	exit_print_err(char *err_msg);
 void	nonexit_print_err(char *err_msg);
 int		print_syntax_err(char *program_name, char *token);
 int		command_not_found(char *program_name, char *cmd);
+int		print_execute_err(char *program_name, char *token, char *err_msg);
 
 /*
  ** prompt/

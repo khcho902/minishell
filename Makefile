@@ -6,7 +6,7 @@
 #    By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/23 14:34:40 by jiseo             #+#    #+#              #
-#    Updated: 2021/01/02 14:07:39 by kycho            ###   ########.fr        #
+#    Updated: 2021/01/02 16:43:05 by kycho            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -54,6 +54,7 @@ RAW_SRCS		=	main.c \
 					errors/nonexit_print_err.c \
 					errors/print_syntax_err.c \
 					errors/command_not_found.c \
+					errors/print_execute_err.c \
 
 SRCS			=	$(addprefix $(SRCS_PATH), $(RAW_SRCS))
 OBJS			=	$(SRCS:.c=.o)
