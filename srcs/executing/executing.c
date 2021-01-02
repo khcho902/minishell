@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/19 19:03:05 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/02 18:26:41 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/02 23:47:34 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ int		set_redirection_fd(t_msh *msh, t_cmd *cmd)
 /******    set_redirection_fd.c  end ********/
 
 
-int		close_fds(t_cmd *cmd, pid_t pid)
+int		close_fds(t_msh *msh, t_cmd *cmd, pid_t pid)
 {
 	int		status;
 	int		ret;
@@ -59,6 +59,11 @@ int		close_fds(t_cmd *cmd, pid_t pid)
 	ret = EXIT_SUCCESS;
 	status = 0;
 	waitpid(pid, &status, 0);
+	
+	if (WIFEXITED(status))
+		msh->exit_status = WEXITSTATUS(status);
+	else if (WIFSIGNALED(status))
+		msh->exit_status = 128 + WTERMSIG(status);
 
 	if (cmd->input_fd != -1)
 		close(cmd->input_fd);
@@ -72,55 +77,44 @@ int		close_fds(t_cmd *cmd, pid_t pid)
 }
 
 
-int	exec_process(t_msh *msh, t_cmd *cmd, char **av, char **env)
+int	exec_process(t_msh *msh, t_cmd *cmd, char **env)
 {
 	char	*temp;
 	int		idx;
 	int		ret;
 
+	if (cmd->args[0] == NULL)
+		exit(0);
 	idx = 0;
 	while (msh->path[idx])
 	{
 		if (!(temp = ft_strjoin3(msh->path[idx], "/", cmd->args[0])))
 			exit_print_err(strerror(errno));
-		ret = execve(temp, av, env);
+		ret = execve(temp, cmd->args, env);
 		free(temp);
 		idx++;
 	}
-	if ((ret = execve(cmd->args[0], av, env)) && ret == -1)
+	if ((ret = execve(cmd->args[0], cmd->args, env)) && ret == -1)
+	{
 		ret = command_not_found(msh->program_name, cmd->args[0]);
-	ft_double_free((void **)av);
+		exit(127);
+	}
 	ft_double_free((void **)env);
 	return (ret);
 }
 
 void			basic_executor(t_msh *msh, t_cmd *cmd)
 {
-	char	**av;
 	char	**env;
-	int		idx;
 
-	if (!(av = (char **)malloc(sizeof(char *) * (cmd->length + 1))))
-		exit_print_err(strerror(errno));
-	if (!(av[0] = ft_strjoin("./", cmd->args[0])))
-		exit_print_err(strerror(errno));
-	idx = 1;
-	while (idx < cmd->length)
-	{
-		if (!(av[idx] = ft_strdup(cmd->args[idx])))
-			exit_print_err(strerror(errno));
-		idx++;
-	}
-	av[idx] = NULL;
 	env = ft_envjoin(msh->env, msh->env_len);
 
-	exec_process(msh, cmd, av, env);
+	exec_process(msh, cmd, env);
 }
 
 
 void	child_process(t_msh *msh, t_cmd *cmd)
 {
-
 	if (cmd->input_fd != -1 && dup2(cmd->input_fd, STDIN) < 0)
 		exit_print_err(strerror(errno));
 	if (cmd->output_fd != -1 && dup2(cmd->output_fd, STDOUT) < 0)
@@ -141,7 +135,7 @@ int		create_process(t_msh *msh, t_cmd *cmd)
 	if (pid == 0)
 		child_process(msh, cmd);
 	else
-		ret = close_fds(cmd, pid);
+		ret = close_fds(msh, cmd, pid);
 	return (ret);
 }
 
