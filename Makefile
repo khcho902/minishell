@@ -6,7 +6,7 @@
 #    By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/23 14:34:40 by jiseo             #+#    #+#              #
-#    Updated: 2021/01/01 18:58:32 by kycho            ###   ########.fr        #
+#    Updated: 2021/01/02 14:07:39 by kycho            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -69,10 +69,10 @@ all:			$(NAME)
 
 $(NAME): $(OBJS)
 	$(MAKE) -C $(LIBFT)
-	$(CC) $(CFLAGS) $^ -o $@ $(LIB) $(INCS)
+	$(CC) $(CFLAGS) $^ -o $@ $(LIB) $(INCS) #-g -fsanitize=address
 
 .c.o:
-	$(CC) $(CFLAGS) $(INCS) -c $< -o $(<:.c=.o)
+	$(CC) $(CFLAGS) $(INCS) -c $< -o $(<:.c=.o) #-g -fsanitize=address
 
 clean:
 	$(MAKE) -C $(LIBFT) clean

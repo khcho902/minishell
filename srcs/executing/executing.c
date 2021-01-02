@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/19 19:03:05 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/01 18:58:00 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/02 15:35:39 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void	redirection_output_fd(t_cmd *cmd, t_list *list)
 	}
 }
 
-int		close_fds(t_cmd *cmd, pid_t pid, int pipe_open)
+int		close_fds(t_cmd *cmd, pid_t pid)
 {
 	int		status;
 	int		ret;
@@ -62,14 +62,7 @@ int		close_fds(t_cmd *cmd, pid_t pid, int pipe_open)
 	ret = EXIT_SUCCESS;
 	status = 0;
 	waitpid(pid, &status, 0);
-	if (pipe_open)
-	{
-		close(cmd->pipes[PIPE_IN]);
-		if (!cmd->next || cmd->type == TYPE_DEFAULT)
-			close(cmd->pipes[PIPE_OUT]);
-	}
-	if (cmd->prev && cmd->prev->type == TYPE_PIPE)
-		close(cmd->prev->pipes[PIPE_OUT]);
+
 	if (cmd->input_fd != -1)
 		close(cmd->input_fd);
 	if (cmd->output_fd != -1)
@@ -78,45 +71,6 @@ int		close_fds(t_cmd *cmd, pid_t pid, int pipe_open)
 		ret = WEXITSTATUS(status);
 	if (ret != EXIT_SUCCESS)
 		ret = EXIT_FAILURE;
-	return (ret);
-}
-
-void	child_process(t_msh *msh, t_cmd *cmd, t_exe_fn func)
-{
-	if (cmd->type == TYPE_PIPE &&
-			dup2(cmd->pipes[PIPE_IN], STDOUT) < 0)
-		exit_print_err(strerror(errno));
-	if (cmd->prev && cmd->prev->type == TYPE_PIPE &&
-			dup2(cmd->prev->pipes[PIPE_OUT], STDIN) < 0)
-		exit_print_err(strerror(errno));
-	if (cmd->input_fd != -1 && dup2(cmd->input_fd, STDIN) < 0)
-		exit_print_err(strerror(errno));
-	if (cmd->output_fd != -1 && dup2(cmd->output_fd, STDOUT) < 0)
-		exit_print_err(strerror(errno));
-	func(msh, cmd);
-	exit(EXIT_SUCCESS);
-}
-
-int		create_process(t_msh *msh, t_cmd *cmd, t_exe_fn func)
-{
-	pid_t	pid;
-	int		ret;
-	int		pipe_open;
-
-	pipe_open = 0;
-	ret = EXIT_SUCCESS;
-	if (cmd->type == TYPE_PIPE)
-	{
-		pipe_open = 1;
-		if (pipe(cmd->pipes) == -1)
-			exit_print_err(strerror(errno));
-	}
-	if ((pid = fork()) == -1)
-		exit_print_err(strerror(errno));
-	if (pid == 0)
-		child_process(msh, cmd, func);
-	else
-		ret = close_fds(cmd, pid, pipe_open);
 	return (ret);
 }
 
@@ -143,7 +97,6 @@ int	exec_process(t_msh *msh, t_cmd *cmd, char **av, char **env)
 	return (ret);
 }
 
-//int			basic_executor(t_msh *msh, t_cmd *cmd)
 void			basic_executor(t_msh *msh, t_cmd *cmd)
 {
 	char	**av;
@@ -165,8 +118,157 @@ void			basic_executor(t_msh *msh, t_cmd *cmd)
 	env = ft_envjoin(msh->env, msh->env_len);
 
 	exec_process(msh, cmd, av, env);
-//	return (exec_process(msh, cmd, av, env));
 }
+
+
+void	child_process(t_msh *msh, t_cmd *cmd, t_exe_fn func)
+{
+
+	if (cmd->input_fd != -1 && dup2(cmd->input_fd, STDIN) < 0)
+		exit_print_err(strerror(errno));
+	if (cmd->output_fd != -1 && dup2(cmd->output_fd, STDOUT) < 0)
+		exit_print_err(strerror(errno));
+	func(msh, cmd);
+	exit(EXIT_SUCCESS);
+}
+
+int		create_process(t_msh *msh, t_cmd *cmd, t_exe_fn func)
+{
+	pid_t	pid;
+	int		ret;
+
+	ret = EXIT_SUCCESS;
+
+	if ((pid = fork()) == -1)
+		exit_print_err(strerror(errno));
+	if (pid == 0)
+		child_process(msh, cmd, func);
+	else
+		ret = close_fds(cmd, pid);
+	return (ret);
+}
+
+
+/****************   piping start   ********************************************/
+
+
+int get_cnt_of_pipes(t_cmd *cmd)
+{
+	int cnt;
+
+	cnt = 0;
+	while (cmd)
+	{
+		if (cmd->type != TYPE_PIPE)
+			break;
+		cnt++;
+		cmd = cmd->next;
+	}
+	return (cnt);
+}
+
+void create_pipes(int *pipes, int cnt_of_pipes)
+{
+	int i;
+
+	i = 0;
+	while (i < cnt_of_pipes)
+	{
+		if (pipe(pipes + (i * 2)) == -1)
+			exit_print_err(strerror(errno));
+		i++;
+	}
+}
+
+void close_pipes(int *pipes, int cnt_of_pipes)
+{
+	int i;
+
+	i = 0;
+	while (i < 2 * cnt_of_pipes)
+	{
+		close(pipes[i]);
+		i++;
+	}
+}
+
+void all_wait(t_msh *msh, int *cpid, int cnt_of_pipes)
+{
+	int status;
+	int	i;
+
+	i = 0;
+	while (i < cnt_of_pipes + 1)
+	{
+		waitpid(cpid[i], &status, 0);
+		i++;
+	}
+	if (WIFEXITED(status))
+		msh->exit_status = WEXITSTATUS(status);
+	else if (WIFSIGNALED(status))
+		msh->exit_status = 128 + WTERMSIG(status);
+}
+
+
+t_cmd	*piping(t_msh *msh, t_cmd *cmd)
+{
+	t_exe_fn	executor;
+	int cnt_of_pipes;
+	int *pipes;
+	int *cpid;
+	int i;
+
+	cnt_of_pipes = get_cnt_of_pipes(cmd);
+	if (!(pipes = malloc(sizeof(int) * (cnt_of_pipes * 2))))
+		exit_print_err(strerror(errno));
+	if (!(cpid = malloc(sizeof(pid_t) * (cnt_of_pipes + 1))))
+		exit_print_err(strerror(errno));
+
+	create_pipes(pipes, cnt_of_pipes);
+
+	i = 0;
+	while (i < (cnt_of_pipes + 1))
+	{
+		if ((cpid[i] = fork()) == 0)
+		{
+
+			if (i < cnt_of_pipes)
+				dup2(pipes[i * 2 + 1], 1);
+			if (i > 0)
+				dup2(pipes[(i - 1) * 2], 0);
+			close_pipes(pipes, cnt_of_pipes);
+
+			
+			executor  = get_builtin_executor(cmd->args[0]);	
+			redirection_input_fd(cmd, cmd->redirection_files);
+			redirection_output_fd(cmd, cmd->redirection_files);
+
+			if (executor)
+			{
+				executor(msh, cmd);
+				exit(msh->exit_status);
+			}
+			else
+			{
+				executor = &basic_executor;
+				child_process(msh, cmd, executor);
+			}
+		}
+		else if (cpid[i] == -1)
+		{
+			exit_print_err(strerror(errno));
+		}
+		cmd = cmd->next;
+		i++;
+	}
+	
+	close_pipes(pipes, cnt_of_pipes);
+	all_wait(msh, cpid, cnt_of_pipes);
+	free(pipes);
+	free(cpid);
+	return (cmd);
+}
+/****************   piping end   **********************************************/
 
 void	executing(t_msh *msh)
 {
@@ -176,24 +278,27 @@ void	executing(t_msh *msh)
 	cmd = msh->cmds;
 	while (cmd)
 	{
+		if (cmd->type == TYPE_PIPE)
+		{
+			cmd = piping(msh, cmd);
+			continue ;
+		}
+		
 		executor = get_builtin_executor(cmd->args[0]);
-		if (executor == NULL)
-			executor = &basic_executor;
-
+		
 		redirection_input_fd(cmd, cmd->redirection_files);
 		redirection_output_fd(cmd, cmd->redirection_files);
 
-		if ((void *)executor != &basic_executor && cmd->type == TYPE_DEFAULT &&
-			cmd->input_fd == -1 && cmd->output_fd == -1 &&
-			(cmd->prev == NULL ||
-			 (cmd->prev && cmd->prev->type == TYPE_DEFAULT)))
+		if (executor)
 		{
 			executor(msh, cmd);
 		}
 		else
 		{
+			executor = &basic_executor;
 			create_process(msh, cmd, executor);
 		}
+
 		cmd = cmd->next;
 	}
 }
