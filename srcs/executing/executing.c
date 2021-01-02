@@ -6,12 +6,13 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/19 19:03:05 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/02 17:58:46 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/02 18:26:41 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+/******  set_redirection_fd.c  start ******/
 int		set_redirection_fd(t_msh *msh, t_cmd *cmd)
 {
 	t_list *list;
@@ -47,6 +48,8 @@ int		set_redirection_fd(t_msh *msh, t_cmd *cmd)
 	}
 	return (SUCCESS);
 }
+/******    set_redirection_fd.c  end ********/
+
 
 int		close_fds(t_cmd *cmd, pid_t pid)
 {
@@ -241,6 +244,10 @@ t_cmd	*piping(t_msh *msh, t_cmd *cmd)
 
 			if (builtin_executor)
 			{
+				if (cmd->input_fd != -1 && dup2(cmd->input_fd, STDIN) < 0)
+					exit_print_err(strerror(errno));
+				if (cmd->output_fd != -1 && dup2(cmd->output_fd, STDOUT) < 0)
+					exit_print_err(strerror(errno));
 				builtin_executor(msh, cmd);
 				exit(msh->exit_status);
 			}
@@ -269,6 +276,8 @@ void	executing(t_msh *msh)
 {
 	t_builtin_executor	builtin_executor;
 	t_cmd		*cmd;
+	int stdin_fd;
+	int stdout_fd;
 
 	cmd = msh->cmds;
 	while (cmd)
@@ -295,7 +304,25 @@ void	executing(t_msh *msh)
 
 		if (builtin_executor)
 		{
+			if ((stdin_fd = dup(STDIN)) < 0)
+				exit_print_err(strerror(errno));
+			if ((stdout_fd = dup(STDOUT)) < 0)
+				exit_print_err(strerror(errno));
+
+			if (cmd->input_fd != -1 && dup2(cmd->input_fd, STDIN) < 0)
+				exit_print_err(strerror(errno));
+			if (cmd->output_fd != -1 && dup2(cmd->output_fd, STDOUT) < 0)
+				exit_print_err(strerror(errno));
+
 			builtin_executor(msh, cmd);
+
+			if (dup2(stdin_fd, STDIN) < 0)
+				exit_print_err(strerror(errno));
+			if (dup2(stdout_fd, STDOUT) < 0)
+				exit_print_err(strerror(errno));
+
+			close(stdin_fd);
+			close(stdout_fd);
 		}
 		else
 		{
