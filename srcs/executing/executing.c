@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/19 19:03:05 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/02 17:15:08 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/02 17:58:46 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,18 +115,18 @@ void			basic_executor(t_msh *msh, t_cmd *cmd)
 }
 
 
-void	child_process(t_msh *msh, t_cmd *cmd, t_exe_fn func)
+void	child_process(t_msh *msh, t_cmd *cmd)
 {
 
 	if (cmd->input_fd != -1 && dup2(cmd->input_fd, STDIN) < 0)
 		exit_print_err(strerror(errno));
 	if (cmd->output_fd != -1 && dup2(cmd->output_fd, STDOUT) < 0)
 		exit_print_err(strerror(errno));
-	func(msh, cmd);
+	basic_executor(msh, cmd);
 	exit(EXIT_SUCCESS);
 }
 
-int		create_process(t_msh *msh, t_cmd *cmd, t_exe_fn func)
+int		create_process(t_msh *msh, t_cmd *cmd)
 {
 	pid_t	pid;
 	int		ret;
@@ -136,7 +136,7 @@ int		create_process(t_msh *msh, t_cmd *cmd, t_exe_fn func)
 	if ((pid = fork()) == -1)
 		exit_print_err(strerror(errno));
 	if (pid == 0)
-		child_process(msh, cmd, func);
+		child_process(msh, cmd);
 	else
 		ret = close_fds(cmd, pid);
 	return (ret);
@@ -206,7 +206,7 @@ void all_wait(t_msh *msh, int *cpid, int cnt_of_pipes)
 
 t_cmd	*piping(t_msh *msh, t_cmd *cmd)
 {
-	t_exe_fn	executor;
+	t_builtin_executor	builtin_executor;
 	int cnt_of_pipes;
 	int *pipes;
 	int *cpid;
@@ -233,21 +233,20 @@ t_cmd	*piping(t_msh *msh, t_cmd *cmd)
 			close_pipes(pipes, cnt_of_pipes);
 
 			
-			executor  = get_builtin_executor(cmd->args[0]);	
+			builtin_executor  = get_builtin_executor(cmd->args[0]);	
 			if (set_redirection_fd(msh, cmd) == ERROR)
 			{
 				exit(1);
 			}
 
-			if (executor)
+			if (builtin_executor)
 			{
-				executor(msh, cmd);
+				builtin_executor(msh, cmd);
 				exit(msh->exit_status);
 			}
 			else
 			{
-				executor = &basic_executor;
-				child_process(msh, cmd, executor);
+				child_process(msh, cmd);
 			}
 		}
 		else if (cpid[i] == -1)
@@ -268,7 +267,7 @@ t_cmd	*piping(t_msh *msh, t_cmd *cmd)
 
 void	executing(t_msh *msh)
 {
-	t_exe_fn	executor;
+	t_builtin_executor	builtin_executor;
 	t_cmd		*cmd;
 
 	cmd = msh->cmds;
@@ -280,7 +279,7 @@ void	executing(t_msh *msh)
 			continue ;
 		}
 		
-		executor = get_builtin_executor(cmd->args[0]);
+		builtin_executor = get_builtin_executor(cmd->args[0]);
 		
 
 		if (set_redirection_fd(msh, cmd) == ERROR)
@@ -294,14 +293,13 @@ void	executing(t_msh *msh)
 			continue;
 		}
 
-		if (executor)
+		if (builtin_executor)
 		{
-			executor(msh, cmd);
+			builtin_executor(msh, cmd);
 		}
 		else
 		{
-			executor = &basic_executor;
-			create_process(msh, cmd, executor);
+			create_process(msh, cmd);
 		}
 
 		cmd = cmd->next;
