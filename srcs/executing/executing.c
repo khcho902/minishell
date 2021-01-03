@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/19 19:03:05 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/02 23:47:34 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/03 18:46:13 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,93 +50,62 @@ int		set_redirection_fd(t_msh *msh, t_cmd *cmd)
 }
 /******    set_redirection_fd.c  end ********/
 
-
-int		close_fds(t_msh *msh, t_cmd *cmd, pid_t pid)
+void			basic_executor(t_msh *msh, t_cmd *cmd)
 {
-	int		status;
-	int		ret;
-
-	ret = EXIT_SUCCESS;
-	status = 0;
-	waitpid(pid, &status, 0);
-	
-	if (WIFEXITED(status))
-		msh->exit_status = WEXITSTATUS(status);
-	else if (WIFSIGNALED(status))
-		msh->exit_status = 128 + WTERMSIG(status);
-
-	if (cmd->input_fd != -1)
-		close(cmd->input_fd);
-	if (cmd->output_fd != -1)
-		close(cmd->output_fd);
-	if (WIFEXITED(status))
-		ret = WEXITSTATUS(status);
-	if (ret != EXIT_SUCCESS)
-		ret = EXIT_FAILURE;
-	return (ret);
-}
-
-
-int	exec_process(t_msh *msh, t_cmd *cmd, char **env)
-{
+	char	**env;
 	char	*temp;
 	int		idx;
-	int		ret;
 
 	if (cmd->args[0] == NULL)
 		exit(0);
+
+	if (cmd->input_fd != -1 && dup2(cmd->input_fd, STDIN) < 0)
+		exit_print_err(strerror(errno));
+	if (cmd->output_fd != -1 && dup2(cmd->output_fd, STDOUT) < 0)
+		exit_print_err(strerror(errno));
+	
+	env = ft_envjoin(msh->env, msh->env_len);
+	
 	idx = 0;
 	while (msh->path[idx])
 	{
 		if (!(temp = ft_strjoin3(msh->path[idx], "/", cmd->args[0])))
 			exit_print_err(strerror(errno));
-		ret = execve(temp, cmd->args, env);
+		execve(temp, cmd->args, env);
 		free(temp);
 		idx++;
 	}
-	if ((ret = execve(cmd->args[0], cmd->args, env)) && ret == -1)
+	if ((execve(cmd->args[0], cmd->args, env)) == -1)
 	{
-		ret = command_not_found(msh->program_name, cmd->args[0]);
+		print_execute_err(msh->program_name, cmd->args[0], "command not found");
 		exit(127);
 	}
-	ft_double_free((void **)env);
-	return (ret);
-}
-
-void			basic_executor(t_msh *msh, t_cmd *cmd)
-{
-	char	**env;
-
-	env = ft_envjoin(msh->env, msh->env_len);
-
-	exec_process(msh, cmd, env);
 }
 
 
-void	child_process(t_msh *msh, t_cmd *cmd)
-{
-	if (cmd->input_fd != -1 && dup2(cmd->input_fd, STDIN) < 0)
-		exit_print_err(strerror(errno));
-	if (cmd->output_fd != -1 && dup2(cmd->output_fd, STDOUT) < 0)
-		exit_print_err(strerror(errno));
-	basic_executor(msh, cmd);
-	exit(EXIT_SUCCESS);
-}
-
-int		create_process(t_msh *msh, t_cmd *cmd)
+void	create_process(t_msh *msh, t_cmd *cmd)
 {
 	pid_t	pid;
-	int		ret;
-
-	ret = EXIT_SUCCESS;
+	int		status;
 
 	if ((pid = fork()) == -1)
 		exit_print_err(strerror(errno));
 	if (pid == 0)
-		child_process(msh, cmd);
+		basic_executor(msh, cmd);
 	else
-		ret = close_fds(msh, cmd, pid);
-	return (ret);
+	{
+		waitpid(pid, &status, 0);
+
+		if (WIFEXITED(status))
+			msh->exit_status = WEXITSTATUS(status);
+		else if (WIFSIGNALED(status))
+			msh->exit_status = 128 + WTERMSIG(status);
+
+		if (cmd->input_fd != -1)
+			close(cmd->input_fd);
+		if (cmd->output_fd != -1)
+			close(cmd->output_fd);
+	}
 }
 
 
@@ -247,7 +216,7 @@ t_cmd	*piping(t_msh *msh, t_cmd *cmd)
 			}
 			else
 			{
-				child_process(msh, cmd);
+				basic_executor(msh, cmd);
 			}
 		}
 		else if (cpid[i] == -1)

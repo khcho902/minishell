@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/17 19:00:35 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/25 15:34:37 by jiseo            ###   ########.fr       */
+/*   Updated: 2021/01/03 13:59:27 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,9 @@ void	print_env(t_msh *msh, t_dict **env_arr, int env_len, char *command)
 
 	if (!env_arr)
 	{
-		command_not_found(msh->program_name, command);
+		print_execute_err(msh->program_name, command, "command not found");
+//		command_not_found(msh->program_name, command);
+
 		return ;
 	}
 	idx = 0;

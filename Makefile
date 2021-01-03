@@ -6,7 +6,7 @@
 #    By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/23 14:34:40 by jiseo             #+#    #+#              #
-#    Updated: 2021/01/02 18:29:23 by kycho            ###   ########.fr        #
+#    Updated: 2021/01/03 14:01:27 by kycho            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -53,7 +53,6 @@ RAW_SRCS		=	main.c \
 					errors/exit_print_err.c \
 					errors/nonexit_print_err.c \
 					errors/print_syntax_err.c \
-					errors/command_not_found.c \
 					errors/print_execute_err.c \
 
 SRCS			=	$(addprefix $(SRCS_PATH), $(RAW_SRCS))
