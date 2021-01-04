@@ -63,7 +63,7 @@ void	sanitize_token(t_list *token, t_msh *msh);
  */
 void	exit_print_err(char *err_msg);
 void	nonexit_print_err(char *err_msg);
-int		print_syntax_err(char *program_name, char *token);
+int		print_syntax_err(char *program_name, char *token, int is_eof_err);
 int		print_execute_err(char *program_name, char *token, char *err_msg);
 
 /*

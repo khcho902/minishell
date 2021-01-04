@@ -22,14 +22,14 @@ int		check_token_valid(char *program_name, t_list *now)
 		if (((char*)now->content)[0] == '|' || ((char *)now->content)[0] == ';')
 		{
 			if (before_type != 1)
-				return (print_syntax_err(program_name, now->content));
+				return (print_syntax_err(program_name, now->content, FALSE));
 			before_type = 2;
 		}
 		else if (((char *)now->content)[0] == '>' ||
 				((char *)now->content)[0] == '<')
 		{
 			if (before_type == 3)
-				return (print_syntax_err(program_name, now->content));
+				return (print_syntax_err(program_name, now->content, FALSE));
 			before_type = 3;
 		}
 		else
@@ -37,6 +37,6 @@ int		check_token_valid(char *program_name, t_list *now)
 		now = now->next;
 	}
 	if (before_type == 3)
-		return (print_syntax_err(program_name, "newline"));
+		return (print_syntax_err(program_name, "newline", FALSE));
 	return (SUCCESS);
 }
