@@ -6,7 +6,7 @@
 #    By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/23 14:34:40 by jiseo             #+#    #+#              #
-#    Updated: 2021/01/04 13:20:29 by kycho            ###   ########.fr        #
+#    Updated: 2021/01/05 01:57:53 by kycho            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,6 +16,7 @@ SRCS_PATH		=	./srcs/
 INCS			=	-Iincludes
 RAW_SRCS		=	main.c \
 					signal.c \
+					get_next_line.c \
 					\
 					prompt/prompt.c \
 					\
@@ -69,10 +70,10 @@ all:			$(NAME)
 
 $(NAME): $(OBJS)
 	$(MAKE) -C $(LIBFT)
-	$(CC) $(CFLAGS) $^ -o $@ $(LIB) $(INCS) #-g -fsanitize=address
+	$(CC) $(CFLAGS) $^ -o $@ $(LIB) $(INCS) -g -fsanitize=address
 
 .c.o:
-	$(CC) $(CFLAGS) $(INCS) -c $< -o $(<:.c=.o) #-g -fsanitize=address
+	$(CC) $(CFLAGS) $(INCS) -c $< -o $(<:.c=.o) -g -fsanitize=address
 
 clean:
 	$(MAKE) -C $(LIBFT) clean
