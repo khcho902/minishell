@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/19 19:03:05 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/03 18:46:13 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/04 02:58:48 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,17 +66,27 @@ void			basic_executor(t_msh *msh, t_cmd *cmd)
 	
 	env = ft_envjoin(msh->env, msh->env_len);
 	
-	idx = 0;
-	while (msh->path[idx])
+	if (msh->path[0] == NULL || ft_strchr(cmd->args[0], '/') != NULL)
 	{
-		if (!(temp = ft_strjoin3(msh->path[idx], "/", cmd->args[0])))
-			exit_print_err(strerror(errno));
-		execve(temp, cmd->args, env);
-		free(temp);
-		idx++;
+		if ((execve(cmd->args[0], cmd->args, env)) == -1)
+		{
+			print_execute_err(msh->program_name, cmd->args[0], strerror(errno));
+		//	if (errno == 13)
+		//		exit(126);
+			exit(127);
+		}
 	}
-	if ((execve(cmd->args[0], cmd->args, env)) == -1)
+	else
 	{
+		idx = 0;
+		while (msh->path[idx])
+		{
+			if (!(temp = ft_strjoin3(msh->path[idx], "/", cmd->args[0])))
+				exit_print_err(strerror(errno));
+			execve(temp, cmd->args, env);
+			free(temp);
+			idx++;
+		}
 		print_execute_err(msh->program_name, cmd->args[0], "command not found");
 		exit(127);
 	}

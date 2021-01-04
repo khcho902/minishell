@@ -6,7 +6,7 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 18:48:11 by kycho             #+#    #+#             */
-/*   Updated: 2020/12/22 08:52:20 by jiseo            ###   ########.fr       */
+/*   Updated: 2021/01/04 02:01:03 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ void	init_msh_path(t_msh *msh)
 {
 	int		i;
 
+	msh->path = NULL;
 	i = 0;
 	while (msh->env[i])
 	{
@@ -53,6 +54,13 @@ void	init_msh_path(t_msh *msh)
 			break ;
 		}
 		i++;
+	}
+	if (msh->path == NULL)
+	{
+		msh->path = (char **)malloc(sizeof(char *));
+		if (msh->path == NULL)
+			exit_print_err(strerror(errno));
+		msh->path[0] = NULL;
 	}
 }
 
