@@ -6,7 +6,7 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 18:23:23 by kycho             #+#    #+#             */
-/*   Updated: 2020/12/16 18:35:22 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/04 13:18:25 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,10 @@ int		parsing(t_msh *msh, char *input)
 		return (ERROR);
 	split_token(input, &(msh->tokens), 0);
 	if (check_token_valid(msh->program_name, msh->tokens) == ERROR)
+	{
+		msh->exit_status = 258;
 		return (ERROR);
+	}
 	making_cmd(msh);
 	return (SUCCESS);
 }

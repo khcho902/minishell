@@ -6,7 +6,7 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 18:31:21 by kycho             #+#    #+#             */
-/*   Updated: 2020/12/19 20:21:40 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/04 13:17:39 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,16 +46,17 @@ void	split_token(char *input, t_list **tokens, int i)
 	char	*str;
 	t_list	*lstnew;
 
-	while (input[i])
+	while (input[i] && (len = 1))
 	{
 		while (input[i] == ' ' || input[i] == '\t')
 			i++;
 		if (input[i] == 0)
 			break ;
-		len = 1;
+		//len = 1;
 		if (!is_in_charset(input[i], METACHARACTER))
 			split_token_sub(input, &i, &len);
-		else if (ft_strncmp(&input[i], ">>", 2) == 0)
+		else if (ft_strncmp(&input[i], ">>", 2) == 0 ||
+				ft_strncmp(&input[i], "<<", 2) == 0)
 			len++;
 		if (!(str = ft_substr(input, i, len)))
 			exit_print_err(strerror(errno));

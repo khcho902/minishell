@@ -6,7 +6,7 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 18:34:02 by kycho             #+#    #+#             */
-/*   Updated: 2020/12/21 02:27:41 by jiseo            ###   ########.fr       */
+/*   Updated: 2021/01/04 12:47:06 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ void	making_cmd(t_msh *msh)
 				ft_strcmp(">", token->content) == 0 ||
 				ft_strcmp(">>", token->content) == 0)
 			add_redirection_file(cmd, &token, msh);
-		else
+		else if (ft_strcmp(";", token->content) != 0)
 			add_args(cmd, token, msh);
 		token = token->next;
 	}
