@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/05 17:05:50 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/05 19:45:35 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,70 @@ int		check_input_valid(char *program_name, char *input)
 	return (SUCCESS);
 }
 
+
+void	split_job_sub(char *input, int *i, int *len)
+{
+	while (input[*i + *len])
+	{
+		if (input[*i + *len - 1] == '"'
+				&& (*i + *len - 1 == 0 || input[*i + *len - 2] != '\\'))
+		{
+			while (!(input[*i + *len] == '"' && input[*i + *len - 1] != '\\')
+					&& input[*i + *len] != 0)
+				(*len)++;
+			(*len)++;
+		}
+		if (input[*i + *len - 1] == '\''
+				&& (*i + *len - 1 == 0 || input[*i + *len - 2] != '\\'))
+		{
+			while (!(input[*i + *len] == '\'') && input[*i + *len] != 0)
+				(*len)++;
+			(*len)++;
+		}
+		if (is_in_charset(input[*i + *len], ";")
+				&& input[*i + *len - 1] != '\\')
+		{
+			break ;
+		}
+		(*len)++;
+	}
+}
+
+void	split_job(char *input, t_list **jobs)
+{
+	int		i;
+	int		len;
+	char	*str;
+	t_list	*lstnew;
+
+	i = 0;
+	while (input[i])
+	{
+		len = 1;
+		if (!is_in_charset(input[i], ";"))
+			split_job_sub(input, &i, &len);
+		else 
+		{
+			i++;
+			continue;
+		}
+
+		if (!(str = ft_substr(input, i, len)))
+			exit_print_err(strerror(errno));
+
+		if (!(lstnew = ft_lstnew(str)))
+			exit_print_err(strerror(errno));
+
+		if (*jobs == NULL)
+			*jobs = lstnew;
+		else
+			ft_lstadd_back(jobs, lstnew);
+		i += len;
+	}
+}
+
+
+
 int		main(int argc, char **argv, char **env)
 {
 	char	*input;
@@ -53,17 +117,40 @@ int		main(int argc, char **argv, char **env)
 	if (argc == 3 && ft_strcmp("-c", argv[1]) == 0)
 	{
 		input = argv[2];
-		/**********************/
+		/*--------------------------------------------------------------------*/
 		if (check_input_valid(msh.program_name, input) == ERROR)
 		{
 			msh.exit_status = 258;
 			return (msh.exit_status & 255);
 		}
 
-		if (parsing(&msh, input) == SUCCESS)
-			executing(&msh);
 
-		free_msh_member(&msh);
+		t_list *tokens = NULL;
+		split_token(input, &tokens, 0);
+		if (check_token_valid(msh.program_name, tokens) == ERROR)
+		{
+			msh.exit_status = 258;
+			ft_lstclear(&(tokens), free);
+			return (msh.exit_status & 255);
+		}
+		ft_lstclear(&(tokens), free);
+
+
+
+		t_list *jobs = NULL;
+		t_list *job_now = NULL;
+		split_job(input, &jobs);
+		job_now = jobs;
+		while (job_now)
+		{
+			if (parsing(&msh, (char *)job_now->content) == SUCCESS)
+				executing(&msh);
+			free_msh_member(&msh);
+
+			job_now = job_now->next;
+		}
+		ft_lstclear(&(jobs), free);
+
 		return (msh.exit_status & 255);
 	}
 	/****************************************************/
@@ -75,7 +162,7 @@ int		main(int argc, char **argv, char **env)
 		show_prompt(&msh);
 		if ((res = get_next_line(STDIN, &input)) == -1)
 			exit_print_err("get_next_line fail");
-		/**********************/
+		/*--------------------------------------------------------------------*/
 		if (check_input_valid(msh.program_name, input) == ERROR)
 		{
 			msh.exit_status = 258;
@@ -84,11 +171,34 @@ int		main(int argc, char **argv, char **env)
 		}
 
 
+		t_list *tokens = NULL;
+		split_token(input, &tokens, 0);
+		if (check_token_valid(msh.program_name, tokens) == ERROR)
+		{
+			msh.exit_status = 258;
+			free(input);
+			ft_lstclear(&(tokens), free);
+			continue;
+		}
+		ft_lstclear(&(tokens), free);
 
-		if (parsing(&msh, input) == SUCCESS)
-			executing(&msh);
 
-		free_msh_member(&msh);
+
+		t_list *jobs = NULL;
+		t_list *job_now = NULL;
+		split_job(input, &jobs);
+		job_now = jobs;
+		while (job_now)
+		{
+			if (parsing(&msh, (char *)job_now->content) == SUCCESS)
+				executing(&msh);
+			free_msh_member(&msh);
+
+			job_now = job_now->next;
+		}
+		ft_lstclear(&(jobs), free);
+
+
 		free(input);
 	}
 	return (EXIT_SUCCESS);
