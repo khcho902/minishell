@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/15 02:36:28 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/02 17:53:34 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/05 15:29:36 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@ typedef struct		s_cmd
 	char			**args;
 	int				length;
 	int				type;
-	int				pipes[2];
 	t_list			*redirection_files;
 	int				input_fd;
 	int				output_fd;
