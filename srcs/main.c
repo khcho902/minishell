@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/05 02:10:40 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/05 14:01:03 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,12 @@ int		main(int argc, char **argv, char **env)
 			msh.exit_status = 258;
 			return (msh.exit_status & 255);
 		}
+		split_token(input, &(msh.tokens), 0);
+		if (check_token_valid(msh.program_name, msh.tokens) == ERROR)
+		{
+			msh.exit_status = 258;
+			return (msh.exit_status & 255);
+		}
 
 		if (parsing(&msh, input) == SUCCESS)
 			executing(&msh);
@@ -82,6 +88,15 @@ int		main(int argc, char **argv, char **env)
 			free(input);
 			continue;
 		}
+		split_token(input, &(msh.tokens), 0);
+		if (check_token_valid(msh.program_name, msh.tokens) == ERROR)
+		{
+			msh.exit_status = 258;
+			free(input);
+			continue;
+		}
+
+
 
 		if (parsing(&msh, input) == SUCCESS)
 			executing(&msh);

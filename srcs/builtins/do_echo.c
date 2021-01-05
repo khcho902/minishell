@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/25 21:51:59 by jiseo             #+#    #+#             */
-/*   Updated: 2020/12/25 18:38:35 by jiseo            ###   ########.fr       */
+/*   Updated: 2021/01/05 15:17:46 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,5 +31,5 @@ void	do_echo(t_msh *msh, t_cmd *cmd)
 	}
 	if (!n_option)
 		ft_putchar_fd('\n', STDOUT);
-	(void)msh;
+	msh->exit_status = 0;
 }
