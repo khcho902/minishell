@@ -6,7 +6,7 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 18:23:23 by kycho             #+#    #+#             */
-/*   Updated: 2021/01/06 17:18:46 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/06 17:49:52 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,14 +36,6 @@ int		sanitize_env_sub2(char **res_str, char *og_str, t_msh *msh, char *tmp)
 	if (og_str[1] == '$' || ('1' <= og_str[1] && og_str[1] <= '9'))
 		return (2);
 	//else if (og_str[1] == '\0' || og_str[1] == '\\')
-	else if (!(og_str[1] != '\0' && (og_str[1] == '_'
-				|| ('0' <= og_str[1] && og_str[1] <= '9')
-				|| ('a' <= og_str[1] && og_str[1] <= 'z')
-				|| ('A' <= og_str[1] && og_str[1] <= 'Z'))))
-	{
-		append_char_to_str(res_str, '$');
-		return (1);
-	}
 	else if (og_str[1] == '0')
 	{
 		if (!(tmp = ft_strjoin3(*res_str, "-", msh->program_name)))
@@ -59,6 +51,22 @@ int		sanitize_env_sub2(char **res_str, char *og_str, t_msh *msh, char *tmp)
 		free(*res_str);
 		*res_str = tmp;
 		return (2);
+	}
+	else if (og_str[1] == '_')
+	{
+		if (!(tmp = ft_strjoin(*res_str, ft_itoa(msh->exit_status))))
+			exit_print_err(strerror(errno));
+		free(*res_str);
+		*res_str = tmp;
+		return (2);
+	}
+	else if (!(og_str[1] != '\0' &&
+				(('0' <= og_str[1] && og_str[1] <= '9')
+				|| ('a' <= og_str[1] && og_str[1] <= 'z')
+				|| ('A' <= og_str[1] && og_str[1] <= 'Z'))))
+	{
+		append_char_to_str(res_str, '$');
+		return (1);
 	}
 	return (-1);
 }
