@@ -6,7 +6,7 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 18:31:21 by kycho             #+#    #+#             */
-/*   Updated: 2021/01/04 13:17:39 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/06 13:22:08 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,27 +16,36 @@ void	split_token_sub(char *input, int *i, int *len)
 {
 	while (input[*i + *len])
 	{
-		if (input[*i + *len - 1] == '"'
-				&& (*i + *len - 1 == 0 || input[*i + *len - 2] != '\\'))
+		if (input[*i + *len - 1] == '\\')
 		{
-			while (!(input[*i + *len] == '"' && input[*i + *len - 1] != '\\')
-					&& input[*i + *len] != 0)
+			(*len)++;
+//			if (input[*i + *len - 1] != '\0')
+//				(*len)++;
+		}
+		else if (input[*i + *len - 1] == '"')
+		{
+			while (!(input[*i + *len] == '"'))
+			{
+				if (input[*i + *len] == '\\')
+				{
+					(*len)++;
+				}
+				(*len)++;
+			}
+			(*len)++;
+		}
+		else if (input[*i + *len - 1] == '\'')
+		{
+			while (!(input[*i + *len] == '\''))
 				(*len)++;
 			(*len)++;
 		}
-		if (input[*i + *len - 1] == '\''
-				&& (*i + *len - 1 == 0 || input[*i + *len - 2] != '\\'))
-		{
-			while (!(input[*i + *len] == '\'') && input[*i + *len] != 0)
-				(*len)++;
+//		else 
+//			(*len)++;
+		if (!input[*i + *len] || is_in_charset(input[*i + *len], METACHARACTER))
+			break;
+		else
 			(*len)++;
-		}
-		if (is_in_charset(input[*i + *len], METACHARACTER)
-				&& input[*i + *len - 1] != '\\')
-		{
-			break ;
-		}
-		(*len)++;
 	}
 }
 

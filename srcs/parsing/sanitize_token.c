@@ -6,7 +6,7 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/20 19:37:19 by kycho             #+#    #+#             */
-/*   Updated: 2020/12/21 02:43:53 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/06 14:21:14 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,8 @@ int		sanitize_env(char **res_str, char *og_str, t_msh *msh)
 
 int		sanitize_backslash(char **res_str, char *og_str, int in_dquotes)
 {
-	if (in_dquotes && og_str[1] != '"' && og_str[1] != '\\')
+//	if (in_dquotes && og_str[1] != '"' && og_str[1] != '\\')
+	if (in_dquotes && og_str[1] != '"' && og_str[1] != '\\' && og_str[1] != '$')
 		append_char_to_str(res_str, '\\');
 	if (og_str[1])
 	{
@@ -108,6 +109,9 @@ void	sanitize_token(t_list *token, t_msh *msh)
 	int		i;
 	int		in_dquotes;
 
+	if (msh == NULL)  // 지울거 
+		exit(188);
+
 	in_dquotes = FALSE;
 	og_str = token->content;
 	if (!(res_str = ft_strdup("")))
@@ -115,6 +119,7 @@ void	sanitize_token(t_list *token, t_msh *msh)
 	i = 0;
 	while (og_str[i])
 	{
+		/*
 		if (og_str[i] == '\\')
 			i += sanitize_backslash(&res_str, og_str + i, in_dquotes);
 		else if (og_str[i] == '\'')
@@ -123,6 +128,15 @@ void	sanitize_token(t_list *token, t_msh *msh)
 			in_dquotes ^= TRUE;
 		else if (og_str[i] == '$')
 			i += sanitize_env(&res_str, og_str + i, msh);
+		else
+			append_char_to_str(&res_str, og_str[i++]);
+		*/
+		if (og_str[i] == '\\')
+			i += sanitize_backslash(&res_str, og_str + i, in_dquotes);
+		else if (og_str[i] == '\'')
+			i += sanitize_single_quotes(&res_str, og_str + i, in_dquotes);
+		else if (og_str[i] == '"' && ++i)
+			in_dquotes ^= TRUE;
 		else
 			append_char_to_str(&res_str, og_str[i++]);
 	}
