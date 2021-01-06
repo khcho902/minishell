@@ -6,7 +6,7 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 18:23:23 by kycho             #+#    #+#             */
-/*   Updated: 2021/01/06 16:28:45 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/06 17:18:46 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ int		sanitize_env_sub2(char **res_str, char *og_str, t_msh *msh, char *tmp)
 	return (-1);
 }
 
-int		sanitize_env2(char **res_str, char *og_str, t_msh *msh)
+int		sanitize_env2(char **res_str, char *og_str, t_msh *msh, int in_dquotes)
 {
 	int		env_len;
 	char	*env_key;
@@ -86,9 +86,16 @@ int		sanitize_env2(char **res_str, char *og_str, t_msh *msh)
 	free(env_key);
 	if (env_dict == NULL)
 		return (env_len);
-
-	if (!(tmp2 = go(env_dict->value, "'\"\\", '\\')))  /// 추가함
-		exit_print_err(strerror(errno));               // 추가함
+	if (in_dquotes)
+	{
+		if (!(tmp2 = go(env_dict->value, "\"\\", '\\')))
+			exit_print_err(strerror(errno));
+	}
+	else
+	{
+		if (!(tmp2 = go(env_dict->value, "'\"\\", '\\')))  /// 추가함
+			exit_print_err(strerror(errno));               // 추가함
+	}
 	//if (!(tmp = ft_strjoin(*res_str, env_dict->value)))
 	if (!(tmp = ft_strjoin(*res_str, tmp2)))          // 위에꺼에서 변경
 		exit_print_err(strerror(errno));
@@ -162,7 +169,7 @@ char	*get_env_replaced_input(t_msh *msh, char *input)
 			in_dquotes ^= TRUE;
 		}
 		else if (input[i] == '$')
-			i += sanitize_env2(&res_str, input + i, msh);
+			i += sanitize_env2(&res_str, input + i, msh, in_dquotes);
 		else
 			append_char_to_str(&res_str, input[i++]);
 //		dprintf(2, "????? %d\n", i);
