@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/06 01:24:38 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/06 19:03:03 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,7 +191,38 @@ int		main(int argc, char **argv, char **env)
 		while (job_now)
 		{
 			if (parsing(&msh, (char *)job_now->content) == SUCCESS)
+			{
+			/*	
+				t_cmd *cmd = msh.cmds;
+				while (cmd)
+				{
+					printf("--------@@@@@@@@@@@@@-------------\n");
+					int i = 0;
+					while(cmd->args[i])
+					{
+						printf("|%s|", cmd->args[i]);
+						i++;
+					}
+					printf("\n");
+					printf("lenght : %d\n", cmd->length);
+					printf("type : %d\n", cmd->type);
+					printf("  --redirection start--\n");
+					t_list *tmp = cmd->redirection_files;
+					while(tmp)
+					{
+						printf("%s\n", tmp->content);
+						tmp = tmp->next;
+					}
+					printf("  --redirection end--\n");
+					cmd = cmd->next;
+					printf("--------@@@@@@@@@@@@@-------------\n");
+				}
+
+				exit(0);
+*/
+
 				executing(&msh);
+			}
 			free_msh_member(&msh);
 
 			job_now = job_now->next;

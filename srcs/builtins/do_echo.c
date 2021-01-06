@@ -6,23 +6,41 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/25 21:51:59 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/05 15:17:46 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/06 20:07:46 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+int		check_n_option(char *token)
+{
+	int	i;
+
+	if (ft_strncmp(token, "-n", 2) != 0)
+		return (FALSE);
+	i = 2;
+	while (token[i])
+	{
+		if (token[i] != 'n')
+			return (FALSE);
+		i++;
+	}
+	return (TRUE);
+}
+
 void	do_echo(t_msh *msh, t_cmd *cmd)
 {
 	int		idx;
 	int		n_option;
-	
+
 	n_option = 0;
-	if (cmd->length > 1)
-		if (!ft_strcmp(cmd->args[1], "-n"))
-			n_option = 1;
-	idx = 1 + n_option;
-	while (idx < cmd->length)
+	idx = 1;
+	while (check_n_option(cmd->args[idx]))
+	{
+		n_option = 1;
+		idx++;
+	}
+	while (cmd->args[idx])
 	{
 		ft_putstr_fd(cmd->args[idx], STDOUT);
 		if (cmd->length != (idx + 1))
