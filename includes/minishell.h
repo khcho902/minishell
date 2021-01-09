@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/09 16:29:36 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/10 00:27:56 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,7 @@ void	quick_sort_env(int left, int right, t_dict **env);
 void	copy_env(t_msh *msh, t_dict **dst);
 void	free_and_get_value(char **dst, char *src);
 void	env_free(t_dict **env);
+int		is_numeric_str(char *str);
 
 /*
  ** signal.c

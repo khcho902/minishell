@@ -6,30 +6,11 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 15:35:33 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/08 23:42:41 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/10 00:28:33 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-int		is_numeric_str(char *str)
-{
-	int i;
-
-	i = 0;
-	while (ft_isspace(str[i]))
-		i++;
-	if (str[i] == '+' || str[i] == '-')
-		i++;
-	while (ft_isdigit(str[i]))
-		i++;
-	while (str[i] == ' ' || str[i] == '\t')
-		i++;
-	if (str[i] == '\0')
-		return (TRUE);
-	else
-		return (FALSE);
-}
 
 int		check_exit_argument(char *str, int is_minus)
 {
