@@ -6,37 +6,43 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/15 02:36:28 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/05 15:29:36 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/09 20:01:43 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_STRUCT_H
 # define MINISHELL_STRUCT_H
 
-# define FALSE			0
-# define TRUE			1
+# define FALSE				0
+# define TRUE				1
 
-# define SUCCESS		1
-# define ERROR			-1
+# define SUCCESS			1
+# define ERROR				-1
 
-# define STDIN			0
-# define STDOUT			1
-# define STDERR			2
+# define STDIN				0
+# define STDOUT				1
+# define STDERR				2
 
-# define TYPE_DEFAULT	0
-# define TYPE_PIPE		1
+# define TOKEN_NONE			0
+# define TOKEN_WORD			1
+# define TOKEN_PIPE			2
+# define TOKEN_SEMICOLON	3
+# define TOKEN_REDIRECTION	4
 
-# define PIPE_OUT		0
-# define PIPE_IN		1
+# define TYPE_DEFAULT		0
+# define TYPE_PIPE			1
 
-# define OPEN_MODE		S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
-# define FLAG_I			O_RDONLY
-# define FLAG_O			O_WRONLY | O_TRUNC | O_CREAT
-# define FLAG_AO		O_WRONLY | O_APPEND | O_CREAT
+# define PIPE_OUT			0
+# define PIPE_IN			1
 
-# define BUFFER_SIZE	256
+# define OPEN_MODE			S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
+# define FLAG_I				O_RDONLY
+# define FLAG_O				O_WRONLY | O_TRUNC | O_CREAT
+# define FLAG_AO			O_WRONLY | O_APPEND | O_CREAT
 
-# define METACHARACTER	" \t\n|;<>"
+# define BUFFER_SIZE		256
+
+# define METACHARACTER		" \t\n|;<>"
 
 typedef struct		s_cmd
 {
