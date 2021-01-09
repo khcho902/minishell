@@ -46,4 +46,4 @@ unset _
 
 unset PATH
 
-./minishell
+/bin/bash

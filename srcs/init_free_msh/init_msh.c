@@ -6,11 +6,44 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 18:48:11 by kycho             #+#    #+#             */
-/*   Updated: 2021/01/04 02:01:03 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/09 21:20:59 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	init_pwd_env(t_msh *msh)
+{
+	t_dict *dict;
+
+	dict = get_env_dict(msh->env, "PWD");
+	if (dict != NULL)
+	{
+		free(dict->value);
+		dict->value = getcwd(NULL, 0);
+	}
+	else
+	{
+		dict = (t_dict *)malloc(sizeof(t_dict) * 1);
+		dict->key = ft_strdup("PWD");
+		dict->value = getcwd(NULL, 0);
+
+		t_dict **tmp = (t_dict **)malloc(sizeof(t_dict *) * (msh->env_len + 2));
+		int i = 0;
+		while (i < msh->env_len)
+		{
+			tmp[i] = msh->env[i];
+			i++;
+		}
+		tmp[msh->env_len] = dict;
+		tmp[msh->env_len + 1] = NULL;
+		msh->env_len++;
+		free(msh->env);
+		msh->env = tmp;
+	}
+
+}
+
 
 void	init_msh_env(t_msh *msh, char **env)
 {
@@ -36,6 +69,8 @@ void	init_msh_env(t_msh *msh, char **env)
 			exit_print_err(strerror(errno));
 		i++;
 	}
+	init_pwd_env(msh);
+//	init_shlvl_env(msh);
 }
 
 void	init_msh_path(t_msh *msh)
