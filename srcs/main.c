@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/09 15:44:21 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/09 16:09:04 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,70 +39,6 @@ int		check_input_valid(char *program_name, char *input)
 		return (print_syntax_err(program_name, "\"", TRUE));
 	return (SUCCESS);
 }
-
-
-void	split_job_sub(char *input, int *i, int *len)
-{
-	while (input[*i + *len])
-	{
-		if (input[*i + *len - 1] == '"'
-				&& (*i + *len - 1 == 0 || input[*i + *len - 2] != '\\'))
-		{
-			while (!(input[*i + *len] == '"' && input[*i + *len - 1] != '\\')
-					&& input[*i + *len] != 0)
-				(*len)++;
-			(*len)++;
-		}
-		if (input[*i + *len - 1] == '\''
-				&& (*i + *len - 1 == 0 || input[*i + *len - 2] != '\\'))
-		{
-			while (!(input[*i + *len] == '\'') && input[*i + *len] != 0)
-				(*len)++;
-			(*len)++;
-		}
-		if (is_in_charset(input[*i + *len], ";")
-				&& input[*i + *len - 1] != '\\')
-		{
-			break ;
-		}
-		(*len)++;
-	}
-}
-
-void	split_job(char *input, t_list **jobs)
-{
-	int		i;
-	int		len;
-	char	*str;
-	t_list	*lstnew;
-
-	i = 0;
-	while (input[i])
-	{
-		len = 1;
-		if (!is_in_charset(input[i], ";"))
-			split_job_sub(input, &i, &len);
-		else 
-		{
-			i++;
-			continue;
-		}
-
-		if (!(str = ft_substr(input, i, len)))
-			exit_print_err(strerror(errno));
-
-		if (!(lstnew = ft_lstnew(str)))
-			exit_print_err(strerror(errno));
-
-		if (*jobs == NULL)
-			*jobs = lstnew;
-		else
-			ft_lstadd_back(jobs, lstnew);
-		i += len;
-	}
-}
-
-
 
 int		main(int argc, char **argv, char **env)
 {
@@ -139,10 +75,15 @@ int		main(int argc, char **argv, char **env)
 
 		t_list *jobs = NULL;
 		t_list *job_now = NULL;
-		split_job(input, &jobs);
+		split_token(input, &jobs, ";", 0);
 		job_now = jobs;
 		while (job_now)
 		{
+			if (ft_strcmp(job_now->content, ";") == 0)
+			{
+				job_now = job_now->next;
+				continue;
+			}
 			if (parsing(&msh, (char *)job_now->content) == SUCCESS)
 				executing(&msh);
 			free_msh_member(&msh);
@@ -183,44 +124,19 @@ int		main(int argc, char **argv, char **env)
 		ft_lstclear(&(tokens), free);
 
 
-
 		t_list *jobs = NULL;
 		t_list *job_now = NULL;
-		split_job(input, &jobs);
+		split_token(input, &jobs, ";", 0);
 		job_now = jobs;
 		while (job_now)
 		{
+			if (ft_strcmp(job_now->content, ";") == 0)
+			{
+				job_now = job_now->next;
+				continue;
+			}
 			if (parsing(&msh, (char *)job_now->content) == SUCCESS)
 			{
-			/*	
-				t_cmd *cmd = msh.cmds;
-				while (cmd)
-				{
-					printf("--------@@@@@@@@@@@@@-------------\n");
-					int i = 0;
-					while(cmd->args[i])
-					{
-						printf("|%s|", cmd->args[i]);
-						i++;
-					}
-					printf("\n");
-					printf("lenght : %d\n", cmd->length);
-					printf("type : %d\n", cmd->type);
-					printf("  --redirection start--\n");
-					t_list *tmp = cmd->redirection_files;
-					while(tmp)
-					{
-						printf("%s\n", tmp->content);
-						tmp = tmp->next;
-					}
-					printf("  --redirection end--\n");
-					cmd = cmd->next;
-					printf("--------@@@@@@@@@@@@@-------------\n");
-				}
-
-				exit(0);
-*/
-
 				executing(&msh);
 			}
 			free_msh_member(&msh);
