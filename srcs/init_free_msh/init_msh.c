@@ -6,42 +6,62 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 18:48:11 by kycho             #+#    #+#             */
-/*   Updated: 2021/01/09 21:20:59 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/10 00:21:33 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	init_pwd_env(t_msh *msh)
+void	add_env_dict(t_msh *msh, char *key, char *value)
+{
+	t_dict	*dict;
+	t_dict	**new_env;
+	int		i;
+
+	if (!(dict = (t_dict *)malloc(sizeof(t_dict) * 1)))
+		exit_print_err(strerror(errno));
+	if (!(dict->key = ft_strdup(key)))
+		exit_print_err(strerror(errno));
+	if (!(dict->value = ft_strdup(value)))
+		exit_print_err(strerror(errno));
+	if (!(new_env = (t_dict **)malloc(sizeof(t_dict *) * (msh->env_len + 2))))
+		exit_print_err(strerror(errno));
+	i = 0;
+	while (i < msh->env_len)
+	{
+		new_env[i] = msh->env[i];
+		i++;
+	}
+	new_env[msh->env_len] = dict;
+	new_env[msh->env_len + 1] = NULL;
+	msh->env_len++;
+	free(msh->env);
+	msh->env = new_env;
+}
+
+void	set_env_dict(t_msh *msh, char *key, char *value)
 {
 	t_dict *dict;
 
-	dict = get_env_dict(msh->env, "PWD");
+	dict = get_env_dict(msh->env, key);
 	if (dict != NULL)
 	{
 		free(dict->value);
-		dict->value = getcwd(NULL, 0);
+		if (!(dict->value = ft_strdup(value)))
+			exit_print_err(strerror(errno));
 	}
 	else
-	{
-		dict = (t_dict *)malloc(sizeof(t_dict) * 1);
-		dict->key = ft_strdup("PWD");
-		dict->value = getcwd(NULL, 0);
+		add_env_dict(msh, key, value);
+}
 
-		t_dict **tmp = (t_dict **)malloc(sizeof(t_dict *) * (msh->env_len + 2));
-		int i = 0;
-		while (i < msh->env_len)
-		{
-			tmp[i] = msh->env[i];
-			i++;
-		}
-		tmp[msh->env_len] = dict;
-		tmp[msh->env_len + 1] = NULL;
-		msh->env_len++;
-		free(msh->env);
-		msh->env = tmp;
-	}
+void	init_pwd_env(t_msh *msh)
+{
+	char	*value;
 
+	if (!(value = getcwd(NULL, 0)))
+		exit_print_err(strerror(errno));
+	set_env_dict(msh, "PWD", value);
+	free(value);
 }
 
 
