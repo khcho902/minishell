@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/07 18:24:33 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/09 15:12:52 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -232,5 +232,5 @@ int		main(int argc, char **argv, char **env)
 
 		free(input);
 	}
-	return (EXIT_SUCCESS);
+	return (msh.exit_status & 255);
 }
