@@ -6,7 +6,7 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 18:34:02 by kycho             #+#    #+#             */
-/*   Updated: 2021/01/05 15:29:51 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/09 16:38:56 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ t_cmd	*get_new_cmd(t_cmd *previous)
 	return (new_cmd);
 }
 
-void	add_args(t_cmd *cmd, t_list *token, t_msh *msh)
+void	add_args(t_cmd *cmd, t_list *token)
 {
 	int		i;
 	char	**tmp;
@@ -50,26 +50,26 @@ void	add_args(t_cmd *cmd, t_list *token, t_msh *msh)
 		tmp[i] = cmd->args[i];
 		i++;
 	}
-	sanitize_token(token, msh);
+	sanitize_token(token);
 	tmp[i] = token->content;
 	free(cmd->args);
 	cmd->args = tmp;
 	cmd->length++;
 }
 
-void	add_redirection_file(t_cmd *cmd, t_list **token, t_msh *msh)
+void	add_redirection_file(t_cmd *cmd, t_list **token)
 {
 	t_list *lstnew;
 
-	sanitize_token(*token, msh);
+	sanitize_token(*token);
 	if (!(lstnew = ft_lstnew((*token)->content)))
 		exit_print_err(strerror(errno));
 	if (cmd->redirection_files == NULL)
 		cmd->redirection_files = lstnew;
 	else
 		ft_lstadd_back(&cmd->redirection_files, lstnew);
-	*token = (*token)->next;
-	sanitize_token(*token, msh);
+	(*token) = (*token)->next;
+	sanitize_token(*token);
 	if (!(lstnew = ft_lstnew((*token)->content)))
 		exit_print_err(strerror(errno));
 	ft_lstadd_back(&cmd->redirection_files, lstnew);
@@ -95,9 +95,9 @@ void	making_cmd(t_msh *msh)
 		else if (ft_strcmp("<", token->content) == 0 ||
 				ft_strcmp(">", token->content) == 0 ||
 				ft_strcmp(">>", token->content) == 0)
-			add_redirection_file(cmd, &token, msh);
+			add_redirection_file(cmd, &token);
 		else if (ft_strcmp(";", token->content) != 0)
-			add_args(cmd, token, msh);
+			add_args(cmd, token);
 		token = token->next;
 	}
 }

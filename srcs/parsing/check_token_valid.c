@@ -6,7 +6,7 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 18:32:52 by kycho             #+#    #+#             */
-/*   Updated: 2021/01/05 15:13:36 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/09 16:23:10 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 /*
  type!!
-
  start : 0
   word : 1
  	 | : 2
@@ -23,8 +22,7 @@
 	 < : 4
 */
 
-
-int		check_token_valid(char *program_name, t_list *now)
+int			check_token_valid(char *program_name, t_list *now)
 {
 	int		before_type;
 
@@ -40,7 +38,7 @@ int		check_token_valid(char *program_name, t_list *now)
 		else if (((char *)now->content)[0] == ';')
 		{
 			if (before_type != 1)
-				return (print_syntax_err(program_name ,now->content, FALSE));
+				return (print_syntax_err(program_name, now->content, FALSE));
 			before_type = 3;
 		}
 		else if (((char *)now->content)[0] == '>' ||
