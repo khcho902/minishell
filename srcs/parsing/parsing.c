@@ -6,7 +6,7 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 18:23:23 by kycho             #+#    #+#             */
-/*   Updated: 2021/01/09 14:53:44 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/09 15:43:14 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -204,7 +204,7 @@ int		parsing(t_msh *msh, char *input)
 
 //	dprintf(2, "env_replaced_input : [%s]\n", env_replaced_input); 
 
-	split_token(env_replaced_input, &(msh->tokens), 0);
+	split_token(env_replaced_input, &(msh->tokens), METACHARACTER, 0);
 /*
 	t_list *l = msh->tokens;
 	while (l)

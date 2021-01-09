@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/09 15:12:52 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/09 15:44:21 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,7 @@ int		main(int argc, char **argv, char **env)
 
 
 		t_list *tokens = NULL;
-		split_token(input, &tokens, 0);
+		split_token(input, &tokens, METACHARACTER, 0);
 		if (check_token_valid(msh.program_name, tokens) == ERROR)
 		{
 			msh.exit_status = 258;
@@ -172,7 +172,7 @@ int		main(int argc, char **argv, char **env)
 
 
 		t_list *tokens = NULL;
-		split_token(input, &tokens, 0);
+		split_token(input, &tokens, METACHARACTER, 0);
 		if (check_token_valid(msh.program_name, tokens) == ERROR)
 		{
 			msh.exit_status = 258;
