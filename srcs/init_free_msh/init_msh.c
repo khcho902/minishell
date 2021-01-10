@@ -6,53 +6,11 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 18:48:11 by kycho             #+#    #+#             */
-/*   Updated: 2021/01/10 00:21:33 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/10 15:14:35 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	add_env_dict(t_msh *msh, char *key, char *value)
-{
-	t_dict	*dict;
-	t_dict	**new_env;
-	int		i;
-
-	if (!(dict = (t_dict *)malloc(sizeof(t_dict) * 1)))
-		exit_print_err(strerror(errno));
-	if (!(dict->key = ft_strdup(key)))
-		exit_print_err(strerror(errno));
-	if (!(dict->value = ft_strdup(value)))
-		exit_print_err(strerror(errno));
-	if (!(new_env = (t_dict **)malloc(sizeof(t_dict *) * (msh->env_len + 2))))
-		exit_print_err(strerror(errno));
-	i = 0;
-	while (i < msh->env_len)
-	{
-		new_env[i] = msh->env[i];
-		i++;
-	}
-	new_env[msh->env_len] = dict;
-	new_env[msh->env_len + 1] = NULL;
-	msh->env_len++;
-	free(msh->env);
-	msh->env = new_env;
-}
-
-void	set_env_dict(t_msh *msh, char *key, char *value)
-{
-	t_dict *dict;
-
-	dict = get_env_dict(msh->env, key);
-	if (dict != NULL)
-	{
-		free(dict->value);
-		if (!(dict->value = ft_strdup(value)))
-			exit_print_err(strerror(errno));
-	}
-	else
-		add_env_dict(msh, key, value);
-}
 
 void	init_pwd_env(t_msh *msh)
 {
@@ -64,6 +22,34 @@ void	init_pwd_env(t_msh *msh)
 	free(value);
 }
 
+void	init_shlvl_env(t_msh *msh)
+{
+	t_dict *dict;
+	int num;
+	char *value;
+
+	if (!(dict = get_env_dict(msh->env, "SHLVL")) ||
+			(is_numeric_long_str(dict->value) == FALSE))
+	{
+		set_env_dict(msh, "SHLVL", "1");
+		return ;
+	}
+	if ((num = atoi(dict->value) + 1) <= 0)
+		set_env_dict(msh, "SHLVL", "0");
+	else
+	{
+		if (num > 1000)
+		{
+			value = ft_itoa(num);
+			print_shlvl_err(msh->program_name, value);
+			free(value);
+			num = 1;
+		}
+		value = ft_itoa(num);
+		set_env_dict(msh, "SHLVL", value);
+		free(value);
+	}
+}
 
 void	init_msh_env(t_msh *msh, char **env)
 {
@@ -90,7 +76,7 @@ void	init_msh_env(t_msh *msh, char **env)
 		i++;
 	}
 	init_pwd_env(msh);
-//	init_shlvl_env(msh);
+	init_shlvl_env(msh);
 }
 
 void	init_msh_path(t_msh *msh)

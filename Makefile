@@ -6,7 +6,7 @@
 #    By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/23 14:34:40 by jiseo             #+#    #+#              #
-#    Updated: 2021/01/10 00:27:30 by kycho            ###   ########.fr        #
+#    Updated: 2021/01/10 14:34:50 by kycho            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -44,6 +44,7 @@ RAW_SRCS		=	main.c \
 					utils/ft_strcmp.c \
 					utils/is_in_charset.c \
 					utils/get_env_dict.c \
+					utils/set_env_dict.c \
 					utils/ft_envjoin.c \
 					utils/quick_sort_env.c \
 					utils/append_char_to_str.c \
@@ -51,11 +52,13 @@ RAW_SRCS		=	main.c \
 					utils/free_and_get_value.c \
 					utils/env_free.c \
 					utils/is_numeric_str.c \
+					utils/is_numeric_long_str.c \
 					\
 					errors/exit_print_err.c \
 					errors/nonexit_print_err.c \
 					errors/print_syntax_err.c \
 					errors/print_execute_err.c \
+					errors/print_shlvl_err.c \
 
 SRCS			=	$(addprefix $(SRCS_PATH), $(RAW_SRCS))
 OBJS			=	$(SRCS:.c=.o)

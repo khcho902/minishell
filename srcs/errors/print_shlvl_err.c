@@ -1,32 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   is_numeric_str.c                                   :+:      :+:    :+:   */
+/*   print_shlvl_err.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/01/10 00:26:40 by kycho             #+#    #+#             */
-/*   Updated: 2021/01/10 13:21:55 by kycho            ###   ########.fr       */
+/*   Created: 2021/01/10 14:15:03 by kycho             #+#    #+#             */
+/*   Updated: 2021/01/10 14:17:19 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int		is_numeric_str(char *str)
+void	print_shlvl_err(char *program_name, char *value)
 {
-	int i;
-
-	i = 0;
-	while (ft_isspace(str[i]))
-		i++;
-	if (str[i] == '+' || str[i] == '-')
-		i++;
-	while (ft_isdigit(str[i]))
-		i++;
-	while (str[i] == ' ' || str[i] == '\t')
-		i++;
-	if (str[i] == '\0')
-		return (TRUE);
-	else
-		return (FALSE);
+	ft_putstr_fd(program_name, STDERR);
+	ft_putstr_fd(": warning: shell level (", STDERR);
+	ft_putstr_fd(value, STDERR);
+	ft_putstr_fd(") too high, resetting to 1\n", STDERR);
 }

@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/10 00:27:56 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/10 14:32:57 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ void	exit_print_err(char *err_msg);
 void	nonexit_print_err(char *err_msg);
 int		print_syntax_err(char *program_name, char *token, int is_eof_err);
 int		print_execute_err(char *program_name, char *token, char *err_msg);
+void	print_shlvl_err(char *program_name, char *value);
 
 /*
  ** prompt/
@@ -80,6 +81,7 @@ void	ft_double_free(void **ptr);
 int		is_in_charset(char c, char *str);
 int		ft_strcmp(const char *s1, const char *s2);
 t_dict	*get_env_dict(t_dict **env, char *key);
+void	set_env_dict(t_msh *msh, char *key, char *value);
 char	**ft_envjoin(t_dict **env, int env_len);
 void	append_char_to_str(char **str, char c);
 void	quick_sort_env(int left, int right, t_dict **env);
@@ -87,6 +89,7 @@ void	copy_env(t_msh *msh, t_dict **dst);
 void	free_and_get_value(char **dst, char *src);
 void	env_free(t_dict **env);
 int		is_numeric_str(char *str);
+int		is_numeric_long_str(char *str);
 
 /*
  ** signal.c
