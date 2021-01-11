@@ -6,7 +6,7 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 18:23:23 by kycho             #+#    #+#             */
-/*   Updated: 2021/01/09 15:43:14 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/11 15:51:57 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,26 @@ int		sanitize_env2(char **res_str, char *og_str, t_msh *msh, int in_dquotes)
 	if (!(env_key = (char *)malloc(sizeof(char) * (env_len + 1))))
 		exit_print_err(strerror(errno));
 	ft_strlcpy(env_key, og_str + 1, env_len);
+
+	/****/
+	if (ft_strcmp("PWD", env_key) == 0)
+	{
+		if (!(tmp = ft_strjoin(*res_str, msh->pwd)))
+			exit_print_err(strerror(errno));
+		free(*res_str);
+		*res_str = tmp;
+		return (env_len);
+	}
+	if (ft_strcmp("OLDPWD", env_key) == 0)
+	{
+		if (!(tmp = ft_strjoin(*res_str, msh->oldpwd)))
+			exit_print_err(strerror(errno));
+		free(*res_str);
+		*res_str = tmp;	
+		return (env_len);
+	}
+	/****/
+
 	env_dict = get_env_dict(msh->env, env_key);
 	free(env_key);
 	if (env_dict == NULL)

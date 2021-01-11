@@ -45,5 +45,6 @@ unset COLORTERM
 unset _
 
 unset PATH
+unset OLDPWD
 
 /bin/bash

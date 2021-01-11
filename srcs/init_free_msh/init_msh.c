@@ -6,7 +6,7 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 18:48:11 by kycho             #+#    #+#             */
-/*   Updated: 2021/01/11 14:18:04 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/11 16:15:00 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,10 +118,10 @@ void	init_msh(char *program_name, t_msh *msh, char **env)
 	msh->exit_status = 0;
 	msh->tokens = NULL;
 	msh->cmds = NULL;
-	msh->pwd = getcwd(NULL, 0);
-	if (msh == NULL)
+	if (!(msh->pwd = getcwd(NULL, 0)))
 		exit_print_err(strerror(errno));
-	msh->oldpwd = NULL;
+	if (!(msh->oldpwd = ft_strdup("")))
+		exit_print_err(strerror(errno));
 	init_msh_env(msh, env);
 	init_msh_path(msh);
 }
