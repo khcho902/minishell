@@ -69,8 +69,15 @@ void	do_unset(t_msh *msh, t_cmd *cmd)
 				exit_print_err(strerror(errno));
 			if (!(temp[temp_idx]->key = ft_strdup(msh->env[idx]->key)))
 				exit_print_err(strerror(errno));
-			if (!(temp[temp_idx]->value = ft_strdup(msh->env[idx]->value)))
-				exit_print_err(strerror(errno));
+			if (msh->env[idx]->value == NULL)
+			{
+				temp[temp_idx]->value = NULL;
+			}	
+			else
+			{
+				if (!(temp[temp_idx]->value = ft_strdup(msh->env[idx]->value)))
+					exit_print_err(strerror(errno));
+			}
 			temp_idx++;
 		}
 	}

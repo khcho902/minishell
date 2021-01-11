@@ -115,6 +115,7 @@ void		do_export(t_msh *msh, t_cmd *cmd)
 		quick_sort_env(0, msh->env_len - 1, temp);
 		print_env(msh, temp, msh->env_len, "export");
 		env_free(temp);
+		//free(temp);
 	}
 	else
 	{

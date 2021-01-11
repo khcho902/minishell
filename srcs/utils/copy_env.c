@@ -19,12 +19,22 @@ void	copy_env(t_msh *msh, t_dict **dst)
 	idx = 0;
 	while (idx < msh->env_len)
 	{
+		
+		
 		if (!(dst[idx] = (t_dict *)malloc(sizeof(t_dict))))
 			exit_print_err(strerror(errno));
 		if (!(dst[idx]->key = ft_strdup(msh->env[idx]->key)))
 			exit_print_err(strerror(errno));
-		if (!(dst[idx]->value = ft_strdup(msh->env[idx]->value)))
-			exit_print_err(strerror(errno));
+		if (msh->env[idx]->value == NULL)
+		{
+			dst[idx]->value = NULL;
+		}
+		else
+		{
+			if (!(dst[idx]->value = ft_strdup(msh->env[idx]->value)))
+				exit_print_err(strerror(errno));
+		}
+		
 		idx++;
 	}
 	dst[idx] = NULL;

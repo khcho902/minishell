@@ -6,7 +6,7 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/10 14:31:07 by kycho             #+#    #+#             */
-/*   Updated: 2021/01/10 14:31:42 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/11 14:05:00 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,16 +22,18 @@ void	add_env_dict(t_msh *msh, char *key, char *value)
 		exit_print_err(strerror(errno));
 	if (!(dict->key = ft_strdup(key)))
 		exit_print_err(strerror(errno));
-	if (!(dict->value = ft_strdup(value)))
-		exit_print_err(strerror(errno));
+	if (value == NULL)
+		dict->value = NULL;
+	else
+	{
+		if (!(dict->value = ft_strdup(value)))
+			exit_print_err(strerror(errno));
+	}
 	if (!(new_env = (t_dict **)malloc(sizeof(t_dict *) * (msh->env_len + 2))))
 		exit_print_err(strerror(errno));
-	i = 0;
-	while (i < msh->env_len)
-	{
+	i = -1;
+	while (++i < msh->env_len)
 		new_env[i] = msh->env[i];
-		i++;
-	}
 	new_env[msh->env_len] = dict;
 	new_env[msh->env_len + 1] = NULL;
 	msh->env_len++;
@@ -47,8 +49,13 @@ void	set_env_dict(t_msh *msh, char *key, char *value)
 	if (dict != NULL)
 	{
 		free(dict->value);
-		if (!(dict->value = ft_strdup(value)))
-			exit_print_err(strerror(errno));
+		if (value == NULL)
+			dict->value = NULL;
+		else
+		{
+			if (!(dict->value = ft_strdup(value)))
+				exit_print_err(strerror(errno));
+		}
 	}
 	else
 		add_env_dict(msh, key, value);

@@ -6,13 +6,13 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 18:48:11 by kycho             #+#    #+#             */
-/*   Updated: 2021/01/10 15:14:35 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/11 14:18:04 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	init_pwd_env(t_msh *msh)
+void	init_pwd_oldpwd_env(t_msh *msh)
 {
 	char	*value;
 
@@ -20,6 +20,7 @@ void	init_pwd_env(t_msh *msh)
 		exit_print_err(strerror(errno));
 	set_env_dict(msh, "PWD", value);
 	free(value);
+	set_env_dict(msh, "OLDPWD", NULL);
 }
 
 void	init_shlvl_env(t_msh *msh)
@@ -75,7 +76,7 @@ void	init_msh_env(t_msh *msh, char **env)
 			exit_print_err(strerror(errno));
 		i++;
 	}
-	init_pwd_env(msh);
+	init_pwd_oldpwd_env(msh);
 	init_shlvl_env(msh);
 }
 
@@ -117,6 +118,10 @@ void	init_msh(char *program_name, t_msh *msh, char **env)
 	msh->exit_status = 0;
 	msh->tokens = NULL;
 	msh->cmds = NULL;
+	msh->pwd = getcwd(NULL, 0);
+	if (msh == NULL)
+		exit_print_err(strerror(errno));
+	msh->oldpwd = NULL;
 	init_msh_env(msh, env);
 	init_msh_path(msh);
 }

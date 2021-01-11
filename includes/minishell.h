@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/11 08:09:19 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/11 11:48:09 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,11 +39,11 @@
 # define TOKEN_SEMICOLON	3
 # define TOKEN_REDIRECTION	4
 
-# define TYPE_DEFAULT		0
+# define TYPE_DEFAULT		0		// 지워도 될거같음 
 # define TYPE_PIPE			1
 
-# define PIPE_OUT			0
-# define PIPE_IN			1
+# define PIPE_OUT			0     // 지워도 될거같음 
+# define PIPE_IN			1     // 지워도 될거같음
 
 # define OPEN_MODE			S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
 # define FLAG_I				O_RDONLY
@@ -76,11 +76,13 @@ typedef struct		s_msh
 {
 	char			*program_name;
 	int				exit_status;
-	t_list			*tokens;
+	t_list			*tokens;    // 나중에 지워도 될거같음.
 	t_cmd			*cmds;
 	t_dict			**env;
 	int				env_len;
 	char			**path;
+	char			*pwd;
+	char			*oldpwd;
 }					t_msh;
 
 typedef void		(*t_builtin_executor)(t_msh *, t_cmd *);
