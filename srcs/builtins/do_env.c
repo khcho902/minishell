@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/17 19:00:35 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/03 13:59:27 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/12 15:18:44 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,29 @@ void	print_env(t_msh *msh, t_dict **env_arr, int env_len, char *command)
 
 void	do_env(t_msh *msh, t_cmd *cmd)
 {
+	/*
 	print_env(msh, msh->env, msh->env_len, "env");
 	(void)cmd;
+	*/
+	(void)cmd;
+
+	int i;
+
+	i = 0;
+	
+	//dprintf(2, "env_len : %d\n", msh->env_len);
+
+	while (msh->env[i])
+	{
+		if (msh->env[i]->value != NULL)
+		{
+			ft_putstr_fd(msh->env[i]->key, STDOUT);
+			ft_putstr_fd("=", STDOUT);
+			ft_putstr_fd(msh->env[i]->value, STDOUT);
+			ft_putchar_fd('\n', STDOUT);
+		}
+		i++;
+	}
+
+
 }

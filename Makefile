@@ -6,7 +6,7 @@
 #    By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/23 14:34:40 by jiseo             #+#    #+#              #
-#    Updated: 2021/01/11 21:59:02 by kycho            ###   ########.fr        #
+#    Updated: 2021/01/12 15:16:30 by kycho            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -45,6 +45,7 @@ RAW_SRCS		=	main.c \
 					utils/is_in_charset.c \
 					utils/get_env_dict.c \
 					utils/set_env_dict.c \
+					utils/unset_env_dict.c \
 					utils/ft_envjoin.c \
 					utils/quick_sort_env.c \
 					utils/append_char_to_str.c \

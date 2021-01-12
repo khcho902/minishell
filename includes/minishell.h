@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/11 11:48:09 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/12 15:17:04 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,6 +149,7 @@ int					is_in_charset(char c, char *str);
 int					ft_strcmp(const char *s1, const char *s2);
 t_dict				*get_env_dict(t_dict **env, char *key);
 void				set_env_dict(t_msh *msh, char *key, char *value);
+void				unset_env_dict(t_msh *msh, char *key);
 char				**ft_envjoin(t_dict **env, int env_len);
 void				append_char_to_str(char **str, char c);
 void				quick_sort_env(int left, int right, t_dict **env);

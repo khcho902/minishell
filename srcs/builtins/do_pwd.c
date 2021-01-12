@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 16:10:13 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/11 21:57:51 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/12 14:20:02 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,11 @@
 
 void	do_pwd(t_msh *msh, t_cmd *cmd)
 {
+	/*
 	(void)cmd;
 	ft_putstr_fd(msh->pwd, STDOUT);
 	ft_putchar_fd('\n', STDOUT);
-	/*
+	*/
 	char	temp[BUFFER_SIZE + 1];
 
 	if (!msh)
@@ -27,5 +28,4 @@ void	do_pwd(t_msh *msh, t_cmd *cmd)
 	ft_putstr_fd(temp, STDOUT);
 	ft_putchar_fd('\n', STDOUT);
 	(void)cmd;
-	*/
 }
