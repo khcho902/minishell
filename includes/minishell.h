@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/12 15:17:04 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/12 17:14:16 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,10 +98,6 @@ void				do_exit(t_msh *msh, t_cmd *cmd);
 void				do_export(t_msh *msh, t_cmd *cmd);
 void				do_pwd(t_msh *msh, t_cmd *cmd);
 void				do_unset(t_msh *msh, t_cmd *cmd);
-
-// 지울꺼임
-void				print_env(t_msh *msh, t_dict **env_arr,
-								int env_len, char *command);
 
 /*
 ** executing/
