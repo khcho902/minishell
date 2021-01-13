@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/12 17:14:16 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/13 21:09:38 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,6 +154,7 @@ void				free_and_get_value(char **dst, char *src);
 void				env_free(t_dict **env);
 int					is_numeric_str(char *str);
 int					is_numeric_long_str(char *str);
+char				*insert_char_before_set(char *str, char *set, char ch);
 
 /*
 ** signal.c

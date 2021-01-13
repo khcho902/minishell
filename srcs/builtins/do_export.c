@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 04:22:01 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/13 19:10:42 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/13 21:18:06 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,6 +199,7 @@ void		do_export(t_msh *msh, t_cmd *cmd)
 	}
 	*/
 	t_dict	**temp;
+	char	*tmp_str;
 	int i;
 
 	if (cmd->length == 1)
@@ -225,8 +226,10 @@ void		do_export(t_msh *msh, t_cmd *cmd)
 			if (temp[i]->value != NULL)
 			{
 				ft_putstr_fd("=\"", STDOUT);
-				ft_putstr_fd(temp[i]->value, STDOUT);
+				tmp_str = insert_char_before_set(temp[i]->value, "\"\\$", '\\');
+				ft_putstr_fd(tmp_str, STDOUT);
 				ft_putchar_fd('"', STDOUT);
+				free(tmp_str);
 			}
 			ft_putchar_fd('\n', STDOUT);
 			i++;

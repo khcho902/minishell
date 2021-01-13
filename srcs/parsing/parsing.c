@@ -6,30 +6,11 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 18:23:23 by kycho             #+#    #+#             */
-/*   Updated: 2021/01/13 21:05:12 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/13 21:09:28 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-char	*go(char *str, char *set, char ch)
-{
-	int i;
-	char *tmp;
-
-	if (!(tmp = ft_strdup("")))
-		exit_print_err(strerror(errno));
-	i = 0;
-	while (str[i])
-	{
-		if (is_in_charset(str[i], set))
-			append_char_to_str(&tmp, ch);
-		append_char_to_str(&tmp, str[i]);
-		i++;
-	}
-	return (tmp);
-}
-
 
 int		sanitize_env_sub2(char **res_str, char *og_str, t_msh *msh, char *tmp)
 {
@@ -118,12 +99,12 @@ int		sanitize_env2(char **res_str, char *og_str, t_msh *msh, int in_dquotes)
 		return (env_len);
 	if (in_dquotes)
 	{
-		if (!(tmp2 = go(env_dict->value, "\"\\", '\\')))
+		if (!(tmp2 = insert_char_before_set(env_dict->value, "\"\\", '\\')))
 			exit_print_err(strerror(errno));
 	}
 	else
 	{
-		if (!(tmp2 = go(env_dict->value, "'\"\\", '\\')))  /// 추가함
+		if (!(tmp2 = insert_char_before_set(env_dict->value, "'\"\\", '\\')))  /// 추가함
 			exit_print_err(strerror(errno));               // 추가함
 	}
 	//if (!(tmp = ft_strjoin(*res_str, env_dict->value)))
