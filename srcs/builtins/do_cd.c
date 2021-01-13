@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 00:57:53 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/11 23:26:44 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/13 22:19:10 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void	do_cd(t_msh *msh, t_cmd *cmd)
 	if (chdir(path))
 	{
 		if (!(tmp = ft_strjoin3(cmd->args[0], ": ", path)))
-			print_execute_err(msh->program_name, tmp, strerror(errno));
+			print_execute_err(msh->program_name, tmp, strerror(errno)); // ??
 		print_execute_err(msh->program_name, tmp, strerror(errno));
 		free(tmp);
 		return ;
