@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 04:22:01 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/12 17:14:46 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/13 19:10:42 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,22 +128,115 @@ void		export_env(t_msh *msh, t_dict **temp, char **args)
 	}
 }
 
+
+int			is_fine_env_key(char *key)
+{
+	int i;
+
+	if (ft_strlen(key) == 0)
+		return (FALSE);
+	if (!(key[0] == '_' || ('a' <= key[0] && key[0] <= 'z') ||
+				('A' <= key[0] && key[0] <= 'Z')))
+		return (FALSE);
+	i = 0;
+	while (key[i])
+	{
+		if (!((key[i] == '_') || ('a' <= key[i] && key[i] <= 'z') ||
+			('A' <= key[i] && key[i] <= 'Z') ||
+			('0' <= key[i] && key[i] <= '9')))
+			return (FALSE);
+		i++;
+	}
+	return (TRUE);
+}
+
+
+char		*get_env_key(char *str)
+{
+	char	*key;
+	int		key_len;
+
+	key_len = 0;
+	while (str[key_len] && str[key_len] != '=')
+		key_len++;
+
+//	dprintf(2, "in get_env_key key_len : %d\n", key_len);
+
+	if (!(key = (char *)malloc(sizeof(char) * (key_len + 1))))
+		exit_print_err(strerror(errno));
+	ft_strlcpy(key, str, key_len + 1);
+	return (key);
+}
+
+char		*get_env_value(char *str)
+{
+	char	*value;
+	int		key_len;
+
+	key_len = 0;
+	while (str[key_len] && str[key_len] != '=')
+		key_len++;
+	
+//	dprintf(2, "in get_env_value key_len : %d\n", key_len);
+//	dprintf(2, "in get_env_value   value : %s\n", str + key_len + 1);
+
+	if (str[key_len] == '\0')
+		return (NULL);
+	if (!(value = ft_strdup(str + key_len + 1)))
+		exit_print_err(strerror(errno));
+	return (value);
+}
+
 void		do_export(t_msh *msh, t_cmd *cmd)
 {
 
-	//write(1, "in do_export\n", 13);
-	t_dict	**temp;
+//	write(1, "in do_export\n", 13);
 
-	if (cmd->args[1] == NULL)
+	/*
+	for(int k = 0; k < msh->env_len; k++){
+		dprintf(2, "|%s| |%s|\n", msh->env[k]->key, msh->env[k]->value);
+
+	}
+	*/
+	t_dict	**temp;
+	int i;
+
+	if (cmd->length == 1)
 	{
 		if (!(temp = (t_dict **)malloc(sizeof(t_dict *) * (msh->env_len + 1))))
 			exit_print_err(strerror(errno));
-		copy_env(msh, temp);
+	//	copy_env(msh, temp);
+		i = 0;
+		while (i < msh->env_len)
+		{
+			temp[i] = msh->env[i];
+			i++;
+		}
+		temp[i] = NULL;
+
 		quick_sort_env(0, msh->env_len - 1, temp);
-		print_env(msh, temp, msh->env_len, "export");
-		env_free(temp);
-		//free(temp);
+
+	//	print_env(msh, temp, msh->env_len, "export");
+		i = 0;
+		while (i < msh->env_len)
+		{
+			ft_putstr_fd("declare -x ", STDOUT);
+			ft_putstr_fd(temp[i]->key, STDOUT);
+			if (temp[i]->value != NULL)
+			{
+				ft_putstr_fd("=\"", STDOUT);
+				ft_putstr_fd(temp[i]->value, STDOUT);
+				ft_putchar_fd('"', STDOUT);
+			}
+			ft_putchar_fd('\n', STDOUT);
+			i++;
+		}
+
+	//	env_free(temp);
+		free(temp);
+		return ;
 	}
+	/*
 	else
 	{
 		if (!(temp = (t_dict **)malloc(sizeof(t_dict *) *
@@ -155,4 +248,34 @@ void		do_export(t_msh *msh, t_cmd *cmd)
 		env_free(msh->env);
 		msh->env = temp;
 	}
+	*/
+
+
+	i = 1;
+	while (i < cmd->length)
+	{
+		char * key = get_env_key(cmd->args[i]);
+		char * value = get_env_value(cmd->args[i]);
+
+//		dprintf(2, "key : |%s|\n", key);
+//		dprintf(2, "value : |%s|\n", value);
+		if(is_fine_env_key(key) == TRUE)
+		{
+			set_env_dict(msh, key, value);
+		}
+		else
+		{
+			dprintf(2, "minishell: export: `%s': not a valid identifier\n", cmd->args[i]);
+			msh->exit_status = 1;
+		}
+		
+		free(key);
+		free(value);
+		i++;
+	}
+
+
+
+
+
 }

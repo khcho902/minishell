@@ -6,7 +6,7 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 18:23:23 by kycho             #+#    #+#             */
-/*   Updated: 2021/01/11 15:51:57 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/13 21:05:12 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ int		sanitize_env2(char **res_str, char *og_str, t_msh *msh, int in_dquotes)
 
 	env_dict = get_env_dict(msh->env, env_key);
 	free(env_key);
-	if (env_dict == NULL)
+	if (env_dict == NULL || env_dict->value == NULL)
 		return (env_len);
 	if (in_dquotes)
 	{
