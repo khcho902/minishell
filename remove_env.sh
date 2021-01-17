@@ -47,4 +47,4 @@ unset _
 unset PATH
 unset OLDPWD
 
-/bin/bash
+/bin/../bin/./bash

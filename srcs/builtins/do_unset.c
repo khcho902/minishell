@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 04:22:52 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/16 18:11:09 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/17 23:48:57 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,7 @@ void	do_unset(t_msh *msh, t_cmd *cmd)
 		if (is_fine_env_key(cmd->args[i]) == TRUE)
 		{
 			if (ft_strcmp(cmd->args[i], "PWD") == 0)
-			{
 				msh->unset_pwd_flag = 1;
-			}
 			unset_env_dict(msh, cmd->args[i]);
 		}
 		else
