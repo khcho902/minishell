@@ -6,7 +6,7 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 18:48:11 by kycho             #+#    #+#             */
-/*   Updated: 2021/01/12 14:54:09 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/16 18:10:16 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,23 @@
 
 void	init_pwd_oldpwd_env(t_msh *msh)
 {
-	char	*value;
+	char	*real_pwd;
+	t_dict	*pwd_dict;
+	struct	stat sb1;
+	struct	stat sb2;
 
-	if (!(value = getcwd(NULL, 0)))
+	if (!(real_pwd = getcwd(NULL, 0)))
 		exit_print_err(strerror(errno));
-	set_env_dict(msh, "PWD", value);
-	free(value);
+	if (stat(real_pwd, &sb1) == -1)
+		exit_print_err(strerror(errno));
+	pwd_dict = get_env_dict(msh->env, "PWD");
+	if (pwd_dict == NULL ||
+			(stat(pwd_dict->value, &sb2) == -1) ||
+			(sb1.st_ino != sb2.st_ino))
+	{
+		set_env_dict(msh, "PWD", real_pwd);
+	}
+	free(real_pwd);
 	set_env_dict(msh, "OLDPWD", NULL);
 }
 
@@ -118,10 +129,9 @@ void	init_msh(char *program_name, t_msh *msh, char **env)
 	msh->exit_status = 0;
 	msh->tokens = NULL;
 	msh->cmds = NULL;
-	if (!(msh->pwd = getcwd(NULL, 0)))
-		exit_print_err(strerror(errno));
-	if (!(msh->oldpwd = ft_strdup("")))
-		exit_print_err(strerror(errno));
 	init_msh_env(msh, env);
 	init_msh_path(msh);
+	if (!(msh->pwd = ft_strdup(get_env_dict(msh->env, "PWD")->value)))
+		exit_print_err(strerror(errno));
+	msh->unset_pwd_flag = 0;
 }

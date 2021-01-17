@@ -75,6 +75,7 @@ int		sanitize_env2(char **res_str, char *og_str, t_msh *msh, int in_dquotes)
 	ft_strlcpy(env_key, og_str + 1, env_len);
 
 	/****/
+	/*
 	if (ft_strcmp("PWD", env_key) == 0)
 	{
 		if (!(tmp = ft_strjoin(*res_str, msh->pwd)))
@@ -91,6 +92,7 @@ int		sanitize_env2(char **res_str, char *og_str, t_msh *msh, int in_dquotes)
 		*res_str = tmp;	
 		return (env_len);
 	}
+	*/
 	/****/
 
 	env_dict = get_env_dict(msh->env, env_key);

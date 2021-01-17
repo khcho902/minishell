@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/13 22:47:01 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/16 18:08:35 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "../libft/libft.h"
 # include "prompt.h"
 # include <string.h>
+# include <sys/stat.h>
 # include <sys/wait.h>
 # include <sys/errno.h>
 # include <signal.h>
@@ -82,7 +83,7 @@ typedef struct		s_msh
 	int				env_len;
 	char			**path;
 	char			*pwd;
-	char			*oldpwd;
+	int				unset_pwd_flag;
 }					t_msh;
 
 typedef void		(*t_builtin_executor)(t_msh *, t_cmd *);
