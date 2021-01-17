@@ -6,7 +6,7 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 18:48:11 by kycho             #+#    #+#             */
-/*   Updated: 2021/01/16 18:10:16 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/18 01:53:17 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 
 void	init_pwd_oldpwd_env(t_msh *msh)
 {
-	char	*real_pwd;
-	t_dict	*pwd_dict;
-	struct	stat sb1;
-	struct	stat sb2;
+	char		*real_pwd;
+	t_dict		*pwd_dict;
+	struct stat	sb1;
+	struct stat	sb2;
 
 	if (!(real_pwd = getcwd(NULL, 0)))
 		exit_print_err(strerror(errno));
@@ -36,9 +36,9 @@ void	init_pwd_oldpwd_env(t_msh *msh)
 
 void	init_shlvl_env(t_msh *msh)
 {
-	t_dict *dict;
-	int num;
-	char *value;
+	t_dict	*dict;
+	int		num;
+	char	*value;
 
 	if (!(dict = get_env_dict(msh->env, "SHLVL")) ||
 			(is_numeric_long_str(dict->value) == FALSE))
@@ -121,6 +121,8 @@ void	init_msh(char *program_name, t_msh *msh, char **env)
 {
 	int i;
 
+	if (!(msh->launch_program_name = ft_strdup(program_name)))
+		exit_print_err(strerror(errno));
 	i = ft_strlen(program_name) - 1;
 	while (i >= 0 && program_name[i] != '/')
 		i--;

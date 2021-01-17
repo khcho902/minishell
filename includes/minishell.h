@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/17 18:53:43 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/18 01:53:04 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@ typedef struct		s_dict
 
 typedef struct		s_msh
 {
+	char			*launch_program_name;
 	char			*program_name;
 	int				exit_status;
 	t_list			*tokens;    // 나중에 지워도 될거같음.
