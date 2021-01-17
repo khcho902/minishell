@@ -6,7 +6,7 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/01 18:56:08 by kycho             #+#    #+#             */
-/*   Updated: 2021/01/01 19:01:16 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/17 18:20:52 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,7 @@
 void	*get_builtin_executor(char *cmd_name)
 {
 	if (cmd_name == NULL)
-		return NULL;
-
+		return (NULL);
 	if (!ft_strcmp(cmd_name, "exit"))
 		return (&do_exit);
 	else if (!ft_strcmp(cmd_name, "echo"))
@@ -31,5 +30,5 @@ void	*get_builtin_executor(char *cmd_name)
 		return (&do_unset);
 	else if (!ft_strcmp(cmd_name, "cd"))
 		return (&do_cd);
-	return NULL;
+	return (NULL);
 }

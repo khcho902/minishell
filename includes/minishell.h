@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/16 18:08:35 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/17 18:53:43 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,10 +115,14 @@ void				free_msh_member(t_msh *msh);
 ** parsing/
 */
 int					parsing(t_msh *msh, char *input);
-void				split_token(char *input, t_list **tokens, char *separator, int i);
+void				split_token(
+						char *input, t_list **tokens, char *separator, int i);
 int					check_token_valid(char *program_name, t_list *now);
 void				making_cmd(t_msh *msh);
 void				sanitize_token(t_list *token);
+int					sanitize_env(
+					char **res_str, char *og_str, t_msh *msh, int in_dquotes);
+char				*get_env_replaced_input(t_msh *msh, char *input);
 
 /*
 ** errors/
