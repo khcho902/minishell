@@ -6,18 +6,24 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/17 18:40:41 by kycho             #+#    #+#             */
-/*   Updated: 2021/01/17 21:52:08 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/17 22:43:45 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int		sanitize_env_sub(char **res_str, char *og_str, t_msh *msh, char *tmp)
+int		sanitize_env_sub(char **res_str, char *og_str, t_msh *msh, int in_dquotes)
 {
+	char *tmp;
+
 	if (og_str[1] == '$' || ('1' <= og_str[1] && og_str[1] <= '9'))
 		return (2);
 	else if (og_str[1] == '"' || og_str[1] == '\'')
+	{	
+		if (og_str[1] == '"' && in_dquotes == TRUE)
+			append_char_to_str(res_str, '$');
 		return (1);
+	}
 	else if (og_str[1] == '0')
 	{
 		if (!(tmp = ft_strjoin(*res_str, msh->program_name)))
@@ -53,7 +59,7 @@ int		sanitize_env(char **res_str, char *og_str, t_msh *msh, int in_dquotes)
 	char	*tmp;
 	char	*tmp2;
 
-	if ((env_len = sanitize_env_sub(res_str, og_str, msh, NULL)) != -1)
+	if ((env_len = sanitize_env_sub(res_str, og_str, msh, in_dquotes)) != -1)
 		return (env_len);
 	
 	
