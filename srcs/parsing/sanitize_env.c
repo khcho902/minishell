@@ -6,7 +6,7 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/17 18:40:41 by kycho             #+#    #+#             */
-/*   Updated: 2021/01/17 18:41:01 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/17 21:52:08 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,18 +34,10 @@ int		sanitize_env_sub(char **res_str, char *og_str, t_msh *msh, char *tmp)
 		*res_str = tmp;
 		return (2);
 	}
-	else if (og_str[1] == '_')
-	{
-		if (!(tmp = ft_strjoin(*res_str, ft_itoa(msh->exit_status))))
-			exit_print_err(strerror(errno));
-		free(*res_str);
-		*res_str = tmp;
-		return (2);
-	}
-	else if (!(og_str[1] != '\0' &&
-				(('0' <= og_str[1] && og_str[1] <= '9')
-				|| ('a' <= og_str[1] && og_str[1] <= 'z')
-				|| ('A' <= og_str[1] && og_str[1] <= 'Z'))))
+	else if (!(og_str[1] != '\0' && (og_str[1] == '_' 
+					|| ('0' <= og_str[1] && og_str[1] <= '9')
+					|| ('a' <= og_str[1] && og_str[1] <= 'z')
+					|| ('A' <= og_str[1] && og_str[1] <= 'Z'))))
 	{
 		append_char_to_str(res_str, '$');
 		return (1);
@@ -63,6 +55,8 @@ int		sanitize_env(char **res_str, char *og_str, t_msh *msh, int in_dquotes)
 
 	if ((env_len = sanitize_env_sub(res_str, og_str, msh, NULL)) != -1)
 		return (env_len);
+	
+	
 	env_len = 1;
 	while (og_str[env_len] != '\0' && (og_str[env_len] == '_'
 				|| ('0' <= og_str[env_len] && og_str[env_len] <= '9')
