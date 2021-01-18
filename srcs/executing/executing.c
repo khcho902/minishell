@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/19 19:03:05 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/18 19:14:04 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/19 00:03:19 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -352,6 +352,18 @@ void	executing(t_msh *msh)
 	cmd = msh->cmds;
 	while (cmd)
 	{
+		free(msh->lstcmd);
+		if (cmd->length == 0)
+		{
+			if (!(msh->lstcmd = ft_strdup("")))
+				exit_print_err(strerror(errno));
+		}
+		else
+		{
+			if (!(msh->lstcmd = ft_strdup(cmd->args[cmd->length - 1])))
+				exit_print_err(strerror(errno));
+		}
+
 		if (cmd->type == TYPE_PIPE)
 		{
 			cmd = piping(msh, cmd);
@@ -400,5 +412,7 @@ void	executing(t_msh *msh)
 		}
 
 		cmd = cmd->next;
+
+		unset_env_dict(msh, "_");
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 04:22:01 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/18 17:47:50 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/18 23:49:15 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,10 @@ void		do_export(t_msh *msh, t_cmd *cmd)
 
 		if(is_fine_env_key(key) == TRUE)
 		{
+			free(msh->lstcmd);
+			if (!(msh->lstcmd = ft_strdup(key)))
+				exit_print_err(strerror(errno));
+
 			if (ft_strcmp(key, "PATH") == 0)
 			{
 				free(msh->path);

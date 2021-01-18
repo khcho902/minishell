@@ -6,7 +6,7 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/17 18:40:41 by kycho             #+#    #+#             */
-/*   Updated: 2021/01/18 17:31:19 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/18 23:08:17 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ int		sanitize_env(char **res_str, char *og_str, t_msh *msh, int in_dquotes)
 	if (ft_strcmp(env_key, "PATH") == 0)
 		sanitize_env_sub(res_str, in_dquotes, msh->path);
 	else if (ft_strcmp(env_key, "_") == 0)
-		sanitize_env_sub(res_str, in_dquotes, "lstcmdㅜㅜ");
+		sanitize_env_sub(res_str, in_dquotes, msh->lstcmd);
 	else
 	{
 		env_dict = get_env_dict(msh->env, env_key);

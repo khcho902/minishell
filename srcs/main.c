@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/18 18:09:41 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/18 23:26:24 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,14 @@ int		main(int argc, char **argv, char **env)
 		i++;
 	}
 	*/
-
+/*
+	int i = 0;
+	while (env[i])
+	{
+		dprintf(2, "|%s|\n", env[i]);
+		i++;
+	}
+*/
 
 
 	char	*input;

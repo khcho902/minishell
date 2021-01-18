@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/18 17:15:10 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/18 23:06:49 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,7 @@ typedef struct		s_msh
 	char			*path;
 	char			*pwd;
 	int				unset_pwd_flag;
+	char			*lstcmd;
 }					t_msh;
 
 typedef void		(*t_builtin_executor)(t_msh *, t_cmd *);

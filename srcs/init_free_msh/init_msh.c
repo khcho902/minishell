@@ -6,7 +6,7 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 18:48:11 by kycho             #+#    #+#             */
-/*   Updated: 2021/01/18 17:32:24 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/18 23:21:06 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,4 +151,6 @@ void	init_msh(char *program_name, t_msh *msh, char **env)
 	if (!(msh->pwd = ft_strdup(get_env_dict(msh->env, "PWD")->value)))
 		exit_print_err(strerror(errno));
 	msh->unset_pwd_flag = 0;
+	if (!(msh->lstcmd = ft_strdup(program_name)))
+		exit_print_err(strerror(errno));
 }
