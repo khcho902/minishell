@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/17 22:54:20 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/18 18:09:41 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,18 @@ int		check_input_valid(char *program_name, char *input)
 
 int		main(int argc, char **argv, char **env)
 {
+	/*
+	char **res2 = ft_split("/bin:::::::", ':');
+	int i = 0;
+	while (res2[i])
+	{
+		dprintf(2, "|%s|\n", res2[i]);
+		i++;
+	}
+	*/
+
+
+
 	char	*input;
 	int		res;
 	t_msh	msh;

@@ -6,7 +6,7 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/17 18:40:41 by kycho             #+#    #+#             */
-/*   Updated: 2021/01/18 01:53:39 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/18 17:31:19 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,19 +55,21 @@ int		exception_handler(
 	return (-1);
 }
 
-void	sanitize_env_sub(char **res_str, int in_dquotes, t_dict *env_dict)
+void	sanitize_env_sub(char **res_str, int in_dquotes, char *value)
 {
 	char	*tmp;
 	char	*tmp2;
-
+	
+	if (value == NULL)
+		return ;
 	if (in_dquotes)
 	{
-		if (!(tmp2 = insert_char_before_set(env_dict->value, "\"\\", '\\')))
+		if (!(tmp2 = insert_char_before_set(value, "\"\\", '\\')))
 			exit_print_err(strerror(errno));
 	}
 	else
 	{
-		if (!(tmp2 = insert_char_before_set(env_dict->value, "'\"\\", '\\')))
+		if (!(tmp2 = insert_char_before_set(value, "'\"\\", '\\')))
 			exit_print_err(strerror(errno));
 	}
 	if (!(tmp = ft_strjoin(*res_str, tmp2)))
@@ -92,10 +94,21 @@ int		sanitize_env(char **res_str, char *og_str, t_msh *msh, int in_dquotes)
 	if (!(env_key = (char *)malloc(sizeof(char) * (env_len + 1))))
 		exit_print_err(strerror(errno));
 	ft_strlcpy(env_key, og_str + 1, env_len);
-	env_dict = get_env_dict(msh->env, env_key);
+
+	if (ft_strcmp(env_key, "PATH") == 0)
+		sanitize_env_sub(res_str, in_dquotes, msh->path);
+	else if (ft_strcmp(env_key, "_") == 0)
+		sanitize_env_sub(res_str, in_dquotes, "lstcmdㅜㅜ");
+	else
+	{
+		env_dict = get_env_dict(msh->env, env_key);
+		if (env_dict == NULL || env_dict->value == NULL)
+		{	
+			free(env_key);
+			return (env_len);
+		}
+		sanitize_env_sub(res_str, in_dquotes, env_dict->value);
+	}
 	free(env_key);
-	if (env_dict == NULL || env_dict->value == NULL)
-		return (env_len);
-	sanitize_env_sub(res_str, in_dquotes, env_dict);
 	return (env_len);
 }

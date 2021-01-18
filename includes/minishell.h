@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/18 01:53:04 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/18 17:15:10 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,8 @@
 
 //# define BUFFER_SIZE		256
 
+# define DEFAULT_PATH		"/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:."
+
 # define METACHARACTER		" \t\n|;<>"
 
 typedef struct		s_cmd
@@ -82,7 +84,7 @@ typedef struct		s_msh
 	t_cmd			*cmds;
 	t_dict			**env;
 	int				env_len;
-	char			**path;
+	char			*path;
 	char			*pwd;
 	int				unset_pwd_flag;
 }					t_msh;

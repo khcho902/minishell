@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/19 19:03:05 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/06 19:13:34 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/18 19:14:04 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,14 +50,87 @@ int		set_redirection_fd(t_msh *msh, t_cmd *cmd)
 }
 /******    set_redirection_fd.c  end ********/
 
+
+char			**split_path(char *path_str)
+{
+	int		i;
+	int		path_idx;
+	int		colon_cnt;
+	char	**splited_path;
+	int		path_cnt;
+	char	*tmp;
+
+	colon_cnt = 0;
+	i = 0;
+	while (path_str[i])
+	{
+		if (path_str[i] == ':')
+			colon_cnt++;
+		i++;
+	}
+
+//	dprintf(2, "colon_cnt : %d\n", colon_cnt);
+
+
+	path_cnt = colon_cnt + 1;
+
+//	dprintf(2, "path_cnt : %d\n", path_cnt);
+
+
+
+	if (!(splited_path = (char **)malloc(sizeof(char*) * (path_cnt + 1))))
+		exit_print_err(strerror(errno));
+
+	
+	
+	if (!(tmp = ft_strdup("")))
+		exit_print_err(strerror(errno));
+
+	i = 0;
+	path_idx = 0;
+	while (path_str[i])
+	{
+		if (path_str[i] == ':')
+		{
+			splited_path[path_idx] = tmp;
+			if (!(tmp = ft_strdup("")))
+				exit_print_err(strerror(errno));	
+			path_idx++;
+		}
+		else
+		{
+			append_char_to_str(&tmp, path_str[i]);	
+		}
+		i++;
+	}
+	splited_path[path_idx] = tmp;
+	path_idx++;
+
+	splited_path[path_idx] = NULL;
+
+
+/*
+	if (path_cnt != path_idx)
+	{
+		dprintf(2, "patn_cnt = %d\n", path_cnt);
+		dprintf(2, "path_idx = %d\n", path_idx);
+		dprintf(2, "nonononnonononnononononononnoonononononn\n");
+	}
+*/
+	return (splited_path);
+
+}
+
 void			basic_executor(t_msh *msh, t_cmd *cmd)
 {
 	char	**env;
 	char	*temp;
 	int		idx;
+	char	**path;   //추가 
 
 	if (cmd->args[0] == NULL)
 		exit(0);
+
 
 	if (cmd->input_fd != -1 && dup2(cmd->input_fd, STDIN) < 0)
 		exit_print_err(strerror(errno));
@@ -66,7 +139,7 @@ void			basic_executor(t_msh *msh, t_cmd *cmd)
 	
 	env = ft_envjoin(msh->env, msh->env_len);
 	
-	if (msh->path[0] == NULL || ft_strchr(cmd->args[0], '/') != NULL)
+	if ((ft_strcmp(msh->path, "") == 0) || (ft_strchr(cmd->args[0], '/') != NULL))
 	{
 		if ((execve(cmd->args[0], cmd->args, env)) == -1)
 		{
@@ -78,17 +151,41 @@ void			basic_executor(t_msh *msh, t_cmd *cmd)
 	}
 	else
 	{
-		idx = 0;
-		while (msh->path[idx])
-		{
-			if (!(temp = ft_strjoin3(msh->path[idx], "/", cmd->args[0])))
+		//dprintf(2, "in else\n");
+
+		path = split_path(msh->path); // 추가 
+		/*
+			if (!(path = ft_split(msh->path, ':'))) // 추가 
 				exit_print_err(strerror(errno));
+		*/
+		/*
+			int i = 0;
+			while (path[i])
+			{
+				dprintf(2 , "|%s|\n", path[i]);
+				i++;
+			}
+		*/
+		idx = 0;
+		while (path[idx])
+		{
+			if (ft_strcmp(path[idx], "") == 0)
+			{
+				if (!(temp = ft_strdup(cmd->args[0])))
+					exit_print_err(strerror(errno));
+			}
+			else
+			{
+				if (!(temp = ft_strjoin3(path[idx], "/", cmd->args[0])))
+					exit_print_err(strerror(errno));	
+			}
 			execve(temp, cmd->args, env);
 			free(temp);
 			idx++;
 		}
 		print_execute_err(msh->program_name, cmd->args[0], "command not found");
 		exit(127);
+		ft_double_free((void*)path); // 추가함  지워도 될듯?
 	}
 }
 
