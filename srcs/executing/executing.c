@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/19 19:03:05 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/19 00:03:19 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/19 02:27:01 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,6 +121,40 @@ char			**split_path(char *path_str)
 
 }
 
+char			**get_env_array(t_dict **env, char *command)
+{
+	int i;
+	int j;
+	char **array;
+
+	j = 0;
+	i = 0;
+	while (env[i])
+	{
+		if (env[i]->value != NULL)
+			j++;
+		i++;
+	}
+	if (!(array = (char **)malloc(sizeof(char *) * (j + 2))))
+		exit_print_err(strerror(errno));
+	i = 0;
+	j = 0;
+	while (env[i])
+	{
+		if (env[i]->value != NULL)
+		{
+			if (!(array[j] = ft_strjoin3(env[i]->key, "=", env[i]->value)))
+				exit_print_err(strerror(errno));
+			j++;
+		}
+		i++;
+	}
+	if (!(array[j] = ft_strjoin("_=", command)))
+		exit_print_err(strerror(errno));
+	array[j + 1] = NULL;
+	return (array);
+}
+
 void			basic_executor(t_msh *msh, t_cmd *cmd)
 {
 	char	**env;
@@ -137,18 +171,34 @@ void			basic_executor(t_msh *msh, t_cmd *cmd)
 	if (cmd->output_fd != -1 && dup2(cmd->output_fd, STDOUT) < 0)
 		exit_print_err(strerror(errno));
 	
-	env = ft_envjoin(msh->env, msh->env_len);
+//	env = ft_envjoin(msh->env, msh->env_len);
 	
 	if ((ft_strcmp(msh->path, "") == 0) || (ft_strchr(cmd->args[0], '/') != NULL))
 	{
+		env = get_env_array(msh->env, cmd->args[0]);
 		if ((execve(cmd->args[0], cmd->args, env)) == -1)
 		{
 			print_execute_err(msh->program_name, cmd->args[0], strerror(errno));
-		//	if (errno == 13)
-		//		exit(126);
+			if (errno == 13)
+				exit(126);
 			exit(127);
 		}
 	}
+	/*
+	if (ft_strchr(msh->path, ':') == NULL)   // 좀더 생각해봐야할듯...
+	{
+		env = get_env_array(msh->env, cmd->args[0]);
+		if (!(temp = ft_strjoin3(msh->path, "/", cmd->args[0])))
+			exit_print_err(strerror(errno));
+		if ((execve(temp, cmd->args, env)) == -1)
+		{
+			print_execute_err(msh->program_name, temp, strerror(errno));
+			if (errno == 13)
+				exit(126);
+			exit(127);
+		}	
+	}
+	*/
 	else
 	{
 		//dprintf(2, "in else\n");
@@ -179,7 +229,9 @@ void			basic_executor(t_msh *msh, t_cmd *cmd)
 				if (!(temp = ft_strjoin3(path[idx], "/", cmd->args[0])))
 					exit_print_err(strerror(errno));	
 			}
+			env = get_env_array(msh->env, temp);
 			execve(temp, cmd->args, env);
+			ft_double_free((void *)env);
 			free(temp);
 			idx++;
 		}
