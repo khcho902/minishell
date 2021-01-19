@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/19 19:03:05 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/19 15:33:52 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/19 17:46:41 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,19 +69,12 @@ char			**split_path(char *path_str)
 		i++;
 	}
 
-//	dprintf(2, "colon_cnt : %d\n", colon_cnt);
-
 
 	path_cnt = colon_cnt + 1;
-
-//	dprintf(2, "path_cnt : %d\n", path_cnt);
-
-
 
 	if (!(splited_path = (char **)malloc(sizeof(char*) * (path_cnt + 1))))
 		exit_print_err(strerror(errno));
 
-	
 	
 	if (!(tmp = ft_strdup("")))
 		exit_print_err(strerror(errno));
@@ -109,33 +102,11 @@ char			**split_path(char *path_str)
 	splited_path[path_idx] = NULL;
 
 
-/*
-	if (path_cnt != path_idx)
-	{
-		dprintf(2, "patn_cnt = %d\n", path_cnt);
-		dprintf(2, "path_idx = %d\n", path_idx);
-		dprintf(2, "nonononnonononnononononononnoonononononn\n");
-	}
-*/
 	return (splited_path);
 
 }
 
-int				is_directory(char *path)
-{
-	struct stat sb;
 
-	if (stat(path, &sb) == -1)
-		return (FALSE);
-	if ((sb.st_mode & S_IFMT) == S_IFDIR)
-	{
-		return (TRUE);
-	}
-	else
-	{
-		return (FALSE);
-	}
-}
 
 char			**get_env_array(t_dict **env, char *command)
 {
@@ -173,10 +144,11 @@ char			**get_env_array(t_dict **env, char *command)
 
 void			basic_executor(t_msh *msh, t_cmd *cmd)
 {
-	char	**env;
-	char	*temp;
-	int		idx;
-	char	**path;   //추가 
+	char		**env;
+	char		*temp;
+	int			idx;
+	char		**path;   //추가 
+	struct stat	sb;
 
 	if (cmd->args[0] == NULL)
 		exit(0);
@@ -191,52 +163,32 @@ void			basic_executor(t_msh *msh, t_cmd *cmd)
 	
 	if ((ft_strcmp(msh->path, "") == 0) || (ft_strchr(cmd->args[0], '/') != NULL))
 	{
-		if (is_directory(cmd->args[0]) == TRUE)
+
+		if (stat(cmd->args[0], &sb) == -1)
+		{
+			print_execute_err(msh->program_name, cmd->args[0], strerror(errno));
+			exit(127);
+		}
+		if ((sb.st_mode & S_IFMT) == S_IFDIR)
 		{
 			print_execute_err(msh->program_name, cmd->args[0], "is a directory");
 			exit(126);
 		}
+
 		env = get_env_array(msh->env, cmd->args[0]);
 		if ((execve(cmd->args[0], cmd->args, env)) == -1)
 		{
 			print_execute_err(msh->program_name, cmd->args[0], strerror(errno));
-			if (errno == 13)
-				exit(126);
-			exit(127);
+			exit(126);
 		}
 	}
-	/*
-	else if (ft_strchr(msh->path, ':') == NULL && ft_strchr(msh->path, '/') == NULL)   // 좀더 생각해봐야할듯...
-	{
-		env = get_env_array(msh->env, cmd->args[0]);
-		if (!(temp = ft_strjoin3(msh->path, "/", cmd->args[0])))
-			exit_print_err(strerror(errno));
-		if ((execve(temp, cmd->args, env)) == -1)
-		{
-			print_execute_err(msh->program_name, temp, strerror(errno));
-			if (errno == 13)
-				exit(126);
-			exit(127);
-		}	
-	}
-	*/
 	else
 	{
-		//dprintf(2, "in else\n");
 
 		path = split_path(msh->path); // 추가 
-		/*
-			if (!(path = ft_split(msh->path, ':'))) // 추가 
-				exit_print_err(strerror(errno));
-		*/
-		/*
-			int i = 0;
-			while (path[i])
-			{
-				dprintf(2 , "|%s|\n", path[i]);
-				i++;
-			}
-		*/
+
+
+
 		idx = 0;
 		while (path[idx])
 		{
@@ -250,9 +202,13 @@ void			basic_executor(t_msh *msh, t_cmd *cmd)
 				if (!(temp = ft_strjoin3(path[idx], "/", cmd->args[0])))
 					exit_print_err(strerror(errno));	
 			}
+
+			
 			env = get_env_array(msh->env, temp);
 			execve(temp, cmd->args, env);
 			ft_double_free((void *)env);
+
+
 			free(temp);
 			idx++;
 		}
