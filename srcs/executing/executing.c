@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/19 19:03:05 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/19 02:27:01 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/19 15:33:52 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,6 +121,22 @@ char			**split_path(char *path_str)
 
 }
 
+int				is_directory(char *path)
+{
+	struct stat sb;
+
+	if (stat(path, &sb) == -1)
+		return (FALSE);
+	if ((sb.st_mode & S_IFMT) == S_IFDIR)
+	{
+		return (TRUE);
+	}
+	else
+	{
+		return (FALSE);
+	}
+}
+
 char			**get_env_array(t_dict **env, char *command)
 {
 	int i;
@@ -175,6 +191,11 @@ void			basic_executor(t_msh *msh, t_cmd *cmd)
 	
 	if ((ft_strcmp(msh->path, "") == 0) || (ft_strchr(cmd->args[0], '/') != NULL))
 	{
+		if (is_directory(cmd->args[0]) == TRUE)
+		{
+			print_execute_err(msh->program_name, cmd->args[0], "is a directory");
+			exit(126);
+		}
 		env = get_env_array(msh->env, cmd->args[0]);
 		if ((execve(cmd->args[0], cmd->args, env)) == -1)
 		{
@@ -185,7 +206,7 @@ void			basic_executor(t_msh *msh, t_cmd *cmd)
 		}
 	}
 	/*
-	if (ft_strchr(msh->path, ':') == NULL)   // 좀더 생각해봐야할듯...
+	else if (ft_strchr(msh->path, ':') == NULL && ft_strchr(msh->path, '/') == NULL)   // 좀더 생각해봐야할듯...
 	{
 		env = get_env_array(msh->env, cmd->args[0]);
 		if (!(temp = ft_strjoin3(msh->path, "/", cmd->args[0])))
