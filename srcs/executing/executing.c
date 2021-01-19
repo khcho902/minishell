@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/19 19:03:05 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/19 17:46:41 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/19 18:18:30 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,9 +146,11 @@ void			basic_executor(t_msh *msh, t_cmd *cmd)
 {
 	char		**env;
 	char		*temp;
+	char		*temp2;
 	int			idx;
 	char		**path;   //추가 
 	struct stat	sb;
+	int			is_command_not_found;
 
 	if (cmd->args[0] == NULL)
 		exit(0);
@@ -188,7 +190,8 @@ void			basic_executor(t_msh *msh, t_cmd *cmd)
 		path = split_path(msh->path); // 추가 
 
 
-
+		is_command_not_found = TRUE;
+		temp2 = NULL;
 		idx = 0;
 		while (path[idx])
 		{
@@ -204,16 +207,39 @@ void			basic_executor(t_msh *msh, t_cmd *cmd)
 			}
 
 			
-			env = get_env_array(msh->env, temp);
-			execve(temp, cmd->args, env);
-			ft_double_free((void *)env);
+			if (stat(temp, &sb) != -1)
+			{
+				if (temp2 == NULL)
+				{
+					if (!(temp2 = ft_strdup(temp)))
+						exit_print_err(strerror(errno));
+				}
+				is_command_not_found = FALSE;
+				env = get_env_array(msh->env, temp);
+				execve(temp, cmd->args, env);
+				ft_double_free((void *)env);
+				//free(sb);
+			}
+
+			
 
 
 			free(temp);
 			idx++;
 		}
-		print_execute_err(msh->program_name, cmd->args[0], "command not found");
-		exit(127);
+
+		if (is_command_not_found == TRUE)
+		{
+			print_execute_err(msh->program_name, cmd->args[0], "command not found");
+			exit(127);
+		}
+		else
+		{
+			print_execute_err(msh->program_name, temp2, strerror(errno));
+			exit(126);
+		}
+		
+		
 		ft_double_free((void*)path); // 추가함  지워도 될듯?
 	}
 }
