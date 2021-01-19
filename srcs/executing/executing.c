@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/19 19:03:05 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/19 18:18:30 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/19 18:53:58 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,7 +180,16 @@ void			basic_executor(t_msh *msh, t_cmd *cmd)
 		env = get_env_array(msh->env, cmd->args[0]);
 		if ((execve(cmd->args[0], cmd->args, env)) == -1)
 		{
+			/*
+			if (errno == 8)
+			{
+				print_execute_err(msh->program_name, cmd->args[0], "Permission denied");
+				exit(126);
+			}
 			print_execute_err(msh->program_name, cmd->args[0], strerror(errno));
+			exit(126);
+			*/
+			print_execute_err(msh->program_name, cmd->args[0], "Permission denied");
 			exit(126);
 		}
 	}
@@ -207,7 +216,7 @@ void			basic_executor(t_msh *msh, t_cmd *cmd)
 			}
 
 			
-			if (stat(temp, &sb) != -1)
+			if (stat(temp, &sb) != -1 && (sb.st_mode & S_IFMT) != S_IFDIR)
 			{
 				if (temp2 == NULL)
 				{
@@ -223,7 +232,7 @@ void			basic_executor(t_msh *msh, t_cmd *cmd)
 
 			
 
-
+		//	free(sb);
 			free(temp);
 			idx++;
 		}
@@ -235,7 +244,8 @@ void			basic_executor(t_msh *msh, t_cmd *cmd)
 		}
 		else
 		{
-			print_execute_err(msh->program_name, temp2, strerror(errno));
+		//	print_execute_err(msh->program_name, temp2, strerror(errno));
+			print_execute_err(msh->program_name, temp2, "Permission denied");
 			exit(126);
 		}
 		
