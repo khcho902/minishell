@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 04:22:01 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/18 23:49:15 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/19 19:28:53 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,8 +86,32 @@ void		do_export(t_msh *msh, t_cmd *cmd)
 	i = 1;
 	while (i < cmd->length)
 	{
+		t_dict *env_dict;
 		char * key = get_env_key(cmd->args[i]);
 		char * value = get_env_value(cmd->args[i]);
+
+		if (key[ft_strlen(key) - 1] == '+')
+		{
+			if (!(tmp = (char *)malloc(sizeof(char) * ft_strlen(key))))
+				exit_print_err(strerror(errno));
+			ft_strlcpy(tmp, key, ft_strlen(key));
+			free(key);
+			key = tmp;
+			if (ft_strcmp(key, "PATH") == 0)
+			{
+				if (!(tmp = ft_strjoin(msh->path, value)))
+					exit_print_err(strerror(errno));
+				free(value);
+				value = tmp;
+			}
+			else if ((env_dict = get_env_dict(msh->env, key)) != NULL && env_dict->value != NULL)
+			{
+				if (!(tmp = ft_strjoin(env_dict->value, value)))
+					exit_print_err(strerror(errno));
+				free(value);
+				value = tmp;
+			}
+		}
 
 		if(is_fine_env_key(key) == TRUE)
 		{
