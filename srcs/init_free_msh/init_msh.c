@@ -6,7 +6,7 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 18:48:11 by kycho             #+#    #+#             */
-/*   Updated: 2021/01/18 23:21:06 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/20 01:01:04 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void	init_shlvl_env(t_msh *msh)
 		set_env_dict(msh, "SHLVL", "1");
 		return ;
 	}
-	if ((num = atoi(dict->value) + 1) <= 0)
+	if ((num = ft_atoi(dict->value) + 1) <= 0)
 		set_env_dict(msh, "SHLVL", "0");
 	else
 	{

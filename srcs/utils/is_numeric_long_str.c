@@ -6,7 +6,7 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/10 13:25:35 by kycho             #+#    #+#             */
-/*   Updated: 2021/01/10 13:48:24 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/20 01:01:17 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int		is_numeric_long_str(char *str)
 		return (FALSE);
 	is_minus = 0;
 	num_start_idx = 0;
-	while (!ft_isdigit(str[num_start_idx]))
+	while (str[num_start_idx] && !ft_isdigit(str[num_start_idx]))
 	{
 		if (str[num_start_idx] == '-')
 			is_minus = 1;

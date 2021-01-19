@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 04:22:01 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/19 19:28:53 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/20 00:36:28 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ void		do_export(t_msh *msh, t_cmd *cmd)
 		char * key = get_env_key(cmd->args[i]);
 		char * value = get_env_value(cmd->args[i]);
 
-		if (key[ft_strlen(key) - 1] == '+')
+		if ((ft_strlen(key) > 0) && (key[ft_strlen(key) - 1] == '+'))
 		{
 			if (!(tmp = (char *)malloc(sizeof(char) * ft_strlen(key))))
 				exit_print_err(strerror(errno));
