@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 00:57:53 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/17 23:52:49 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/20 16:41:21 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ int		set_cd_path(t_msh *msh, t_cmd *cmd, char **path)
 	p_name = msh->program_name;
 	if (cmd->length == 1)
 	{
-		if (!(env_dict = get_env_dict(msh->env, "HOME")))
+		if (!(env_dict = get_env_dict(msh->env, "HOME")) || env_dict->value == NULL)
 			return (print_execute_err(p_name, cmd->args[0], "HOME not set"));
 		if (!(*path = ft_strdup(env_dict->value)))
 			exit_print_err(strerror(errno));
@@ -56,7 +56,7 @@ int		set_cd_path(t_msh *msh, t_cmd *cmd, char **path)
 	}
 	else if (ft_strcmp(cmd->args[1], "-") == 0)
 	{
-		if (!(env_dict = get_env_dict(msh->env, "OLDPWD")))
+		if (!(env_dict = get_env_dict(msh->env, "OLDPWD")) || env_dict->value == NULL)
 			return (print_execute_err(p_name, cmd->args[0], "OLDPWD not set"));
 		if (!(*path = ft_strdup(env_dict->value)))
 			exit_print_err(strerror(errno));
