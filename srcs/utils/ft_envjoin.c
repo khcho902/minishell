@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 08:32:02 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/19 00:54:25 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/21 01:42:08 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ char	**ft_envjoin(t_dict **env, int env_len)
 	int		idx;
 	int		i;
 
-
+/*
 	dprintf(2, "--------------\n");
 	i = 0;
 	while (env[i])
@@ -35,6 +35,7 @@ char	**ft_envjoin(t_dict **env, int env_len)
 		i++;
 	}
 	dprintf(2, "--------------\n");
+	*/
 
 	if (!(temp = (char **)malloc(sizeof(char *) * (env_len + 1))))
 		exit_print_err(strerror(errno));

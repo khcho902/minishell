@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/20 17:00:37 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/21 02:53:27 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,6 @@
 # include <sys/errno.h>
 # include <signal.h>
 # include "get_next_line.h"
-
-# include <stdio.h>
 
 # define FALSE				0
 # define TRUE				1
@@ -70,7 +68,7 @@ typedef struct		s_msh
 	char			*launch_program_name;
 	char			*program_name;
 	int				exit_status;
-	t_list			*tokens;    // 나중에 지워도 될거같음.
+	t_list			*tokens;
 	t_cmd			*cmds;
 	t_dict			**env;
 	int				env_len;
@@ -109,8 +107,7 @@ void				free_msh_member(t_msh *msh);
 ** parsing/
 */
 int					parsing(t_msh *msh, char *input);
-void				split_token(
-						char *input, t_list **tokens, char *separator, int i);
+void				split_token(char *input, t_list **tokens, char *separator);
 int					check_token_valid(char *program_name, t_list *now);
 void				making_cmd(t_msh *msh);
 void				sanitize_token(t_list *token);

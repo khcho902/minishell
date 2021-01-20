@@ -19,7 +19,7 @@ int		parsing(t_msh *msh, char *input)
 	if (msh == NULL || input == NULL)
 		return (ERROR);
 	env_replaced_input = get_env_replaced_input(msh, input);
-	split_token(env_replaced_input, &(msh->tokens), METACHARACTER, 0);
+	split_token(env_replaced_input, &(msh->tokens), METACHARACTER);
 	if (check_token_valid(msh->program_name, msh->tokens) == ERROR)
 	{
 		msh->exit_status = 258;

@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/20 01:08:50 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/21 02:50:01 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,131 +40,65 @@ int		check_input_valid(char *program_name, char *input)
 	return (SUCCESS);
 }
 
+void	main_loop(t_msh *msh, char *input)
+{
+	t_list *jobs;
+	t_list *job_now;
+	
+	split_token(input, &jobs, ";");
+	job_now = jobs;
+	while (job_now)
+	{
+		if (ft_strcmp(job_now->content, ";") != 0)
+		{
+			if (parsing(msh, (char *)job_now->content) == SUCCESS)
+				executing(msh);
+			free_msh_member(msh);
+		}
+		job_now = job_now->next;
+	}
+	ft_lstclear(&(jobs), free);
+}
+
+int		get_command_line(t_msh *msh, char **input)
+{
+	int res;
+	t_list *tokens;
+
+	res = SUCCESS;
+	if ((res = get_next_line(STDIN, input)) == -1)
+		exit_print_err("get_next_line fail");
+	if (check_input_valid(msh->program_name, *input) == ERROR)
+	{
+		msh->exit_status = 258;
+		return (ERROR);
+	}
+	split_token(*input, &tokens, METACHARACTER);
+	if (check_token_valid(msh->program_name, tokens) == ERROR)
+	{
+		msh->exit_status = 258;
+		ft_lstclear(&(tokens), free);
+		return (ERROR);
+	}
+	ft_lstclear(&(tokens), free);
+	return (res);
+}
+
 int		main(int argc, char **argv, char **env)
 {
-	/*
-	char **res2 = ft_split("/bin:::::::", ':');
-	int i = 0;
-	while (res2[i])
-	{
-		dprintf(2, "|%s|\n", res2[i]);
-		i++;
-	}
-	*/
-/*
-	int i = 0;
-	while (env[i])
-	{
-		dprintf(2, "|%s|\n", env[i]);
-		i++;
-	}
-*/
-
-
 	char	*input;
 	int		res;
 	t_msh	msh;
 
 	init_msh(argv[0], &msh, env);
 	init_signal();
-
-	/****************************************************/
-	if (argc == 3 && ft_strcmp("-c", argv[1]) == 0)
-	{
-		input = argv[2];
-		/*--------------------------------------------------------------------*/
-		if (check_input_valid(msh.program_name, input) == ERROR)
-		{
-			msh.exit_status = 258;
-			return (msh.exit_status & 255);
-		}
-
-
-		t_list *tokens = NULL;
-		split_token(input, &tokens, METACHARACTER, 0);
-		if (check_token_valid(msh.program_name, tokens) == ERROR)
-		{
-			msh.exit_status = 258;
-			ft_lstclear(&(tokens), free);
-			return (msh.exit_status & 255);
-		}
-		ft_lstclear(&(tokens), free);
-
-
-
-		t_list *jobs = NULL;
-		t_list *job_now = NULL;
-		split_token(input, &jobs, ";", 0);
-		job_now = jobs;
-		while (job_now)
-		{
-			if (ft_strcmp(job_now->content, ";") == 0)
-			{
-				job_now = job_now->next;
-				continue;
-			}
-			if (parsing(&msh, (char *)job_now->content) == SUCCESS)
-				executing(&msh);
-			free_msh_member(&msh);
-
-			job_now = job_now->next;
-		}
-		ft_lstclear(&(jobs), free);
-
-		return (msh.exit_status & 255);
-	}
-	/****************************************************/
-
-	show_logo();
+//	show_logo();
 	res = argc;
 	while (res)
 	{
-		show_prompt(&msh);
-		if ((res = get_next_line(STDIN, &input)) == -1)
-			exit_print_err("get_next_line fail");
-		/*--------------------------------------------------------------------*/
-		if (check_input_valid(msh.program_name, input) == ERROR)
-		{
-			msh.exit_status = 258;
-			free(input);
-			continue;
-		}
-
-
-		t_list *tokens = NULL;
-		split_token(input, &tokens, METACHARACTER, 0);
-		if (check_token_valid(msh.program_name, tokens) == ERROR)
-		{
-			msh.exit_status = 258;
-			free(input);
-			ft_lstclear(&(tokens), free);
-			continue;
-		}
-		ft_lstclear(&(tokens), free);
-
-
-		t_list *jobs = NULL;
-		t_list *job_now = NULL;
-		split_token(input, &jobs, ";", 0);
-		job_now = jobs;
-		while (job_now)
-		{
-			if (ft_strcmp(job_now->content, ";") == 0)
-			{
-				job_now = job_now->next;
-				continue;
-			}
-			if (parsing(&msh, (char *)job_now->content) == SUCCESS)
-			{
-				executing(&msh);
-			}
-			free_msh_member(&msh);
-
-			job_now = job_now->next;
-		}
-		ft_lstclear(&(jobs), free);
-
-
+//		show_prompt(&msh);
+		if ((res = get_command_line(&msh, &input)) != ERROR)
+			main_loop(&msh, input);
 		free(input);
 	}
 	return (msh.exit_status & 255);

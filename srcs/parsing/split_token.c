@@ -41,12 +41,15 @@ void	split_token_sub(char *input, char *separator, int *i, int *len)
 	}
 }
 
-void	split_token(char *input, t_list **tokens, char *separator, int i)
+void	split_token(char *input, t_list **tokens, char *separator)
 {
+	int		i;
 	int		len;
 	char	*str;
 	t_list	*lstnew;
 
+	i = 0;
+	*tokens = NULL;
 	while (input[i] && (len = 1))
 	{
 		while (input[i] == ' ' || input[i] == '\t')
@@ -62,10 +65,7 @@ void	split_token(char *input, t_list **tokens, char *separator, int i)
 			exit_print_err(strerror(errno));
 		if (!(lstnew = ft_lstnew(str)))
 			exit_print_err(strerror(errno));
-		if (*tokens == NULL)
-			*tokens = lstnew;
-		else
-			ft_lstadd_back(tokens, lstnew);
+		ft_lstadd_back(tokens, lstnew);
 		i += len;
 	}
 }
