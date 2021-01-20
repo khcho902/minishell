@@ -25,7 +25,7 @@ int		set_redirection_fd(t_msh *msh, t_cmd *cmd)
 			if (cmd->output_fd != -1)
 				close(cmd->output_fd);
 			list = list->next;
-			if ((cmd->output_fd = open(list->content, FLAG_O, OPEN_MODE)) == -1)
+			if ((cmd->output_fd = open(list->content, O_WRONLY | O_TRUNC | O_CREAT, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)) == -1)
 				return (print_execute_err(msh->program_name, list->content, strerror(errno)));
 		}
 		else if (!ft_strcmp(">>", list->content))
@@ -33,7 +33,7 @@ int		set_redirection_fd(t_msh *msh, t_cmd *cmd)
 			if (cmd->output_fd != -1)
 				close(cmd->output_fd);
 			list = list->next;
-			if ((cmd->output_fd = open(list->content, FLAG_AO, OPEN_MODE)) == -1)
+			if ((cmd->output_fd = open(list->content, O_WRONLY | O_APPEND | O_CREAT, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)) == -1)
 				return (print_execute_err(msh->program_name, list->content, strerror(errno)));
 		}
 		else if (!ft_strcmp("<", list->content))
@@ -41,7 +41,7 @@ int		set_redirection_fd(t_msh *msh, t_cmd *cmd)
 			if (cmd->input_fd != -1)
 				close(cmd->input_fd);
 			list = list->next;
-			if ((cmd->input_fd = open(list->content, FLAG_I, OPEN_MODE)) == -1)
+			if ((cmd->input_fd = open(list->content, O_RDONLY, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)) == -1)
 				return (print_execute_err(msh->program_name, list->content, strerror(errno)));
 		}
 		list = list->next;

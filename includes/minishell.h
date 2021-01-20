@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/18 23:06:49 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/20 17:00:37 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,18 +40,8 @@
 # define TOKEN_SEMICOLON	3
 # define TOKEN_REDIRECTION	4
 
-# define TYPE_DEFAULT		0		// 지워도 될거같음 
+# define TYPE_DEFAULT		0
 # define TYPE_PIPE			1
-
-# define PIPE_OUT			0     // 지워도 될거같음 
-# define PIPE_IN			1     // 지워도 될거같음
-
-# define OPEN_MODE			S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
-# define FLAG_I				O_RDONLY
-# define FLAG_O				O_WRONLY | O_TRUNC | O_CREAT
-# define FLAG_AO			O_WRONLY | O_APPEND | O_CREAT
-
-//# define BUFFER_SIZE		256
 
 # define DEFAULT_PATH		"/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:."
 
