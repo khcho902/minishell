@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/21 02:50:01 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/21 02:57:58 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int		check_input_valid(char *program_name, char *input)
 	{
 		if (input[i] == '\\')
 			i++;
-		else if (in_dquotes == FALSE && input[i] == '\'' )
+		else if (in_dquotes == FALSE && input[i] == '\'')
 		{
 			i++;
 			while (input[i] != '\'' && input[i] != '\0')
@@ -42,9 +42,9 @@ int		check_input_valid(char *program_name, char *input)
 
 void	main_loop(t_msh *msh, char *input)
 {
-	t_list *jobs;
-	t_list *job_now;
-	
+	t_list	*jobs;
+	t_list	*job_now;
+
 	split_token(input, &jobs, ";");
 	job_now = jobs;
 	while (job_now)
@@ -62,8 +62,8 @@ void	main_loop(t_msh *msh, char *input)
 
 int		get_command_line(t_msh *msh, char **input)
 {
-	int res;
-	t_list *tokens;
+	int		res;
+	t_list	*tokens;
 
 	res = SUCCESS;
 	if ((res = get_next_line(STDIN, input)) == -1)
@@ -92,11 +92,11 @@ int		main(int argc, char **argv, char **env)
 
 	init_msh(argv[0], &msh, env);
 	init_signal();
-//	show_logo();
+	show_logo();
 	res = argc;
 	while (res)
 	{
-//		show_prompt(&msh);
+		show_prompt(&msh);
 		if ((res = get_command_line(&msh, &input)) != ERROR)
 			main_loop(&msh, input);
 		free(input);
