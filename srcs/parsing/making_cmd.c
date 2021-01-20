@@ -6,7 +6,7 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 18:34:02 by kycho             #+#    #+#             */
-/*   Updated: 2021/01/18 01:23:45 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/21 03:00:34 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,9 +85,6 @@ void	making_cmd(t_msh *msh)
 	token = msh->tokens;
 	while (token)
 	{
-//		if (ft_strcmp(";", token->content) == 0 && token->next != NULL)
-//			cmd = get_new_cmd(cmd);
-//		else if (ft_strcmp("|", token->content) == 0)
 		if (ft_strcmp("|", token->content) == 0)
 		{
 			cmd->type = TYPE_PIPE;

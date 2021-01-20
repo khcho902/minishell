@@ -6,7 +6,7 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/17 18:40:41 by kycho             #+#    #+#             */
-/*   Updated: 2021/01/18 23:08:17 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/21 03:09:43 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void	sanitize_env_sub(char **res_str, int in_dquotes, char *value)
 {
 	char	*tmp;
 	char	*tmp2;
-	
+
 	if (value == NULL)
 		return ;
 	if (in_dquotes)
@@ -94,7 +94,6 @@ int		sanitize_env(char **res_str, char *og_str, t_msh *msh, int in_dquotes)
 	if (!(env_key = (char *)malloc(sizeof(char) * (env_len + 1))))
 		exit_print_err(strerror(errno));
 	ft_strlcpy(env_key, og_str + 1, env_len);
-
 	if (ft_strcmp(env_key, "PATH") == 0)
 		sanitize_env_sub(res_str, in_dquotes, msh->path);
 	else if (ft_strcmp(env_key, "_") == 0)
@@ -102,12 +101,8 @@ int		sanitize_env(char **res_str, char *og_str, t_msh *msh, int in_dquotes)
 	else
 	{
 		env_dict = get_env_dict(msh->env, env_key);
-		if (env_dict == NULL || env_dict->value == NULL)
-		{	
-			free(env_key);
-			return (env_len);
-		}
-		sanitize_env_sub(res_str, in_dquotes, env_dict->value);
+		if (env_dict != NULL && env_dict->value != NULL)
+			sanitize_env_sub(res_str, in_dquotes, env_dict->value);
 	}
 	free(env_key);
 	return (env_len);

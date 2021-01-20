@@ -6,7 +6,7 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 18:48:11 by kycho             #+#    #+#             */
-/*   Updated: 2021/01/20 01:01:04 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/21 03:23:10 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,38 +91,10 @@ void	init_msh_env(t_msh *msh, char **env)
 	init_shlvl_env(msh);
 }
 
-/*
 void	init_msh_path(t_msh *msh)
 {
-	int		i;
-
-	msh->path = NULL;
-	i = 0;
-	while (msh->env[i])
-	{
-		if (!ft_strcmp(msh->env[i]->key, "PATH"))
-		{
-			msh->path = ft_split(msh->env[i]->value, ':');
-			if (msh->path == NULL)
-				exit_print_err(strerror(errno));
-			break ;
-		}
-		i++;
-	}
-	if (msh->path == NULL)
-	{
-		msh->path = (char **)malloc(sizeof(char *));
-		if (msh->path == NULL)
-			exit_print_err(strerror(errno));
-		msh->path[0] = NULL;
-	}
-}
-*/
-
-void	init_msh_path(t_msh *msh)
-{
-	t_dict *env_dict;
-	char *path;
+	t_dict	*env_dict;
+	char	*path;
 
 	if ((env_dict = get_env_dict(msh->env, "PATH")) != NULL)
 		path = env_dict->value;
