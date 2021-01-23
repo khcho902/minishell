@@ -6,7 +6,7 @@
 #    By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/23 14:34:40 by jiseo             #+#    #+#              #
-#    Updated: 2021/01/21 03:10:15 by kycho            ###   ########.fr        #
+#    Updated: 2021/01/21 06:09:51 by kycho            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,6 +30,10 @@ RAW_SRCS		=	main.c \
 					builtins/do_unset.c \
 					\
 					executing/executing.c \
+					executing/set_redirection_fd.c \
+					executing/basic_executor.c \
+					executing/create_process.c \
+					executing/piping.c \
 					\
 					init_free_msh/init_msh.c \
 					init_free_msh/free_msh_member.c \

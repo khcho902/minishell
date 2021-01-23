@@ -6,11 +6,12 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/21 05:44:07 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/23 23:41:34 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include <stdio.h>
 
 int		check_input_valid(char *program_name, char *input)
 {
@@ -64,10 +65,27 @@ int		get_command_line(t_msh *msh, char **input)
 {
 	int		res;
 	t_list	*tokens;
+	char	*input2;
+	char	*tmp;
 
 	res = SUCCESS;
-	if ((res = get_next_line(STDIN, input)) == -1)
-		exit_print_err("get_next_line fail");
+	*input = ft_strdup("");
+	while (TRUE)
+	{
+		if ((res = get_next_line(STDIN, &input2)) == -1)
+			exit_print_err("get_next_line fail");
+		tmp = ft_strjoin(*input, input2);
+		free(*input);
+		*input = tmp;
+		if (res == 0)
+		{
+			ft_putstr_fd("  \b\b", STDOUT);
+			if ((ft_strlen(input2) != 0 || ft_strlen(*input)))
+				continue;
+			ft_putstr_fd("exit\n", STDOUT);
+		}
+		break;
+	}
 	if (check_input_valid(msh->program_name, *input) == ERROR)
 	{
 		msh->exit_status = 258;

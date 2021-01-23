@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/21 02:53:27 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/21 06:10:07 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,10 @@ void				do_unset(t_msh *msh, t_cmd *cmd);
 ** executing/
 */
 void				executing(t_msh *msh);
+int					set_redirection_fd(t_msh *msh, t_cmd *cmd);
+void				basic_executor(t_msh *msh, t_cmd *cmd);
+void				create_process(t_msh *msh, t_cmd *cmd);
+t_cmd				*piping(t_msh *msh, t_cmd *cmd);
 
 /*
 ** init_free_msh/

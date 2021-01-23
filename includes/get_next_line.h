@@ -6,7 +6,7 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/24 22:02:28 by kycho             #+#    #+#             */
-/*   Updated: 2021/01/05 02:10:17 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/23 23:06:06 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 # include "../libft/libft.h"
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 80
+#  define BUFFER_SIZE 1
 # endif
 
 # ifndef FD_NUMBER
