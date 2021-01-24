@@ -6,7 +6,7 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 18:23:23 by kycho             #+#    #+#             */
-/*   Updated: 2021/01/17 18:54:13 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/24 02:02:17 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,13 @@ int		parsing(t_msh *msh, char *input)
 		return (ERROR);
 	env_replaced_input = get_env_replaced_input(msh, input);
 	split_token(env_replaced_input, &(msh->tokens), METACHARACTER);
+	/*	
 	if (check_token_valid(msh->program_name, msh->tokens) == ERROR)
 	{
 		msh->exit_status = 258;
 		return (ERROR);
 	}
+	*/
 	making_cmd(msh);
 	free(env_replaced_input);
 	return (SUCCESS);

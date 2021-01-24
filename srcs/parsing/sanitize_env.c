@@ -6,7 +6,7 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/17 18:40:41 by kycho             #+#    #+#             */
-/*   Updated: 2021/01/21 03:09:43 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/24 02:02:02 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ void	sanitize_env_sub(char **res_str, int in_dquotes, char *value)
 	}
 	else
 	{
-		if (!(tmp2 = insert_char_before_set(value, "'\"\\", '\\')))
+		if (!(tmp2 = insert_char_before_set(value, "'\"\\;|<>", '\\')))
 			exit_print_err(strerror(errno));
 	}
 	if (!(tmp = ft_strjoin(*res_str, tmp2)))
