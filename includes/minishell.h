@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/25 00:21:11 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/25 01:16:27 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,9 @@ typedef void		(*t_builtin_executor)(t_msh *, t_cmd *);
 ** builtins/
 */
 void				*get_builtin_executor(char *cmd_name);
+void				run_builtin_executor(t_msh *msh, t_cmd *cmd,
+									t_builtin_executor builtin_executor,
+									int is_in_child_process);
 void				do_cd(t_msh *msh, t_cmd *cmd);
 void				do_echo(t_msh *msh, t_cmd *cmd);
 void				do_env(t_msh *msh, t_cmd *cmd);

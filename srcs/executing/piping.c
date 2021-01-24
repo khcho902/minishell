@@ -68,6 +68,8 @@ t_cmd	*piping(t_msh *msh, t_cmd *cmd)
 			if (pipe(pipes + (i * 2)) == -1)
 				exit_print_err(strerror(errno));
 		}
+
+
 		if ((cpid[i] = fork()) == -1)
 			exit_print_err(strerror(errno));
 		else if (cpid[i] == 0)
@@ -89,15 +91,12 @@ t_cmd	*piping(t_msh *msh, t_cmd *cmd)
 
 			
 			builtin_executor  = get_builtin_executor(cmd->args[0]);	
+
 			if (set_redirection_fd(msh, cmd) == ERROR)
 				exit(1);
 			if (builtin_executor)
 			{
-				if (cmd->input_fd != -1 && dup2(cmd->input_fd, STDIN) < 0)
-					exit_print_err(strerror(errno));
-				if (cmd->output_fd != -1 && dup2(cmd->output_fd, STDOUT) < 0)
-					exit_print_err(strerror(errno));
-				builtin_executor(msh, cmd);
+				run_builtin_executor(msh, cmd, builtin_executor, TRUE);
 				exit(g_exit_status);
 			}
 			else

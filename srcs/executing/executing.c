@@ -16,8 +16,6 @@ void	executing(t_msh *msh)
 {
 	t_builtin_executor	builtin_executor;
 	t_cmd		*cmd;
-	int stdin_fd;
-	int stdout_fd;
 
 	cmd = msh->cmds;
 	while (cmd)
@@ -55,31 +53,9 @@ void	executing(t_msh *msh)
 		}
 
 		if (builtin_executor)
-		{
-			if ((stdin_fd = dup(STDIN)) < 0)
-				exit_print_err(strerror(errno));
-			if ((stdout_fd = dup(STDOUT)) < 0)
-				exit_print_err(strerror(errno));
-
-			if (cmd->input_fd != -1 && dup2(cmd->input_fd, STDIN) < 0)
-				exit_print_err(strerror(errno));
-			if (cmd->output_fd != -1 && dup2(cmd->output_fd, STDOUT) < 0)
-				exit_print_err(strerror(errno));
-
-			builtin_executor(msh, cmd);
-
-			if (dup2(stdin_fd, STDIN) < 0)
-				exit_print_err(strerror(errno));
-			if (dup2(stdout_fd, STDOUT) < 0)
-				exit_print_err(strerror(errno));
-
-			close(stdin_fd);
-			close(stdout_fd);
-		}
+			run_builtin_executor(msh, cmd, builtin_executor, FALSE);
 		else
-		{
 			create_process(msh, cmd);
-		}
 
 		cmd = cmd->next;
 

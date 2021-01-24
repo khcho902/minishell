@@ -6,7 +6,7 @@
 #    By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/23 14:34:40 by jiseo             #+#    #+#              #
-#    Updated: 2021/01/24 22:42:41 by kycho            ###   ########.fr        #
+#    Updated: 2021/01/25 01:23:12 by kycho            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,6 +21,7 @@ RAW_SRCS		=	main.c \
 					prompt/prompt.c \
 					\
 					builtins/get_builtin_executor.c \
+					builtins/run_builtin_executor.c \
 					builtins/do_cd.c \
 					builtins/do_echo.c \
 					builtins/do_env.c \
