@@ -71,6 +71,8 @@ t_cmd	*piping(t_msh *msh, t_cmd *cmd)
 
 		if ((cpid[i] = fork()) == 0)
 		{
+			signal(SIGINT, SIG_DFL);
+			signal(SIGQUIT, SIG_DFL);
 
 			if (i < cnt_of_pipes)                 // 0     1     2     3     4 
 				dup2(pipes[i * 2 + 1], 1);        // 1     3     5     7     9

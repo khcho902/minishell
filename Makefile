@@ -6,7 +6,7 @@
 #    By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/23 14:34:40 by jiseo             #+#    #+#              #
-#    Updated: 2021/01/24 02:15:28 by kycho            ###   ########.fr        #
+#    Updated: 2021/01/24 19:07:26 by kycho            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@ LIBFT			=	./libft/libft.a
 SRCS_PATH		=	./srcs/
 INCS			=	-Iincludes
 RAW_SRCS		=	main.c \
-					signal.c \
+					init_signal.c \
 					get_next_line.c \
 					\
 					prompt/prompt.c \

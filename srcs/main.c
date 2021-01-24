@@ -6,12 +6,11 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/24 14:25:47 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/24 15:14:07 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include <stdio.h>
 
 int		check_quotes_valid(char *program_name, char *input)
 {

@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/21 06:10:07 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/24 15:56:34 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,7 +162,6 @@ int					is_fine_env_key(char *key);
 /*
 ** signal.c
 */
-void				sig_handler(int signo);
 void				init_signal(void);
 
 #endif
