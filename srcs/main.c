@@ -6,11 +6,12 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/24 15:14:07 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/24 22:44:44 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include <stdio.h>
 
 int		check_quotes_valid(char *program_name, char *input)
 {
@@ -18,8 +19,8 @@ int		check_quotes_valid(char *program_name, char *input)
 	int i;
 
 	in_dquotes = FALSE;
-	i = 0;
-	while (input[i])
+	i = -1;
+	while (input[++i])
 	{
 		if (input[i] == '\\')
 			i++;
@@ -33,7 +34,8 @@ int		check_quotes_valid(char *program_name, char *input)
 		}
 		else if (input[i] == '"')
 			in_dquotes ^= TRUE;
-		i++;
+		if (input[i] == 0)
+			break ;
 	}
 	if (in_dquotes == TRUE)
 		return (print_syntax_err(program_name, "\"", TRUE));
@@ -46,13 +48,13 @@ int		check_input_valid(t_msh *msh, char *input)
 
 	if (check_quotes_valid(msh->program_name, input) == ERROR)
 	{
-		msh->exit_status = 258;
+		g_exit_status = 258;
 		return (ERROR);
 	}
 	split_token(input, &tokens, METACHARACTER);
 	if (check_token_valid(msh->program_name, tokens) == ERROR)
 	{
-		msh->exit_status = 258;
+		g_exit_status = 258;
 		ft_lstclear(&(tokens), free);
 		return (ERROR);
 	}
@@ -92,13 +94,12 @@ int		get_command_line(char **input)
 		if ((res = get_next_line(STDIN, &input2)) == -1)
 			exit_print_err("get_next_line fail");
 		tmp = ft_strjoin(*input, input2);
-		free(input2); // 추가 
+		free(input2);
 		free(*input);
 		*input = tmp;
 		if (res == 0)
 		{
 			ft_putstr_fd("  \b\b", STDOUT);
-			//if ((ft_strlen(input2) != 0 || ft_strlen(*input)))
 			if (ft_strlen(*input) != 0)
 				continue;
 			ft_putstr_fd("exit\n", STDOUT);
@@ -107,6 +108,8 @@ int		get_command_line(char **input)
 	}
 	return (res);
 }
+
+int		g_exit_status = 0;
 
 int		main(int argc, char **argv, char **env)
 {
@@ -125,7 +128,7 @@ int		main(int argc, char **argv, char **env)
 		}
 		if (check_input_valid(&msh, input) != ERROR)
 			main_loop(&msh, input);
-		exit(msh.exit_status & 255);
+		exit(g_exit_status & 255);
 	}
 	show_logo();
 	res = argc;
@@ -137,5 +140,5 @@ int		main(int argc, char **argv, char **env)
 			main_loop(&msh, input);
 		free(input);
 	}
-	return (msh.exit_status & 255);
+	return (g_exit_status & 255);
 }

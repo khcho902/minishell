@@ -23,7 +23,7 @@ int		parsing(t_msh *msh, char *input)
 	/*	
 	if (check_token_valid(msh->program_name, msh->tokens) == ERROR)
 	{
-		msh->exit_status = 258;
+		g_exit_status = 258;
 		return (ERROR);
 	}
 	*/

@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/24 15:56:34 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/24 22:10:24 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,8 @@
 
 # define METACHARACTER		" \t\n|;<>"
 
+extern				int g_exit_status;
+
 typedef struct		s_cmd
 {
 	char			**args;
@@ -67,7 +69,6 @@ typedef struct		s_msh
 {
 	char			*launch_program_name;
 	char			*program_name;
-	int				exit_status;
 	t_list			*tokens;
 	t_cmd			*cmds;
 	t_dict			**env;
@@ -137,7 +138,7 @@ void				print_identifier_err(
 ** prompt/
 */
 void				show_logo();
-void				show_prompt(t_msh *msh);
+void				show_prompt();
 
 /*
 ** utils/

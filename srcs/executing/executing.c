@@ -50,7 +50,7 @@ void	executing(t_msh *msh)
 			if (cmd->output_fd != -1)
 				close(cmd->output_fd);
 			cmd = cmd->next;
-			msh->exit_status = 1;
+			g_exit_status = 1;
 			continue;
 		}
 

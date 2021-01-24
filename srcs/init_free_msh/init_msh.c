@@ -115,7 +115,6 @@ void	init_msh(char *program_name, t_msh *msh, char **env)
 		i--;
 	if (!(msh->program_name = ft_strdup(program_name + i + 1)))
 		exit_print_err(strerror(errno));
-	msh->exit_status = 0;
 	msh->tokens = NULL;
 	msh->cmds = NULL;
 	init_msh_env(msh, env);

@@ -116,7 +116,7 @@ void	do_cd(t_msh *msh, t_cmd *cmd)
 		print_execute_err(msh->program_name, tmp, strerror(errno));
 		free(tmp);
 		free(path);
-		msh->exit_status = 1;
+		g_exit_status = 1;
 		return ;
 	}
 	if (get_env_dict(msh->env, "OLDPWD"))
@@ -135,5 +135,5 @@ void	do_cd(t_msh *msh, t_cmd *cmd)
 		set_env_dict(msh, "PWD", path);
 	free(msh->pwd);
 	msh->pwd = path;
-	msh->exit_status = 0;
+	g_exit_status = 0;
 }

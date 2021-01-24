@@ -43,5 +43,5 @@ void	do_unset(t_msh *msh, t_cmd *cmd)
 		}
 		i++;
 	}
-	msh->exit_status = res;
+	g_exit_status = res;
 }

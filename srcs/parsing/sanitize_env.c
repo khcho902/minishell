@@ -30,7 +30,7 @@ int		exception_handler_sub(
 	}
 	else
 	{
-		if (!(tmp = ft_strjoin(*res_str, ft_itoa(msh->exit_status))))
+		if (!(tmp = ft_strjoin(*res_str, ft_itoa(g_exit_status))))
 			exit_print_err(strerror(errno));
 	}
 	free(*res_str);

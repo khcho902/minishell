@@ -26,10 +26,10 @@ void		show_logo()
 	ft_putstr_fd("by. kycho, jiseo\n", STDOUT);
 }
 
-void		show_prompt(t_msh *msh)
+void		show_prompt()
 {
 	ft_putstr_fd(COLOR_BR_BLUE, STDOUT);
-	ft_putstr_fd(msh->program_name, STDOUT);
+	ft_putstr_fd("minishell", STDOUT);
 	ft_putstr_fd(COLOR_WHITE, STDOUT);
 	ft_putstr_fd("$ ", STDOUT);
 }

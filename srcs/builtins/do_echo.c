@@ -33,6 +33,7 @@ void	do_echo(t_msh *msh, t_cmd *cmd)
 	int		idx;
 	int		n_option;
 
+	(void)msh;
 	n_option = 0;
 	idx = 1;
 	while (check_n_option(cmd->args[idx]))
@@ -49,5 +50,5 @@ void	do_echo(t_msh *msh, t_cmd *cmd)
 	}
 	if (!n_option)
 		ft_putchar_fd('\n', STDOUT);
-	msh->exit_status = 0;
+	g_exit_status = 0;
 }

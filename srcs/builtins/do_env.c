@@ -29,5 +29,5 @@ void	do_env(t_msh *msh, t_cmd *cmd)
 		}
 		i++;
 	}
-	msh->exit_status = 0;
+	g_exit_status = 0;
 }

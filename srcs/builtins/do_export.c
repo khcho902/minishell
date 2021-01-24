@@ -121,7 +121,7 @@ void		do_export(t_msh *msh, t_cmd *cmd)
 	if (cmd->length == 1)
 	{
 		export_print(msh, -1);
-		msh->exit_status = 0;
+		g_exit_status = 0;
 		return ;
 	}
 	res = 0;
@@ -131,5 +131,5 @@ void		do_export(t_msh *msh, t_cmd *cmd)
 		export_env_set(msh, cmd, i, &res);
 		i++;
 	}
-	msh->exit_status = res;
+	g_exit_status = res;
 }

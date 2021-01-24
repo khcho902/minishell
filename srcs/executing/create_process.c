@@ -29,9 +29,9 @@ void	create_process(t_msh *msh, t_cmd *cmd)
 	{
 		waitpid(pid, &status, 0);
 		if (WIFEXITED(status))
-			msh->exit_status = WEXITSTATUS(status);
+			g_exit_status = WEXITSTATUS(status);
 		else if (WIFSIGNALED(status))
-			msh->exit_status = 128 + WTERMSIG(status);
+			g_exit_status = 128 + WTERMSIG(status);
 		if (cmd->input_fd != -1)
 			close(cmd->input_fd);
 		if (cmd->output_fd != -1)

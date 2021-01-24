@@ -17,5 +17,5 @@ void	do_pwd(t_msh *msh, t_cmd *cmd)
 	(void)cmd;
 	ft_putstr_fd(msh->pwd, STDOUT);
 	ft_putchar_fd('\n', STDOUT);
-	msh->exit_status = 0;
+	g_exit_status = 0;
 }

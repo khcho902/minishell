@@ -23,7 +23,8 @@ void	sig_handler(int signo)
 		if (pid == -1)
 		{
 			ft_putstr_fd("\b\b  \b\b\n", STDOUT);
-			ft_putstr_fd("\033[34;1mminishell\033[37m$ ", STDOUT);
+			show_prompt();
+			g_exit_status = 1;
 		}
 		else
 			ft_putchar_fd('\n', STDOUT);
@@ -33,11 +34,7 @@ void	sig_handler(int signo)
 		if (pid == -1)
 			ft_putstr_fd("\b\b  \b\b", STDOUT);
 		else
-		{
-			ft_putstr_fd("Quit: ", STDOUT);
-			ft_putchar_fd(SIGQUIT + '0', STDOUT);
-			ft_putchar_fd('\n', STDOUT);
-		}
+			ft_putstr_fd("Quit: 3\n", STDOUT);
 	}
 }
 

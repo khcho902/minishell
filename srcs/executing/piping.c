@@ -27,7 +27,7 @@ int get_cnt_of_pipes(t_cmd *cmd)
 	return (cnt);
 }
 
-void all_wait(t_msh *msh, int *cpid, int cnt_of_pipes)
+void all_wait(int *cpid, int cnt_of_pipes)
 {
 	int status;
 	int	i;
@@ -39,9 +39,9 @@ void all_wait(t_msh *msh, int *cpid, int cnt_of_pipes)
 		i++;
 	}
 	if (WIFEXITED(status))
-		msh->exit_status = WEXITSTATUS(status);
+		g_exit_status = WEXITSTATUS(status);
 	else if (WIFSIGNALED(status))
-		msh->exit_status = 128 + WTERMSIG(status);
+		g_exit_status = 128 + WTERMSIG(status);
 }
 
 
@@ -103,7 +103,7 @@ t_cmd	*piping(t_msh *msh, t_cmd *cmd)
 				if (cmd->output_fd != -1 && dup2(cmd->output_fd, STDOUT) < 0)
 					exit_print_err(strerror(errno));
 				builtin_executor(msh, cmd);
-				exit(msh->exit_status);
+				exit(g_exit_status);
 			}
 			else
 			{
@@ -131,7 +131,7 @@ t_cmd	*piping(t_msh *msh, t_cmd *cmd)
 		i++;
 
 	}
-	all_wait(msh, cpid, cnt_of_pipes);
+	all_wait(cpid, cnt_of_pipes);
 	free(pipes);
 	free(cpid);
 	return (cmd);
