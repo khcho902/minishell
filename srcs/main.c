@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 16:02:10 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/24 22:44:44 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/25 00:23:18 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,6 +121,7 @@ int		main(int argc, char **argv, char **env)
 	init_signal();
 	if (argc >= 2 && ft_strcmp(argv[1], "-c") == 0)
 	{
+		msh.c_option_flag = TRUE;
 		if (!(input = argv[2]))
 		{
 			print_execute_err(argv[0], "-c", "option requires an argument");

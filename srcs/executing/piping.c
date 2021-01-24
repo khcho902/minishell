@@ -68,34 +68,29 @@ t_cmd	*piping(t_msh *msh, t_cmd *cmd)
 			if (pipe(pipes + (i * 2)) == -1)
 				exit_print_err(strerror(errno));
 		}
-
-		if ((cpid[i] = fork()) == 0)
+		if ((cpid[i] = fork()) == -1)
+			exit_print_err(strerror(errno));
+		else if (cpid[i] == 0)
 		{
 			signal(SIGINT, SIG_DFL);
 			signal(SIGQUIT, SIG_DFL);
 
-			if (i < cnt_of_pipes)                 // 0     1     2     3     4 
-				dup2(pipes[i * 2 + 1], 1);        // 1     3     5     7     9
+			if (i < cnt_of_pipes)
+				dup2(pipes[i * 2 + 1], 1);
 			if (i > 0)
-				dup2(pipes[(i - 1) * 2], 0);      //       0     2     4     6
-
+				dup2(pipes[(i - 1) * 2], 0);
 			if (i < cnt_of_pipes)
 			{
 				close(pipes[(i * 2) + 1]);
 				close(pipes[(i * 2)]);
 			}
 			if (i > 0)
-			{
 				close(pipes[(i - 1) * 2]);
-			}
 
 			
 			builtin_executor  = get_builtin_executor(cmd->args[0]);	
 			if (set_redirection_fd(msh, cmd) == ERROR)
-			{
 				exit(1);
-			}
-
 			if (builtin_executor)
 			{
 				if (cmd->input_fd != -1 && dup2(cmd->input_fd, STDIN) < 0)
@@ -106,30 +101,17 @@ t_cmd	*piping(t_msh *msh, t_cmd *cmd)
 				exit(g_exit_status);
 			}
 			else
-			{
 				basic_executor(msh, cmd);
-			}
-		}
-		else if (cpid[i] == -1)
-		{
-			exit_print_err(strerror(errno));
-		}
-		
-		// close 
-		
-		if (i < cnt_of_pipes)
-		{
-			close(pipes[(i * 2) + 1]);
-		}
-		if (i > 0)
-		{
-			close(pipes[(i - 1) * 2]);
 		}
 
+		// close 
+		if (i < cnt_of_pipes)
+			close(pipes[(i * 2) + 1]);
+		if (i > 0)
+			close(pipes[(i - 1) * 2]);
 
 		cmd = cmd->next;
 		i++;
-
 	}
 	all_wait(cpid, cnt_of_pipes);
 	free(pipes);

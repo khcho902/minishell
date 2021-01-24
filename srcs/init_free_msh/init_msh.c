@@ -6,7 +6,7 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 18:48:11 by kycho             #+#    #+#             */
-/*   Updated: 2021/01/21 03:23:10 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/25 00:22:43 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,7 @@ void	init_msh(char *program_name, t_msh *msh, char **env)
 {
 	int i;
 
+	msh->c_option_flag = FALSE;
 	if (!(msh->launch_program_name = ft_strdup(program_name)))
 		exit_print_err(strerror(errno));
 	i = ft_strlen(program_name) - 1;

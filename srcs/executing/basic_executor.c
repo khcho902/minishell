@@ -29,8 +29,6 @@ char			**split_path(char *path_str)
 			colon_cnt++;
 		i++;
 	}
-
-
 	path_cnt = colon_cnt + 1;
 
 	if (!(splited_path = (char **)malloc(sizeof(char*) * (path_cnt + 1))))
@@ -61,12 +59,8 @@ char			**split_path(char *path_str)
 	path_idx++;
 
 	splited_path[path_idx] = NULL;
-
-
 	return (splited_path);
-
 }
-
 
 
 char			**get_env_array(t_dict **env, char *command)
@@ -185,6 +179,5 @@ void			basic_executor(t_msh *msh, t_cmd *cmd)
 			print_execute_err(msh->program_name, temp2, "Permission denied");
 			exit(126);
 		}
-		ft_double_free((void*)path); // 추가함  지워도 될듯?
 	}
 }
