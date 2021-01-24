@@ -35,6 +35,11 @@ void	executing(t_msh *msh)
 		if (cmd->type == TYPE_PIPE)
 		{
 			cmd = piping(msh, cmd);
+			/******/
+			free(msh->lstcmd);
+			if (!(msh->lstcmd = ft_strdup("")))
+				exit_print_err(strerror(errno));
+			/******/
 			continue ;
 		}
 		

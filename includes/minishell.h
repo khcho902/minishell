@@ -80,6 +80,14 @@ typedef struct		s_msh
 	char			*lstcmd;
 }					t_msh;
 
+typedef struct		s_piping_material
+{
+	int				cnt_of_pipes;
+	int				*pipes;
+	int				*cpid;
+}					t_piping_material;
+
+
 typedef void		(*t_builtin_executor)(t_msh *, t_cmd *);
 
 /*
