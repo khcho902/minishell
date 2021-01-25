@@ -6,7 +6,7 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 06:04:05 by kycho             #+#    #+#             */
-/*   Updated: 2021/01/25 22:57:58 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/26 00:18:30 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,10 +47,10 @@ char			**split_path(char *path_str)
 		{
 			splited_path[path_idx++] = tmp;
 			if (!(tmp = ft_strdup("")))
-				exit_print_err(strerror(errno));	
+				exit_print_err(strerror(errno));
 		}
 		else
-			append_char_to_str(&tmp, path_str[i]);	
+			append_char_to_str(&tmp, path_str[i]);
 	}
 	splited_path[path_idx++] = tmp;
 	splited_path[path_idx] = NULL;
@@ -137,11 +137,12 @@ void			set_exec_cmd(t_cmd *cmd, char *path, char **exec_cmd)
 	{
 		free(*exec_cmd);
 		if (!(*exec_cmd = ft_strjoin3(path, "/", cmd->args[0])))
-			exit_print_err(strerror(errno));	
+			exit_print_err(strerror(errno));
 	}
 }
 
-void			execute_fail_handler(t_msh *msh, t_cmd *cmd, char *exec_cmd, int is_command_not_found)
+void			execute_fail_handler(
+			t_msh *msh, t_cmd *cmd, char *exec_cmd, int is_command_not_found)
 {
 	if (is_command_not_found == TRUE)
 	{
@@ -155,18 +156,16 @@ void			execute_fail_handler(t_msh *msh, t_cmd *cmd, char *exec_cmd, int is_comma
 	}
 }
 
-void			while_path_basic_executor(t_msh *msh, t_cmd *cmd)
+void			while_path_basic_executor(t_msh *msh, t_cmd *cmd, int i)
 {
 	struct stat	sb;
 	char		**path;
 	char		**env;
 	int			is_command_not_found;
 	char		*exec_cmd;
-	int			i;
 
 	path = split_path(msh->path);
 	is_command_not_found = TRUE;
-	i = 0;
 	exec_cmd = NULL;
 	while (path[i])
 	{
@@ -191,8 +190,9 @@ void			basic_executor(t_msh *msh, t_cmd *cmd)
 		exit_print_err(strerror(errno));
 	if (cmd->output_fd != -1 && dup2(cmd->output_fd, STDOUT) < 0)
 		exit_print_err(strerror(errno));
-	if ((ft_strcmp(msh->path, "") == 0) || (ft_strchr(cmd->args[0], '/') != NULL))
+	if ((ft_strcmp(msh->path, "") == 0) ||
+			(ft_strchr(cmd->args[0], '/') != NULL))
 		direct_basic_executor(msh, cmd);
 	else
-		while_path_basic_executor(msh, cmd);
+		while_path_basic_executor(msh, cmd, 0);
 }
