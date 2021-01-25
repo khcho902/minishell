@@ -6,100 +6,11 @@
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 06:04:05 by kycho             #+#    #+#             */
-/*   Updated: 2021/01/26 00:18:30 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/26 00:28:51 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-int				get_path_cnt(char *path_str)
-{
-	int colon_cnt;
-	int i;
-
-	colon_cnt = 0;
-	i = 0;
-	while (path_str[i])
-	{
-		if (path_str[i] == ':')
-			colon_cnt++;
-		i++;
-	}
-	return (colon_cnt + 1);
-}
-
-char			**split_path(char *path_str)
-{
-	int		i;
-	int		path_idx;
-	char	**splited_path;
-	char	*tmp;
-
-	if (!(splited_path = malloc(sizeof(char*) * (get_path_cnt(path_str) + 1))))
-		exit_print_err(strerror(errno));
-	if (!(tmp = ft_strdup("")))
-		exit_print_err(strerror(errno));
-	i = -1;
-	path_idx = 0;
-	while (path_str[++i])
-	{
-		if (path_str[i] == ':')
-		{
-			splited_path[path_idx++] = tmp;
-			if (!(tmp = ft_strdup("")))
-				exit_print_err(strerror(errno));
-		}
-		else
-			append_char_to_str(&tmp, path_str[i]);
-	}
-	splited_path[path_idx++] = tmp;
-	splited_path[path_idx] = NULL;
-	return (splited_path);
-}
-
-char			**malloc_env_array(t_dict **env)
-{
-	char	**array;
-	int		not_null_env_cnt;
-	int		i;
-
-	not_null_env_cnt = 0;
-	i = 0;
-	while (env[i])
-	{
-		if (env[i]->value != NULL)
-			not_null_env_cnt++;
-		i++;
-	}
-	if (!(array = (char **)malloc(sizeof(char *) * (not_null_env_cnt + 2))))
-		exit_print_err(strerror(errno));
-	return (array);
-}
-
-char			**get_env_array(t_dict **env, char *exec_cmd)
-{
-	int		i;
-	int		j;
-	char	**array;
-
-	array = malloc_env_array(env);
-	i = 0;
-	j = 0;
-	while (env[i])
-	{
-		if (env[i]->value != NULL)
-		{
-			if (!(array[j] = ft_strjoin3(env[i]->key, "=", env[i]->value)))
-				exit_print_err(strerror(errno));
-			j++;
-		}
-		i++;
-	}
-	if (!(array[j] = ft_strjoin("_=", exec_cmd)))
-		exit_print_err(strerror(errno));
-	array[j + 1] = NULL;
-	return (array);
-}
 
 void			direct_basic_executor(t_msh *msh, t_cmd *cmd)
 {
