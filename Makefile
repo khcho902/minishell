@@ -6,7 +6,7 @@
 #    By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/23 14:34:40 by jiseo             #+#    #+#              #
-#    Updated: 2021/01/26 00:30:51 by kycho            ###   ########.fr        #
+#    Updated: 2021/01/26 01:59:43 by kycho            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -65,6 +65,7 @@ RAW_SRCS		=	main.c \
 					utils/is_fine_env_key.c \
 					utils/split_path.c \
 					utils/get_env_array.c \
+					utils/get_upper_path.c \
 					\
 					errors/exit_print_err.c \
 					errors/nonexit_print_err.c \

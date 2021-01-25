@@ -6,79 +6,15 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 00:57:53 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/20 16:41:21 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/26 01:59:02 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*get_upper_path(char *path)
+void	normal_set_cd_path_sub(
+						char **splited_path, char **path, int i, char *tmp)
 {
-	char	*upper_path;
-	int		i;
-	int		slash_idx;
-	
-	slash_idx = 0;
-	i = 0;
-	while (path[i])
-	{
-		if (path[i] == '/')
-			slash_idx = i;
-		i++;
-	}
-	if (slash_idx == 0)
-	{
-		if (!(upper_path = ft_strdup("/")))
-			exit_print_err(strerror(errno));
-	}
-	else
-	{
-		if (!(upper_path = malloc(sizeof(char) * (slash_idx + 1))))
-			exit_print_err(strerror(errno));
-		ft_strlcpy(upper_path, path, slash_idx + 1);
-	}
-	return (upper_path);
-}
-
-int		set_cd_path(t_msh *msh, t_cmd *cmd, char **path)
-{
-	char *p_name;
-	t_dict *env_dict;
-
-	p_name = msh->program_name;
-	if (cmd->length == 1)
-	{
-		if (!(env_dict = get_env_dict(msh->env, "HOME")) || env_dict->value == NULL)
-			return (print_execute_err(p_name, cmd->args[0], "HOME not set"));
-		if (!(*path = ft_strdup(env_dict->value)))
-			exit_print_err(strerror(errno));
-		return (SUCCESS);
-	}
-	else if (ft_strcmp(cmd->args[1], "-") == 0)
-	{
-		if (!(env_dict = get_env_dict(msh->env, "OLDPWD")) || env_dict->value == NULL)
-			return (print_execute_err(p_name, cmd->args[0], "OLDPWD not set"));
-		if (!(*path = ft_strdup(env_dict->value)))
-			exit_print_err(strerror(errno));
-		return (SUCCESS);
-	}
-	else if ((ft_strcmp(cmd->args[1], "") == 0) || (ft_strcmp(cmd->args[1], ".") == 0))
-	{
-		if (!(*path = ft_strdup(msh->pwd)))
-			exit_print_err(strerror(errno));
-		return (SUCCESS);
-	}
-	
-	
-	char *tmp;
-	if (cmd->args[1][0] == '/')
-		tmp = ft_strdup(cmd->args[1]);
-	else
-		tmp = ft_strjoin3(msh->pwd, "/", cmd->args[1]);
-	char **splited_path = ft_split(tmp, '/');
-	free(tmp);
-	*path = ft_strdup("/");
-	int i = 0;
 	while (splited_path[i])
 	{
 		if (ft_strcmp(splited_path[i], "..") == 0)
@@ -90,35 +26,78 @@ int		set_cd_path(t_msh *msh, t_cmd *cmd, char **path)
 		else if (ft_strcmp(splited_path[i], ".") != 0)
 		{
 			if (ft_strcmp(*path, "/") == 0)
-				tmp = ft_strjoin(*path, splited_path[i]);
+			{
+				if (!(tmp = ft_strjoin(*path, splited_path[i])))
+					exit_print_err(strerror(errno));
+			}
 			else
-				tmp = ft_strjoin3(*path, "/", splited_path[i]);
+			{
+				if (!(tmp = ft_strjoin3(*path, "/", splited_path[i])))
+					exit_print_err(strerror(errno));
+			}
 			free(*path);
 			*path = tmp;
 		}
 		i++;
 	}
+}
+
+int		normal_set_cd_path(t_msh *msh, t_cmd *cmd, char **path)
+{
+	char *tmp;
+	char **splited_path;
+
+	if (cmd->args[1][0] == '/')
+	{
+		if (!(tmp = ft_strdup(cmd->args[1])))
+			exit_print_err(strerror(errno));
+	}
+	else
+	{
+		if (!(tmp = ft_strjoin3(msh->pwd, "/", cmd->args[1])))
+			exit_print_err(strerror(errno));
+	}
+	if (!(splited_path = ft_split(tmp, '/')))
+		exit_print_err(strerror(errno));
+	free(tmp);
+	if (!(*path = ft_strdup("/")))
+		exit_print_err(strerror(errno));
+	normal_set_cd_path_sub(splited_path, path, 0, NULL);
 	ft_double_free((void *)splited_path);
 	return (SUCCESS);
 }
 
-void	do_cd(t_msh *msh, t_cmd *cmd)
+int		set_cd_path(t_msh *msh, t_cmd *cmd, char **path, char *p_name)
 {
-	char	*path;
-	char	*tmp;
-	
-	if (set_cd_path(msh, cmd, &path) == ERROR)
-		return ;
-	if (chdir(path))
+	t_dict *dict;
+
+	if (cmd->length == 1)
 	{
-		if (!(tmp = ft_strjoin3(cmd->args[0], ": ", cmd->args[1])))
+		if (!(dict = get_env_dict(msh->env, "HOME")) || !(dict->value))
+			return (print_execute_err(p_name, cmd->args[0], "HOME not set"));
+		if (!(*path = ft_strdup(dict->value)))
 			exit_print_err(strerror(errno));
-		print_execute_err(msh->program_name, tmp, strerror(errno));
-		free(tmp);
-		free(path);
-		g_exit_status = 1;
-		return ;
+		return (SUCCESS);
 	}
+	else if (ft_strcmp(cmd->args[1], "-") == 0)
+	{
+		if (!(dict = get_env_dict(msh->env, "OLDPWD")) || !(dict->value))
+			return (print_execute_err(p_name, cmd->args[0], "OLDPWD not set"));
+		if (!(*path = ft_strdup(dict->value)))
+			exit_print_err(strerror(errno));
+		return (SUCCESS);
+	}
+	else if (!ft_strcmp(cmd->args[1], "") || !ft_strcmp(cmd->args[1], "."))
+	{
+		if (!(*path = ft_strdup(msh->pwd)))
+			exit_print_err(strerror(errno));
+		return (SUCCESS);
+	}
+	return (normal_set_cd_path(msh, cmd, path));
+}
+
+void	set_oldpwd_pwd(t_msh *msh, char *path)
+{
 	if (get_env_dict(msh->env, "OLDPWD"))
 	{
 		if (get_env_dict(msh->env, "PWD"))
@@ -135,5 +114,25 @@ void	do_cd(t_msh *msh, t_cmd *cmd)
 		set_env_dict(msh, "PWD", path);
 	free(msh->pwd);
 	msh->pwd = path;
+}
+
+void	do_cd(t_msh *msh, t_cmd *cmd)
+{
+	char	*path;
+	char	*tmp;
+
+	if (set_cd_path(msh, cmd, &path, msh->program_name) == ERROR)
+		return ;
+	if (chdir(path))
+	{
+		if (!(tmp = ft_strjoin3(cmd->args[0], ": ", cmd->args[1])))
+			exit_print_err(strerror(errno));
+		print_execute_err(msh->program_name, tmp, strerror(errno));
+		free(tmp);
+		free(path);
+		g_exit_status = 1;
+		return ;
+	}
+	set_oldpwd_pwd(msh, path);
 	g_exit_status = 0;
 }

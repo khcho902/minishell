@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/26 00:31:42 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/26 02:00:05 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,6 +173,7 @@ char				*insert_char_before_set(char *str, char *set, char ch);
 int					is_fine_env_key(char *key);
 char				**split_path(char *path_str);
 char				**get_env_array(t_dict **env, char *exec_cmd);
+char				*get_upper_path(char *path);
 
 /*
 ** signal.c
