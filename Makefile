@@ -20,22 +20,6 @@ RAW_SRCS		=	main.c \
 					\
 					prompt/prompt.c \
 					\
-					builtins/get_builtin_executor.c \
-					builtins/run_builtin_executor.c \
-					builtins/do_cd.c \
-					builtins/do_echo.c \
-					builtins/do_env.c \
-					builtins/do_exit.c \
-					builtins/do_export.c \
-					builtins/do_pwd.c \
-					builtins/do_unset.c \
-					\
-					executing/executing.c \
-					executing/set_redirection_fd.c \
-					executing/basic_executor.c \
-					executing/create_process.c \
-					executing/piping.c \
-					\
 					init_free_msh/init_msh.c \
 					init_free_msh/free_msh_member.c \
 					\
@@ -47,18 +31,30 @@ RAW_SRCS		=	main.c \
 					parsing/sanitize_env.c \
 					parsing/get_env_replaced_input.c \
 					\
+					executing/executing.c \
+					executing/set_redirection_fd.c \
+					executing/basic_executor.c \
+					executing/create_process.c \
+					executing/piping.c \
+					\
+					builtins/get_builtin_executor.c \
+					builtins/run_builtin_executor.c \
+					builtins/do_cd.c \
+					builtins/do_echo.c \
+					builtins/do_env.c \
+					builtins/do_exit.c \
+					builtins/do_export.c \
+					builtins/do_pwd.c \
+					builtins/do_unset.c \
+					\
 					utils/ft_double_free.c \
 					utils/ft_strcmp.c \
 					utils/is_in_charset.c \
 					utils/get_env_dict.c \
 					utils/set_env_dict.c \
 					utils/unset_env_dict.c \
-					utils/ft_envjoin.c \
 					utils/quick_sort_env.c \
 					utils/append_char_to_str.c \
-					utils/copy_env.c \
-					utils/free_and_get_value.c \
-					utils/env_free.c \
 					utils/is_numeric_str.c \
 					utils/is_numeric_long_str.c \
 					utils/insert_char_before_set.c \
@@ -68,7 +64,6 @@ RAW_SRCS		=	main.c \
 					utils/get_upper_path.c \
 					\
 					errors/exit_print_err.c \
-					errors/nonexit_print_err.c \
 					errors/print_syntax_err.c \
 					errors/print_execute_err.c \
 					errors/print_shlvl_err.c \

@@ -6,7 +6,7 @@
 /*   By: jiseo <jiseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 18:39:33 by jiseo             #+#    #+#             */
-/*   Updated: 2021/01/26 02:00:05 by kycho            ###   ########.fr       */
+/*   Updated: 2021/01/26 02:57:40 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,32 +87,18 @@ typedef struct		s_piping_material
 	int				*cpid;
 }					t_piping_material;
 
-
 typedef void		(*t_builtin_executor)(t_msh *, t_cmd *);
 
 /*
-** builtins/
+** init_signal.c
 */
-void				*get_builtin_executor(char *cmd_name);
-void				run_builtin_executor(t_msh *msh, t_cmd *cmd,
-									t_builtin_executor builtin_executor,
-									int is_in_child_process);
-void				do_cd(t_msh *msh, t_cmd *cmd);
-void				do_echo(t_msh *msh, t_cmd *cmd);
-void				do_env(t_msh *msh, t_cmd *cmd);
-void				do_exit(t_msh *msh, t_cmd *cmd);
-void				do_export(t_msh *msh, t_cmd *cmd);
-void				do_pwd(t_msh *msh, t_cmd *cmd);
-void				do_unset(t_msh *msh, t_cmd *cmd);
+void				init_signal(void);
 
 /*
-** executing/
+** prompt/
 */
-void				executing(t_msh *msh);
-int					set_redirection_fd(t_msh *msh, t_cmd *cmd);
-void				basic_executor(t_msh *msh, t_cmd *cmd);
-void				create_process(t_msh *msh, t_cmd *cmd);
-t_cmd				*piping(t_msh *msh, t_cmd *cmd);
+void				show_logo();
+void				show_prompt();
 
 /*
 ** init_free_msh/
@@ -133,24 +119,28 @@ int					sanitize_env(
 char				*get_env_replaced_input(t_msh *msh, char *input);
 
 /*
-** errors/
+** executing/
 */
-void				exit_print_err(char *err_msg);
-void				nonexit_print_err(char *err_msg);
-int					print_syntax_err(
-							char *program_name, char *token, int is_eof_err);
-int					print_execute_err(
-							char *program_name, char *token, char *err_msg);
-void				print_shlvl_err(
-							char *program_name, char *value);
-void				print_identifier_err(
-							char *program_name, char *token1, char *token2);
+void				executing(t_msh *msh);
+int					set_redirection_fd(t_msh *msh, t_cmd *cmd);
+void				basic_executor(t_msh *msh, t_cmd *cmd);
+void				create_process(t_msh *msh, t_cmd *cmd);
+t_cmd				*piping(t_msh *msh, t_cmd *cmd);
 
 /*
-** prompt/
+** builtins/
 */
-void				show_logo();
-void				show_prompt();
+void				*get_builtin_executor(char *cmd_name);
+void				run_builtin_executor(t_msh *msh, t_cmd *cmd,
+									t_builtin_executor builtin_executor,
+									int is_in_child_process);
+void				do_cd(t_msh *msh, t_cmd *cmd);
+void				do_echo(t_msh *msh, t_cmd *cmd);
+void				do_env(t_msh *msh, t_cmd *cmd);
+void				do_exit(t_msh *msh, t_cmd *cmd);
+void				do_export(t_msh *msh, t_cmd *cmd);
+void				do_pwd(t_msh *msh, t_cmd *cmd);
+void				do_unset(t_msh *msh, t_cmd *cmd);
 
 /*
 ** utils/
@@ -161,12 +151,8 @@ int					ft_strcmp(const char *s1, const char *s2);
 t_dict				*get_env_dict(t_dict **env, char *key);
 void				set_env_dict(t_msh *msh, char *key, char *value);
 void				unset_env_dict(t_msh *msh, char *key);
-char				**ft_envjoin(t_dict **env, int env_len);
 void				append_char_to_str(char **str, char c);
 void				quick_sort_env(int left, int right, t_dict **env);
-void				copy_env(t_msh *msh, t_dict **dst);
-void				free_and_get_value(char **dst, char *src);
-void				env_free(t_dict **env);
 int					is_numeric_str(char *str);
 int					is_numeric_long_str(char *str);
 char				*insert_char_before_set(char *str, char *set, char ch);
@@ -176,8 +162,16 @@ char				**get_env_array(t_dict **env, char *exec_cmd);
 char				*get_upper_path(char *path);
 
 /*
-** signal.c
+** errors/
 */
-void				init_signal(void);
+void				exit_print_err(char *err_msg);
+int					print_syntax_err(
+							char *program_name, char *token, int is_eof_err);
+int					print_execute_err(
+							char *program_name, char *token, char *err_msg);
+void				print_shlvl_err(
+							char *program_name, char *value);
+void				print_identifier_err(
+							char *program_name, char *token1, char *token2);
 
 #endif
