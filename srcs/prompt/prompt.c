@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-void		show_logo()
+void		show_logo(void)
 {
 	ft_putstr_fd(COLOR_BLUE, STDOUT);
 	ft_putstr_fd("        :::      ::::::::\n", STDOUT);
@@ -26,7 +26,7 @@ void		show_logo()
 	ft_putstr_fd("by. kycho, jiseo\n", STDOUT);
 }
 
-void		show_prompt()
+void		show_prompt(void)
 {
 	ft_putstr_fd(COLOR_BR_BLUE, STDOUT);
 	ft_putstr_fd("minishell", STDOUT);

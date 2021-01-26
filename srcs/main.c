@@ -11,76 +11,8 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include <stdio.h>
 
-int		check_quotes_valid(char *program_name, char *input)
-{
-	int in_dquotes;
-	int i;
-
-	in_dquotes = FALSE;
-	i = -1;
-	while (input[++i])
-	{
-		if (input[i] == '\\')
-			i++;
-		else if (in_dquotes == FALSE && input[i] == '\'')
-		{
-			i++;
-			while (input[i] != '\'' && input[i] != '\0')
-				i++;
-			if (input[i] != '\'')
-				return (print_syntax_err(program_name, "'", TRUE));
-		}
-		else if (input[i] == '"')
-			in_dquotes ^= TRUE;
-		if (input[i] == 0)
-			break ;
-	}
-	if (in_dquotes == TRUE)
-		return (print_syntax_err(program_name, "\"", TRUE));
-	return (SUCCESS);
-}
-
-int		check_input_valid(t_msh *msh, char *input)
-{
-	t_list	*tokens;
-
-	if (check_quotes_valid(msh->program_name, input) == ERROR)
-	{
-		g_exit_status = 258;
-		return (ERROR);
-	}
-	split_token(input, &tokens, METACHARACTER);
-	if (check_token_valid(msh->program_name, tokens) == ERROR)
-	{
-		g_exit_status = 258;
-		ft_lstclear(&(tokens), free);
-		return (ERROR);
-	}
-	ft_lstclear(&(tokens), free);
-	return (SUCCESS);
-}
-
-void	main_loop(t_msh *msh, char *input)
-{
-	t_list	*jobs;
-	t_list	*job_now;
-
-	split_token(input, &jobs, ";");
-	job_now = jobs;
-	while (job_now)
-	{
-		if (ft_strcmp(job_now->content, ";") != 0)
-		{
-			if (parsing(msh, (char *)job_now->content) == SUCCESS)
-				executing(msh);
-			free_msh_member(msh);
-		}
-		job_now = job_now->next;
-	}
-	ft_lstclear(&(jobs), free);
-}
+int		g_exit_status = 0;
 
 int		get_command_line(char **input)
 {
@@ -109,7 +41,39 @@ int		get_command_line(char **input)
 	return (res);
 }
 
-int		g_exit_status = 0;
+void	main_loop(t_msh *msh, char *input)
+{
+	t_list	*jobs;
+	t_list	*job_now;
+
+	split_token(input, &jobs, ";");
+	job_now = jobs;
+	while (job_now)
+	{
+		if (ft_strcmp(job_now->content, ";") != 0)
+		{
+			if (parsing(msh, (char *)job_now->content) == SUCCESS)
+				executing(msh);
+			free_msh_member(msh);
+		}
+		job_now = job_now->next;
+	}
+	ft_lstclear(&(jobs), free);
+}
+
+void	onetime_run(char **argv, t_msh *msh)
+{
+	char *input;
+
+	msh->c_option_flag = TRUE;
+	if (!(input = argv[2]))
+	{
+		print_execute_err(argv[0], "-c", "option requires an argument");
+		exit(2);
+	}
+	if (check_input_valid(msh, input) != ERROR)
+		main_loop(msh, input);
+}
 
 int		main(int argc, char **argv, char **env)
 {
@@ -121,14 +85,7 @@ int		main(int argc, char **argv, char **env)
 	init_signal();
 	if (argc >= 2 && ft_strcmp(argv[1], "-c") == 0)
 	{
-		msh.c_option_flag = TRUE;
-		if (!(input = argv[2]))
-		{
-			print_execute_err(argv[0], "-c", "option requires an argument");
-			exit(2);
-		}
-		if (check_input_valid(&msh, input) != ERROR)
-			main_loop(&msh, input);
+		onetime_run(argv, &msh);
 		exit(g_exit_status & 255);
 	}
 	show_logo();

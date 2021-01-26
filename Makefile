@@ -17,6 +17,7 @@ INCS			=	-Iincludes
 RAW_SRCS		=	main.c \
 					init_signal.c \
 					get_next_line.c \
+					check_input_valid.c \
 					\
 					prompt/prompt.c \
 					\
@@ -25,7 +26,6 @@ RAW_SRCS		=	main.c \
 					\
 					parsing/parsing.c \
 					parsing/split_token.c \
-					parsing/check_token_valid.c \
 					parsing/making_cmd.c \
 					parsing/sanitize_token.c \
 					parsing/sanitize_env.c \

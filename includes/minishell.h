@@ -93,12 +93,13 @@ typedef void		(*t_builtin_executor)(t_msh *, t_cmd *);
 ** init_signal.c
 */
 void				init_signal(void);
+int					check_input_valid(t_msh *msh, char *input);
 
 /*
 ** prompt/
 */
-void				show_logo();
-void				show_prompt();
+void				show_logo(void);
+void				show_prompt(void);
 
 /*
 ** init_free_msh/
@@ -111,7 +112,6 @@ void				free_msh_member(t_msh *msh);
 */
 int					parsing(t_msh *msh, char *input);
 void				split_token(char *input, t_list **tokens, char *separator);
-int					check_token_valid(char *program_name, t_list *now);
 void				making_cmd(t_msh *msh);
 void				sanitize_token(t_list *token);
 int					sanitize_env(

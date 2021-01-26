@@ -1,18 +1,47 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   check_token_valid.c                                :+:      :+:    :+:   */
+/*   check_input_valid.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kycho <kycho@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/12/16 18:32:52 by kycho             #+#    #+#             */
-/*   Updated: 2021/01/18 01:19:08 by kycho            ###   ########.fr       */
+/*   Created: 2021/01/26 19:38:54 by kycho             #+#    #+#             */
+/*   Updated: 2021/01/26 19:39:23 by kycho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	check_token_valid_sub(char *program_name, t_list *now, int *before_type)
+int		check_quotes_valid(char *program_name, char *input)
+{
+	int in_dquotes;
+	int i;
+
+	in_dquotes = FALSE;
+	i = -1;
+	while (input[++i])
+	{
+		if (input[i] == '\\')
+			i++;
+		else if (in_dquotes == FALSE && input[i] == '\'')
+		{
+			i++;
+			while (input[i] != '\'' && input[i] != '\0')
+				i++;
+			if (input[i] != '\'')
+				return (print_syntax_err(program_name, "'", TRUE));
+		}
+		else if (input[i] == '"')
+			in_dquotes ^= TRUE;
+		if (input[i] == 0)
+			break ;
+	}
+	if (in_dquotes == TRUE)
+		return (print_syntax_err(program_name, "\"", TRUE));
+	return (SUCCESS);
+}
+
+int		check_token_valid_sub(char *program_name, t_list *now, int *before_type)
 {
 	if (((char*)now->content)[0] == '|')
 	{
@@ -38,7 +67,7 @@ int	check_token_valid_sub(char *program_name, t_list *now, int *before_type)
 	return (SUCCESS);
 }
 
-int	check_token_valid(char *program_name, t_list *now)
+int		check_token_valid(char *program_name, t_list *now)
 {
 	int		before_type;
 
@@ -53,5 +82,25 @@ int	check_token_valid(char *program_name, t_list *now)
 		return (print_syntax_err(program_name, "newline", FALSE));
 	if (before_type == TOKEN_PIPE)
 		return (ERROR);
+	return (SUCCESS);
+}
+
+int		check_input_valid(t_msh *msh, char *input)
+{
+	t_list	*tokens;
+
+	if (check_quotes_valid(msh->program_name, input) == ERROR)
+	{
+		g_exit_status = 258;
+		return (ERROR);
+	}
+	split_token(input, &tokens, METACHARACTER);
+	if (check_token_valid(msh->program_name, tokens) == ERROR)
+	{
+		g_exit_status = 258;
+		ft_lstclear(&(tokens), free);
+		return (ERROR);
+	}
+	ft_lstclear(&(tokens), free);
 	return (SUCCESS);
 }
