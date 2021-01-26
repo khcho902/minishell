@@ -92,7 +92,7 @@ int		main(int argc, char **argv, char **env)
 	res = argc;
 	while (res)
 	{
-		show_prompt(&msh);
+		show_prompt();
 		res = get_command_line(&input);
 		if (check_input_valid(&msh, input) != ERROR)
 			main_loop(&msh, input);
